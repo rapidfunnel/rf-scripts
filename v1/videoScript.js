@@ -53,6 +53,9 @@ jQuery(function ($) {
                   video.bind('play', function() {
                       // Log percent watched to test if it's being tracked correctly
                       console.log("Percent Watched: ", video.percentWatched());
+                      watchInterval = setInterval(() => {
+                        console.log("Real time Percent Watched: ", video.percentWatched());
+                      }, 1000);
                     
                       analyticObject.percentWatched = video.percentWatched();
                       analyticObject.mediaHash = video.hashedId();
@@ -67,6 +70,12 @@ jQuery(function ($) {
                       // Log the whole analyticObject to check all values
                       console.log("Analytic Object: ", analyticObject);
                   });
+
+                  // Clear the interval when the video is paused or ended
+                  video.bind('pause end', function() {
+                      clearInterval(watchInterval); // This stops the real-time logging when the video is not playing
+                  });
+                
                   video.email($('#contactEmail').val());
               }
           }
