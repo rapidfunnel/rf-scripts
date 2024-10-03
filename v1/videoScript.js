@@ -6,7 +6,7 @@ jQuery(function ($) {
   // const resourceId = params[2]; // Extract the resourceID
   // const contactId = params[3]; // Extract the contactId
   
-  document.addEventListener('DOMContentLoaded', function() {
+  // document.addEventListener('DOMContentLoaded', function() {
       // Adding Wistia analytics tracking class to iframes
       $("iframe").each(function() {
           var str = $(this).attr('src');
@@ -15,7 +15,7 @@ jQuery(function ($) {
           }
       });
       videoAnalytics();
-  });
+  // });
   
   // Wistia video analytics tracking setup
   function videoAnalytics() {
