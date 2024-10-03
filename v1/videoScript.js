@@ -19,6 +19,7 @@ jQuery(function ($) {
   
   // Wistia video analytics tracking setup
   function videoAnalytics() {
+      console.log('Inside video analystics');
       window._wq = window._wq || [];
       _wq.push({
           "_all": function(video) {
