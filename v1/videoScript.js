@@ -50,6 +50,9 @@ jQuery(function ($) {
                   };
                   var percentWatched = 0;
                   video.bind('play', function() {
+                      // Log percent watched to test if it's being tracked correctly
+                      console.log("Percent Watched: ", video.percentWatched());
+                    
                       analyticObject.percentWatched = video.percentWatched();
                       analyticObject.mediaHash = video.hashedId();
                       analyticObject.duration = video.duration();
@@ -59,6 +62,9 @@ jQuery(function ($) {
                       analyticObject.delayProcess = 1;
                       sqsPushAnalytics(analyticObject);
                       analyticObject.delayProcess = 0;
+
+                      // Log the whole analyticObject to check all values
+                      console.log("Analytic Object: ", analyticObject);
                   });
                   video.email($('#contactEmail').val());
               }
