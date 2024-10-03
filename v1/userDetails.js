@@ -52,20 +52,6 @@ jQuery(function ($) {
           }
 
           // Handle social links (replace href if available, otherwise hide the element)
-          // $('.footer-social-links a').each(function () {
-          //   const socialKey = $(this).data('social');
-          //   if (
-          //     userData.hasOwnProperty(socialKey) &&
-          //     userData[socialKey].trim() !== ''
-          //   ) {
-          //     $(this)
-          //       .attr('href', userData[socialKey])
-          //       .text(userData[socialKey]); // Set href and text
-          //   } else {
-          //     $(this).hide(); // Hide if the social link is empty
-          //   }
-          // });
-          // Handle social links (replace href if available, otherwise hide the element)
           $('.footer-social-links a').each(function () {
             const socialId = $(this).attr('id'); // Get the id of the element (e.g., facebookUrl, twitterUrl)
 
@@ -73,7 +59,9 @@ jQuery(function ($) {
               userData.hasOwnProperty(socialId) &&
               userData[socialId].trim() !== ''
             ) {
-              $(this).attr('href', userData[socialId]); // Set href if value exists in userData
+              $(this)
+                .attr('href', userData[socialId]) // Set href if value exists in userData
+                .text('');
             } else {
               $(this).hide(); // Hide the element if no value exists for the socialId
             }
