@@ -25,9 +25,9 @@ jQuery(function ($) {
                   args;
             
               const parsedUrl = new URL(url);
-              const userId = parsedUrl.searchParams.get('userId');
-              const resourceId = parsedUrl.searchParams.get('resourceId');
-              const contactId = parsedUrl.searchParams.get('contactId');
+              userId = parsedUrl.searchParams.get('userId');
+              resourceId = parsedUrl.searchParams.get('resourceId');
+              contactId = parsedUrl.searchParams.get('contactId');
             
               if ('' !== contactId &&
                   $.isNumeric(resourceId) && $.isNumeric(userId)) {
