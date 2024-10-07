@@ -1,10 +1,4 @@
 jQuery(function ($) {
-  // Parse the URL to extract userId, resourceID, and contactId
-  // const parsedUrl = new URL(window.location.href);
-  // const params = parsedUrl.search.split('/');
-  // const userId = params[1]; // Extract the userId
-  // const resourceId = params[2]; // Extract the resourceID
-  // const contactId = params[3]; // Extract the contactId
   
   // document.addEventListener('DOMContentLoaded', function() {
       // Adding Wistia analytics tracking class to iframes
@@ -29,11 +23,12 @@ jQuery(function ($) {
                   url = window.location.href,
                   webinar = $('#webinar').val(),
                   args;
+            
               const parsedUrl = new URL(url);
-              const params = parsedUrl.search.split('/');
-              resourceId = params[2];
-              userId = params[1];
-              contactId = params[3];
+              const userId = parsedUrl.searchParams.get('userId');
+              const resourceId = parsedUrl.searchParams.get('resourceId');
+              const contactId = parsedUrl.searchParams.get('contactId');
+            
               if ('' !== contactId &&
                   $.isNumeric(resourceId) && $.isNumeric(userId)) {
                   var analyticObject = {
