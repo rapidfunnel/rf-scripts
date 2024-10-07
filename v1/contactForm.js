@@ -53,9 +53,11 @@ jQuery(function ($) {
     const formData = 'firstName=' + document.getElementById('contactFirstName').value +
           '&lastName=' + document.getElementById('contactLastName').value +
           '&email=' + document.getElementById('contactEmail').value +
-          '&phone=' + document.getElementById('contactPhone').value +
-          '&note=' + document.getElementById('contactNote').value +
-          '&noteTimeStamps[]=' + todayDate();
+          '&phone=' + document.getElementById('contactPhone').value;
+
+    
+          // '&note=' + document.getElementById('contactNote').value +
+          // '&noteTimeStamps[]=' + todayDate();
 
     // Submit the form data to the API
     $.ajax({
