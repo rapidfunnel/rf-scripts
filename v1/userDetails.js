@@ -60,7 +60,7 @@ jQuery(function ($) {
             ) {
               $(this)
                 .attr('href', userData[socialId]) // Set href if value exists in userData
-                .text('');
+                // .text('');
             } else {
               $(this).hide(); // Hide the element if no value exists for the socialId
             }
