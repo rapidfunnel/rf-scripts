@@ -44,11 +44,15 @@ jQuery(function ($) {
             } else if (key === 'customBookingLink') {
               if (value !== '') {
                 $element.attr('href', value);
+                $element.find('span').text('');
               } else {
                 $element.hide();
               }
             }
           }
+
+          $('.email-block').find('span').text('');
+          $('.phone-block').find('span').text('');
 
           // Handle social links (replace href if available, otherwise hide the element)
           $('.footer-social-links a').each(function () {
