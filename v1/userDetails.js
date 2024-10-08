@@ -24,7 +24,7 @@ jQuery(function ($) {
           if ($element.length) {
             // If it's not the customBookingLink, set the text for the element (replace the placeholder text)
             if (key !== 'customBookingLink') {
-              $element.text(value);
+              // $element.text(value);
             }
 
             if (key === 'profileImage') {
