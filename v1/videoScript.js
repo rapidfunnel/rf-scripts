@@ -85,7 +85,10 @@ jQuery(function ($) {
                       }
                       if (video.secondsWatched() == 10) {
                         console.log("You've watched 10 seconds of this video!");
-                        $('#customBookingLink').show();
+                        console.log('video script, customBookingLink: ', window.sharedData.customBookingLink);
+                        if (window.sharedData.customBookingLink) {
+                           $('#customBookingLink').show();
+                        }
                       }
                       if (video.secondsWatched() == 15) {
                         console.log("You've watched 15 seconds of this video!");
