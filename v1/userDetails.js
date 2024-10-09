@@ -47,6 +47,7 @@ jQuery(function ($) {
                 $element.find('span').text('');
               } else {
                 $element.hide();
+                $('.custom_custombookinglink').hide();
               }
             }
           }
