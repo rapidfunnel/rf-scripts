@@ -83,6 +83,7 @@ jQuery(function ($) {
                       }
                       if (video.secondsWatched() == 10) {
                         console.log("You've watched 10 seconds of this video!");
+                        $('#customBookingLink').show();
                       }
                       if (video.secondsWatched() == 15) {
                         console.log("You've watched 15 seconds of this video!");
