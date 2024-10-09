@@ -16,7 +16,7 @@ jQuery(function ($) {
         const userData = data.data[0];
         console.log('userdata', userData);
 
-        window.sharedData.customBookingLink = userData.customBookingLink;
+        window.sharedData.customBookingLink = userData['customBookingLink'];
         console.log('shared global custom booking link:', window.sharedData.customBookingLink);
 
         // Loop over the userData keys
