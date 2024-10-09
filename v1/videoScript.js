@@ -76,6 +76,18 @@ jQuery(function ($) {
                         console.log('Percent Watched: ', percent);
                       }
                   });
+
+                  video.bind("secondchange", function() {
+                      if (video.secondsWatched() == 5) {
+                        console.log("You've watched 5 seconds of this video!");
+                      }
+                      if (video.secondsWatched() == 10) {
+                        console.log("You've watched 10 seconds of this video!");
+                      }
+                      if (video.secondsWatched() == 15) {
+                        console.log("You've watched 15 seconds of this video!");
+                      }
+                  });
                 
                   video.email($('#contactEmail').val());
               }
