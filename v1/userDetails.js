@@ -22,7 +22,7 @@ jQuery(function ($) {
         console.log('custom booking link4', userData[customBookingLink]);
         console.log('custom booking link5', userData['customBookingLink']);
 
-        window.sharedData.customBookingLink = userData['customBookingLink'];
+        window.sharedData.customBookingLink = userData.customBookingLink;
         console.log('shared global custom booking link:', window.sharedData.customBookingLink);
 
         // Loop over the userData keys
