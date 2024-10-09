@@ -46,6 +46,7 @@ jQuery(function ($) {
                 $element.attr('href', value);
                 $element.find('span').text('');
                 $('.custom_custombookinglink').attr('href', value);
+                $('.alternate-text').hide();
               } else {
                 $element.hide();
                 $('.custom_custombookinglink').hide();
