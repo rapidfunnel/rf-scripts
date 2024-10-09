@@ -55,6 +55,7 @@ jQuery(function ($) {
 
           $('.email-block').find('span').text('');
           $('.phone-block').find('span').text('');
+          $('.custom_custombookinglink').find('span').text('');
 
           // Handle social links (replace href if available, otherwise hide the element)
           $('.footer-social-links a').each(function () {
