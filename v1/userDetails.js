@@ -45,6 +45,7 @@ jQuery(function ($) {
               if (value !== '') {
                 $element.attr('href', value);
                 $element.find('span').text('');
+                $('.custom_custombookinglink').attr('href', value);
               } else {
                 $element.hide();
                 $('.custom_custombookinglink').hide();
