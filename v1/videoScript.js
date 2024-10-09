@@ -28,6 +28,8 @@ jQuery(function ($) {
               userId = parsedUrl.searchParams.get('userId');
               resourceId = parsedUrl.searchParams.get('resourceId');
               contactId = parsedUrl.searchParams.get('contactId');
+
+              $('#customBookingLink').hide();
             
               if ('' !== contactId &&
                   $.isNumeric(resourceId) && $.isNumeric(userId)) {
