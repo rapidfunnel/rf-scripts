@@ -63,6 +63,7 @@ jQuery(function ($) {
 
           $('.email-block').find('span').text('');
           $('.firstName').text(userData.firstName);
+          $('.lastName').text(userData.lastName);
           $('.phone-block').find('span').text('');
           $('.custom_custombookinglink').find('span').text('');
 
