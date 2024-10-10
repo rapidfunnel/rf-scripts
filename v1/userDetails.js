@@ -18,6 +18,8 @@ jQuery(function ($) {
 
         console.log('custom booking link', userData.customBookingLink);
 
+        
+        window.sharedData = window.sharedData || {};
         window.sharedData.customBookingLink = userData.customBookingLink;
         console.log('shared global custom booking link:', window.sharedData.customBookingLink);
 
