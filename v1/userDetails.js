@@ -62,6 +62,7 @@ jQuery(function ($) {
           }
 
           $('.email-block').find('span').text('');
+          $('.firstName').text(userData.firstName);
           $('.phone-block').find('span').text('');
           $('.custom_custombookinglink').find('span').text('');
 
