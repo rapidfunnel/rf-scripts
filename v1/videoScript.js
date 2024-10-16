@@ -29,7 +29,10 @@ jQuery(function ($) {
               resourceId = parsedUrl.searchParams.get('resourceId');
               contactId = parsedUrl.searchParams.get('contactId');
 
-              $('#customBookingLink').hide();
+              console.log('timeInSeconds', showBookMeAfterTimeInSecondsPassedInVideo);
+              if (showBookMeAfterTimeInSecondsPassedInVideo > 0) {
+                $('#bookMeContainer').hide();
+              }
             
               if ('' !== contactId &&
                   $.isNumeric(resourceId) && $.isNumeric(userId)) {
@@ -80,15 +83,19 @@ jQuery(function ($) {
                   });
 
                   video.bind("secondchange", function() {
+                    if (video.secondsWatched() >= showBookMeAfterTimeInSecondsPassedInVideo) {
+                      console.log("We should now show book me container");
+                      $('#bookMeContainer').show();
+                    }
                       if (video.secondsWatched() == 5) {
                         console.log("You've watched 5 seconds of this video!");
                       }
                       if (video.secondsWatched() == 10) {
                         console.log("You've watched 10 seconds of this video!");
                         console.log('video script, customBookingLink: ', window.sharedData.customBookingLink);
-                        if (window.sharedData.customBookingLink) {
-                           $('#customBookingLink').show();
-                        }
+                        // if (window.sharedData.customBookingLink) {
+                        //    $('#customBookingLink').show();
+                        // }
                       }
                       if (video.secondsWatched() == 15) {
                         console.log("You've watched 15 seconds of this video!");
