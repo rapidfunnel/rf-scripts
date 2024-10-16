@@ -25,11 +25,11 @@ jQuery(function ($) {
         const contactData = response.data;
 
         // Populate the form with contact details
-        $('#contactFirstName').val(contactData.firstName);
-        $('#contactLastName').val(contactData.lastName);
-        $('#contactEmail').val(contactData.email);
-        $('#contactPhone').val(contactData.phone);
-        $('#contactNote').val(contactData.note);
+        $('.contactFirstName').val(contactData.firstName);
+        $('.contactLastName').val(contactData.lastName);
+        $('.contactEmail').val(contactData.email);
+        $('.contactPhone').val(contactData.phone);
+        $('.contactNote').val(contactData.note);
       }
     ).fail(function () {
       console.error('Failed to fetch contact details.');
