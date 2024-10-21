@@ -34,7 +34,7 @@ jQuery(function ($) {
                 $('#bookMeContainer').hide();
               }
 
-              if($('#customBookingLink').attr('href')) {
+              if($('#customBookingLink').attr('href') && $('#customBookingLink').attr('href') !== '#') {
                 console.log("We should hide request call container since there's a booking link");
                 $('#requestCallContainer').hide();
               } else {
