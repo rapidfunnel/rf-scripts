@@ -88,7 +88,7 @@ jQuery(function ($) {
                   });
 
                   video.bind("secondchange", function() {
-                    console.log($("book me link", '#customBookingLink').attr('href'))
+                    console.log("book me href value", $('#customBookingLink').attr('href'));
                     if (video.secondsWatched() >= showBookMeAfterTimeInSecondsPassedInVideo) {
                       console.log("We should now show book me container as time specified has passed");
                       $('#bookMeContainer').show();
