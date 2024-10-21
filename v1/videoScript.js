@@ -10,6 +10,25 @@ jQuery(function ($) {
       });
       videoAnalytics();
   // });
+
+    // Listen for the custom event
+    $(document).on('customBookingLinkUpdated', function () {
+        checkBookingLink();
+    });
+
+   // Function to check the booking link and show/hide the request call container
+    function checkBookingLink() {
+        if ($('#customBookingLink').attr('href') && $('#customBookingLink').attr('href') !== '#') {
+            console.log("We should hide request call container since there's a booking link");
+            $('#requestCallContainer').hide();
+        } else {
+            console.log("We should show request call container since there's no booking link");
+            $('#requestCallContainer').show();
+        }
+    }
+
+    // Run the check initially in case the href value is already set on page load
+    checkBookingLink();
   
   // Wistia video analytics tracking setup
   function videoAnalytics() {
@@ -32,14 +51,6 @@ jQuery(function ($) {
               console.log('timeInSeconds', showBookMeAfterTimeInSecondsPassedInVideo);
               if (showBookMeAfterTimeInSecondsPassedInVideo > 0) {
                 $('#bookMeContainer').hide();
-              }
-
-              if($('#customBookingLink').attr('href') && $('#customBookingLink').attr('href') !== '#') {
-                console.log("We should hide request call container since there's a booking link");
-                $('#requestCallContainer').hide();
-              } else {
-                console.log("We should show request call container since there's no booking link");
-                $('#requestCallContainer').show();
               }
             
               if ('' !== contactId &&
