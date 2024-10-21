@@ -53,9 +53,6 @@ jQuery(function ($) {
                   video.bind('play', function() {
                       // Log percent watched to test if it's being tracked correctly
                       console.log("Percent Watched: ", video.percentWatched());
-                      // watchInterval = setInterval(() => {
-                      //   console.log("Real time Percent Watched: ", video.percentWatched());
-                      // }, 1000);
                     
                       analyticObject.percentWatched = video.percentWatched();
                       analyticObject.mediaHash = video.hashedId();
@@ -85,7 +82,13 @@ jQuery(function ($) {
                   video.bind("secondchange", function() {
                     if (video.secondsWatched() >= showBookMeAfterTimeInSecondsPassedInVideo) {
                       console.log("We should now show book me container");
-                      $('#bookMeContainer').show();
+                      if($('#customBookingLink').attr('href')) {
+                        $('#bookMeContainer').show();
+                        $('#requestCallContainer').hide();
+                      } else {
+                        $('#bookMeContainer').hide();
+                        $('#requestCallContainer').show();
+                      }
                     }
                       if (video.secondsWatched() == 5) {
                         console.log("You've watched 5 seconds of this video!");
