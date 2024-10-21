@@ -54,6 +54,9 @@ jQuery(function ($) {
                 $element.find('span').text('');
                 $('.custom_custombookinglink').attr('href', value);
                 $('.alternate-text').hide();
+
+                // Trigger the custom event now that the href has been updated
+                $(document).trigger('customBookingLinkUpdated');
               } else {
                 $element.hide();
                 $('.custom_custombookinglink').hide();
