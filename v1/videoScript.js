@@ -80,12 +80,15 @@ jQuery(function ($) {
                   });
 
                   video.bind("secondchange", function() {
+                    console.log($("book me link", '#customBookingLink').attr('href'))
                     if (video.secondsWatched() >= showBookMeAfterTimeInSecondsPassedInVideo) {
-                      console.log("We should now show book me container");
+                      console.log("We should now decide to show either book me btn or request call component");
                       if($('#customBookingLink').attr('href')) {
+                        console.log("We should now show book me container");
                         $('#bookMeContainer').show();
                         $('#requestCallContainer').hide();
                       } else {
+                        console.log("We should now show request call container");
                         $('#bookMeContainer').hide();
                         $('#requestCallContainer').show();
                       }
