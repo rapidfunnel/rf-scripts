@@ -33,6 +33,14 @@ jQuery(function ($) {
               if (showBookMeAfterTimeInSecondsPassedInVideo > 0) {
                 $('#bookMeContainer').hide();
               }
+
+              if($('#customBookingLink').attr('href')) {
+                console.log("We should hide request call container since there's a booking link");
+                $('#requestCallContainer').hide();
+              } else {
+                console.log("We should show request call container since there's no booking link");
+                $('#requestCallContainer').show();
+              }
             
               if ('' !== contactId &&
                   $.isNumeric(resourceId) && $.isNumeric(userId)) {
@@ -82,30 +90,22 @@ jQuery(function ($) {
                   video.bind("secondchange", function() {
                     console.log($("book me link", '#customBookingLink').attr('href'))
                     if (video.secondsWatched() >= showBookMeAfterTimeInSecondsPassedInVideo) {
-                      console.log("We should now decide to show either book me btn or request call component");
-                      if($('#customBookingLink').attr('href')) {
-                        console.log("We should now show book me container");
-                        $('#bookMeContainer').show();
-                        $('#requestCallContainer').hide();
-                      } else {
-                        console.log("We should now show request call container");
-                        $('#bookMeContainer').hide();
-                        $('#requestCallContainer').show();
-                      }
+                      console.log("We should now show book me container as time specified has passed");
+                      $('#bookMeContainer').show();
                     }
-                      if (video.secondsWatched() == 5) {
-                        console.log("You've watched 5 seconds of this video!");
-                      }
-                      if (video.secondsWatched() == 10) {
-                        console.log("You've watched 10 seconds of this video!");
-                        console.log('video script, customBookingLink: ', window.sharedData.customBookingLink);
-                        // if (window.sharedData.customBookingLink) {
-                        //    $('#customBookingLink').show();
-                        // }
-                      }
-                      if (video.secondsWatched() == 15) {
-                        console.log("You've watched 15 seconds of this video!");
-                      }
+                    if (video.secondsWatched() == 5) {
+                      console.log("You've watched 5 seconds of this video!");
+                    }
+                    if (video.secondsWatched() == 10) {
+                      console.log("You've watched 10 seconds of this video!");
+                      console.log('video script, customBookingLink: ', window.sharedData.customBookingLink);
+                      // if (window.sharedData.customBookingLink) {
+                      //    $('#customBookingLink').show();
+                      // }
+                    }
+                    if (video.secondsWatched() == 15) {
+                      console.log("You've watched 15 seconds of this video!");
+                    }
                   });
                 
                   video.email($('#contactEmail').val());
