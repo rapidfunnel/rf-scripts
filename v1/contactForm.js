@@ -50,12 +50,15 @@ jQuery(function ($) {
 
     // Get additional attributes from the form
     const contactForm = $('#contactForm');
-    const formData = 'firstName=' + document.getElementById('contactFirstName').value +
+    var formData = 'firstName=' + document.getElementById('contactFirstName').value +
           '&lastName=' + document.getElementById('contactLastName').value +
           '&email=' + document.getElementById('contactEmail').value +
           '&phone=' + document.getElementById('contactPhone').value;
 
     console.log('CampaignId', assignCampaignId);
+    if(assignCampaignId && assignCampaignId !== 0) {
+      formData += '&campaign=' + assignCampaignId;
+    }
 
     
           // '&note=' + document.getElementById('contactNote').value +
