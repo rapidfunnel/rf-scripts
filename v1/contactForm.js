@@ -53,12 +53,13 @@ jQuery(function ($) {
     var formData = 'firstName=' + document.getElementById('contactFirstName').value +
           '&lastName=' + document.getElementById('contactLastName').value +
           '&email=' + document.getElementById('contactEmail').value +
-          '&phone=' + document.getElementById('contactPhone').value;
+          '&phone=' + document.getElementById('contactPhone').value +
+          '&campaign=' + assignCampaignId;
 
     console.log('CampaignId', assignCampaignId);
-    if(assignCampaignId && assignCampaignId !== 0) {
-      formData += '&campaign=' + assignCampaignId;
-    }
+    // if(assignCampaignId && assignCampaignId !== 0) {
+    //   formData += '&campaign=' + assignCampaignId;
+    // }
 
     
           // '&note=' + document.getElementById('contactNote').value +
