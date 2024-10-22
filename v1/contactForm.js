@@ -55,6 +55,8 @@ jQuery(function ($) {
           '&email=' + document.getElementById('contactEmail').value +
           '&phone=' + document.getElementById('contactPhone').value;
 
+    console.log('CampaignId', assignCampaignId);
+
     
           // '&note=' + document.getElementById('contactNote').value +
           // '&noteTimeStamps[]=' + todayDate();
