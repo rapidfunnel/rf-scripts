@@ -29,6 +29,7 @@ jQuery(function ($) {
             contactFirstName: contactData.firstName,
             contactLastName: contactData.lastName,
             contactPhoneNumber: contactData.phone,
+            requestCallSourcePage: resourceDescriptionForRequestCall
           },
           success: function (response) {
             console.log('Request Call email sent successfully', response);
@@ -46,26 +47,34 @@ jQuery(function ($) {
 
   function requestCallFormSubmit() {
     if(contactId) {
-       $('#requestForm').on('submit', function (event) {
-          $.ajax({
-          url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email',
-          type: 'POST',
-          contentType: 'application/json',
-          dataType: "json",
-          data: {
-            legacyUserId: userId,
-            contactFirstName: contactData.firstName,
-            contactLastName: contactData.lastName,
-            contactPhoneNumber: contactData.phone,
-          },
-          success: function (response) {
-            console.log('Request Call email sent successfully', response);
-          },
-          error: function (xhr, status, error) {
-            console.error('Request Call email failed', error);
-          }
-        });
-       });
+        const contactFirstName = $('#contactFirstNameRequestForm').val();
+        const contactLastName = $('#contactLastNameRequestForm').val();
+        const contactPhoneNumber = $('#contactPhoneRequestForm').val();
+      
+        $.ajax({
+        url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email',
+        type: 'POST',
+        contentType: 'application/json',
+        dataType: "json",
+        data: {
+          legacyUserId: userId,
+          contactFirstName: contactFirstName,
+          contactLastName: contactLastName,
+          contactPhoneNumber: contactPhoneNumber,
+          requestCallSourcePage: resourceDescriptionForRequestCall
+        },
+        success: function (response) {
+          console.log('Request Call email sent successfully', response);
+        },
+        error: function (xhr, status, error) {
+          console.error('Request Call email failed', error);
+        }
+      });
     }
   }
+
+  $('#requestCallBtn').on('click', requestCallButtonSubmit);
+  $('#requestForm').on('submit', function (event) {
+    requestCallFormSubmit();
+  });
 });
