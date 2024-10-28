@@ -20,7 +20,7 @@ jQuery(function ($) {
         const contactData = response.data;
         // Make a POST request with contactData to send request call email to user
         $.ajax({
-          url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email',
+          url: 'https://s1app.rapidfunnel.com/api/mail/send-request-call-email',
           type: 'POST',
           contentType: 'application/json',
           dataType: "json",
@@ -52,7 +52,7 @@ jQuery(function ($) {
         const contactPhoneNumber = $('#contactPhoneRequestForm').val();
       
         $.ajax({
-        url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email',
+        url: 'https://s1app.rapidfunnel.com/api/mail/send-request-call-email',
         type: 'POST',
         contentType: 'application/json',
         dataType: "json",
