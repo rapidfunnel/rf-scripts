@@ -76,6 +76,7 @@ jQuery(function ($) {
 
             if (
               userData.hasOwnProperty(socialId) &&
+              userData[socialId] &&
               userData[socialId].trim() !== ''
             ) {
               $(this)
