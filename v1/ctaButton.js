@@ -48,6 +48,7 @@ jQuery(function ($) {
   
   $('[id^="ctaButton"]').on('click', function(event) {
       event.preventDefault();
+      console.log("Clicked CTA Button:", this.id);
       handleCtaButtonClick(this.id);
   });
 });
