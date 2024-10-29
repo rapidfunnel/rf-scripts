@@ -17,11 +17,11 @@ jQuery(function ($) {
         const contactData = response.data;
         // Make a POST request with contactData to send cta button email to user
         $.ajax({
-          url: 'https://s1app.rapidfunnel.com/api/mail/send-ctaemail',
+          url: 'https://s1app.rapidfunnel.com/api/mail/send-cta-email',
           type: 'POST',
           contentType: 'application/json',
           dataType: "json",
-          data: {
+          data: JSON.stringify({
             legacyUserId: userId,
             contactFirstName: contactData.firstName,
             contactLastName: contactData.lastName,
@@ -29,7 +29,7 @@ jQuery(function ($) {
             contactEmail: contactData.email,
             ctaLocation: ctaButtonLocation,
             ctaPageName: pageName
-          },
+          }),
           success: function (response) {
             console.log('CTA Button email sent successfully', response);
           },
