@@ -24,13 +24,13 @@ jQuery(function ($) {
           type: 'POST',
           contentType: 'application/json',
           dataType: "json",
-          data: {
+          data: JSON.stringify({
             legacyUserId: userId,
             contactFirstName: contactData.firstName,
             contactLastName: contactData.lastName,
             contactPhoneNumber: contactData.phone,
             requestCallSourcePage: resourceDescriptionForRequestCall
-          },
+          }),
           success: function (response) {
             console.log('Request Call email sent successfully', response);
           },
@@ -56,13 +56,13 @@ jQuery(function ($) {
         type: 'POST',
         contentType: 'application/json',
         dataType: "json",
-        data: {
+        data: JSON.stringify({
           legacyUserId: userId,
           contactFirstName: contactFirstName,
           contactLastName: contactLastName,
           contactPhoneNumber: contactPhoneNumber,
           requestCallSourcePage: resourceDescriptionForRequestCall
-        },
+        }),
         success: function (response) {
           console.log('Request Call email sent successfully', response);
         },
