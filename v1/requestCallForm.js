@@ -14,6 +14,7 @@ jQuery(function ($) {
   }
 
   function requestCallButtonSubmit() {
+    // Called for known contact
     if(contactId) {
       $.get(
       'https://apiv2.rapidfunnel.com/v2/contact-details/' + contactId,
@@ -47,31 +48,29 @@ jQuery(function ($) {
   }
 
   function requestCallFormSubmit() {
-    if(contactId) {
-        const contactFirstName = $('#contactFirstNameRequestForm').val();
-        const contactLastName = $('#contactLastNameRequestForm').val();
-        const contactPhoneNumber = $('#contactPhoneRequestForm').val();
-      
-        $.ajax({
-        url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email',
-        type: 'POST',
-        contentType: 'application/json',
-        dataType: "json",
-        data: JSON.stringify({
-          legacyUserId: numericUserId,
-          contactFirstName: contactFirstName,
-          contactLastName: contactLastName,
-          contactPhoneNumber: contactPhoneNumber,
-          requestCallSourcePage: resourceDescriptionForRequestCall
-        }),
-        success: function (response) {
-          console.log('Request Call email sent successfully', response);
-        },
-        error: function (xhr, status, error) {
-          console.error('Request Call email failed', error);
-        }
-      });
-    }
+      const contactFirstName = $('#contactFirstNameRequestForm').val();
+      const contactLastName = $('#contactLastNameRequestForm').val();
+      const contactPhoneNumber = $('#contactPhoneRequestForm').val();
+    
+      $.ajax({
+      url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email',
+      type: 'POST',
+      contentType: 'application/json',
+      dataType: "json",
+      data: JSON.stringify({
+        legacyUserId: numericUserId,
+        contactFirstName: contactFirstName,
+        contactLastName: contactLastName,
+        contactPhoneNumber: contactPhoneNumber,
+        requestCallSourcePage: resourceDescriptionForRequestCall
+      }),
+      success: function (response) {
+        console.log('Request Call email sent successfully', response);
+      },
+      error: function (xhr, status, error) {
+        console.error('Request Call email failed', error);
+      }
+    });
   }
 
   $('#requestCallBtn').on('click', requestCallButtonSubmit);
