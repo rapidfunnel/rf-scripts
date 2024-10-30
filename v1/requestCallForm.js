@@ -5,6 +5,7 @@ jQuery(function ($) {
   const userId = parsedUrl.searchParams.get('userId');
   const resourceId = parsedUrl.searchParams.get('resourceId');
   const contactId = parsedUrl.searchParams.get('contactId');
+  const numericUserId = Number(userId);
 
   if(contactId) {
     $('#requestCallForm').hide();
@@ -25,7 +26,7 @@ jQuery(function ($) {
           contentType: 'application/json',
           dataType: "json",
           data: JSON.stringify({
-            legacyUserId: userId,
+            legacyUserId: numericUserId,
             contactFirstName: contactData.firstName,
             contactLastName: contactData.lastName,
             contactPhoneNumber: contactData.phone,
@@ -57,7 +58,7 @@ jQuery(function ($) {
         contentType: 'application/json',
         dataType: "json",
         data: JSON.stringify({
-          legacyUserId: userId,
+          legacyUserId: numericUserId,
           contactFirstName: contactFirstName,
           contactLastName: contactLastName,
           contactPhoneNumber: contactPhoneNumber,
