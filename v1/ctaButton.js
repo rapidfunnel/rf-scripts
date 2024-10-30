@@ -9,6 +9,7 @@ jQuery(function ($) {
   function handleCtaButtonClick(buttonId) {
     const ctaButtonLocation = eval(buttonId);
     const redirectUrl = $('#' + buttonId).attr('href');
+    const target = $ctaButton.attr('target');
 
     // Get contact details
     if(contactId) {
