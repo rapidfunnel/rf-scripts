@@ -22,7 +22,7 @@ jQuery(function ($) {
           contentType: 'application/json',
           dataType: "json",
           data: JSON.stringify({
-            legacyUserId: userId,
+            legacyUserId: Number(userId),
             contactFirstName: contactData.firstName,
             contactLastName: contactData.lastName,
             contactPhoneNumber: contactData.phone,
