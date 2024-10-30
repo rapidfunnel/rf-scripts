@@ -8,6 +8,7 @@ jQuery(function ($) {
 
   function handleCtaButtonClick(buttonId) {
     const ctaButtonLocation = eval(buttonId);
+    const redirectUrl = $('#' + buttonId).attr('href');
 
     // Get contact details
     if(contactId) {
@@ -33,15 +34,20 @@ jQuery(function ($) {
           }),
           success: function (response) {
             console.log('CTA Button email sent successfully', response);
+            window.location.href = redirectUrl;
           },
           error: function (xhr, status, error) {
             console.error('CTA Button email failed', error);
+            window.location.href = redirectUrl;
           }
         });
       }
       ).fail(function () {
         console.error('Failed to fetch contact details.');
+        window.location.href = redirectUrl;
       });
+    } else {
+      window.location.href = redirectUrl;
     }
   }
   
