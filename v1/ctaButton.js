@@ -18,7 +18,7 @@ jQuery(function ($) {
         const numericUserId = Number(userId);
         // Make a POST request with contactData to send cta button email to user
         $.ajax({
-          url: 'https://s1app.rapidfunnel.com/api/mail/send-cta-email',
+          url: 'https://app.rapidfunnel.com/api/mail/send-cta-email',
           type: 'POST',
           contentType: 'application/json',
           dataType: "json",
