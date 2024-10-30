@@ -7,7 +7,7 @@ jQuery(function ($) {
   const contactId = parsedUrl.searchParams.get('contactId');
 
   function handleCtaButtonClick(buttonId) {
-    const ctaButtonLocation = window[buttonId];
+    const ctaButtonLocation = eval(buttonId);
 
     // Get contact details
     if(contactId) {
