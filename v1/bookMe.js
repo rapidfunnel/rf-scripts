@@ -5,6 +5,7 @@ jQuery(function ($) {
 
     // Listen for the custom event
     $(document).on('customBookingLinkUpdated', function () {
+        console.log('customBookingLinkUpdated event received, rechecking visibility');
         checkAndShowButton();
     });
 
