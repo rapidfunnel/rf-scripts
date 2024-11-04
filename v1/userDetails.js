@@ -57,7 +57,9 @@ jQuery(function ($) {
 
                 // Trigger the custom event now that the href has been updated
                 $(document).trigger('customBookingLinkUpdated');
+                console.log('Custom Booking Link Updated event triggered');
               } else {
+                console.log('Custom Booking Link Hidden as no value returned in API');
                 $element.hide();
                 $('.custom_custombookinglink').hide();
               }
