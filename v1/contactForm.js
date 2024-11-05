@@ -54,9 +54,11 @@ jQuery(function ($) {
           '&lastName=' + document.getElementById('contactLastName').value +
           '&email=' + document.getElementById('contactEmail').value +
           '&phone=' + document.getElementById('contactPhone').value +
-          '&campaign=' + assignCampaignId;
+          '&campaign=' + assignCampaignId +
+          '&contactTag=' + labelId;
 
     console.log('CampaignId', assignCampaignId);
+    console.log('labelId ', labelId);
     // if(assignCampaignId && assignCampaignId !== 0) {
     //   formData += '&campaign=' + assignCampaignId;
     // }
