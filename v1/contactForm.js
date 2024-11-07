@@ -14,6 +14,21 @@ jQuery(function ($) {
   console.log('Resource ID: ' + resourceId);
   console.log('Contact ID: ' + contactId);
 
+    // Capture and format the redirect URL immediately
+  let contactFormLink = $('#contactForm form').attr('redirect') || $('#contactForm form').data('redirect');
+  if (contactFormLink) {
+    // Format the redirect URL with the dynamic values
+    contactFormLink = contactFormLink
+      .replace('[user-id]', userId || '')
+      .replace('[resourceID]', resourceId || '')
+      .replace('[contactId]', contactId || '');
+    
+    console.log('Formatted Redirect URL:', contactFormLink);
+
+    // Remove redirect attributes immediately to prevent Webflow's default behavior
+    $('#contactForm form').removeAttr('redirect').removeAttr('data-redirect');
+  }
+
   // If contactId exists, make an API call to get contact details
   if (contactId) {
     $('#contactEmail').prop('disabled', true);  // Disable the email input field
@@ -48,11 +63,6 @@ jQuery(function ($) {
     event.preventDefault(); // Prevent the default form submission behavior
     $(':button').attr('disabled', true);
 
-    // Capture the link before removing the attribute
-    const contactFormLink = $(this).attr('redirect') || $(this).data('redirect');
-    $(this).removeAttr('redirect').removeAttr('data-redirect');
-    console.log('Link URL', contactFormLink);
-
     // Get additional attributes from the form
     const contactForm = $('#contactForm');
     var formData = 'firstName=' + document.getElementById('contactFirstName').value +
@@ -61,18 +71,6 @@ jQuery(function ($) {
           '&phone=' + document.getElementById('contactPhone').value +
           '&campaign=' + assignCampaignId +
           '&contactTag=' + labelId;
-
-    // Get the form element within #contactForm
-    const formElement = $('#contactForm form');
-    
-    let formattedLink = contactFormLink
-      ? contactFormLink
-          .replace('[userId]', userId)
-          .replace('[user-id]', userId)
-          .replace('[contactId]', contactId)
-      : null;
-    
-    console.log('Formatted Link URL', formattedLink);
 
     // Submit the form data to the API
     $.ajax({
@@ -91,14 +89,14 @@ jQuery(function ($) {
           alert('Form submitted successfully!');
 
           // Open linked URL
-          if (formattedLink) {
-            window.location.href = formattedLink;
+          if (contactFormLink) {
+            window.location.href = contactFormLink;
           }
         } else {
           alert('A contact could not be added!');
           // Open linked URL
-          if (formattedLink) {
-            window.location.href = formattedLink;
+          if (contactFormLink) {
+            window.location.href = contactFormLink;
           }
         }
       },
@@ -106,8 +104,8 @@ jQuery(function ($) {
         alert('Error submitting the form.');
         console.error(error);
         // Open linked URL
-          if (formattedLink) {
-            window.location.href = formattedLink;
+          if (contactFormLink) {
+            window.location.href = contactFormLink;
           }
       },
     });
