@@ -48,6 +48,11 @@ jQuery(function ($) {
     event.preventDefault(); // Prevent the default form submission behavior
     $(':button').attr('disabled', true);
 
+    // Capture the link before removing the attribute
+    const contactFormLink = $(this).attr('redirect') || $(this).data('redirect');
+    $(this).removeAttr('redirect').removeAttr('data-redirect');
+    console.log('Link URL', contactFormLink);
+
     // Get additional attributes from the form
     const contactForm = $('#contactForm');
     var formData = 'firstName=' + document.getElementById('contactFirstName').value +
@@ -60,16 +65,13 @@ jQuery(function ($) {
     // Get the form element within #contactForm
     const formElement = $('#contactForm form');
     
-    // Replace placeholders in the URL for contact form submission
-    const contactFormLink = formElement.attr('redirect');
     let formattedLink = contactFormLink
       ? contactFormLink
           .replace('[userId]', userId)
           .replace('[user-id]', userId)
           .replace('[contactId]', contactId)
       : null;
-
-    console.log('Link URL', contactFormLink);
+    
     console.log('Formatted Link URL', formattedLink);
 
     // Submit the form data to the API
