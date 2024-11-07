@@ -7,13 +7,15 @@ jQuery(function ($) {
 
   if (userId) {
     // Call the API to fetch branding details
-    $.getJSON(`https://your-api-url.com/api/branding/${userId}`, function (response) {
+    $.getJSON(`https://s1app.rapidfunnel.com.com/api/branding/user/${userId}`, function (response) {
       if (response.status === 0 && response.data) {
         const brandingData = response.data;
+        console.log('Branding data', brandingData);
 
         // Apply primary color to elements with class 'rf_primaryColor'
         if (brandingData.primaryColor) {
           $('.rf_primaryColor').css('color', brandingData.primaryColor);
+          console.log('Primary Color', brandingData.primaryColor);
         }
 
         // Apply secondary color to elements with class 'rf_secondaryColor'
