@@ -44,7 +44,7 @@ jQuery(function ($) {
   }
 
   // Handle form submission
-  $('#contactForm').on('submit', function (event) {
+  $('#contactForm form').on('submit', function (event) {
     event.preventDefault(); // Prevent the default form submission behavior
     $(':button').attr('disabled', true);
 
