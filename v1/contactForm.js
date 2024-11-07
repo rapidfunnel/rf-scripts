@@ -57,15 +57,20 @@ jQuery(function ($) {
           '&campaign=' + assignCampaignId +
           '&contactTag=' + labelId;
 
-    console.log('CampaignId', assignCampaignId);
-    console.log('labelId ', labelId);
-    // if(assignCampaignId && assignCampaignId !== 0) {
-    //   formData += '&campaign=' + assignCampaignId;
-    // }
-
+    // Get the form element within #contactForm
+    const formElement = $('#contactForm form');
     
-          // '&note=' + document.getElementById('contactNote').value +
-          // '&noteTimeStamps[]=' + todayDate();
+    // Replace placeholders in the URL for contact form submission
+    const contactFormLink = formElement.attr('redirect');
+    let formattedLink = contactFormLink
+      ? contactFormLink
+          .replace('[userId]', userId)
+          .replace('[user-id]', userId)
+          .replace('[contactId]', contactId)
+      : null;
+
+    console.log('Link URL', contactFormLink);
+    console.log('Formatted Link URL', formattedLink);
 
     // Submit the form data to the API
     $.ajax({
@@ -82,13 +87,26 @@ jQuery(function ($) {
         console.log(response);
         if (response.contactId > 0) {
           alert('Form submitted successfully!');
+
+          // Open linked URL
+          if (formattedLink) {
+            window.location.href = formattedLink;
+          }
         } else {
           alert('A contact could not be added!');
+          // Open linked URL
+          if (formattedLink) {
+            window.location.href = formattedLink;
+          }
         }
       },
       error: function (error) {
         alert('Error submitting the form.');
         console.error(error);
+        // Open linked URL
+          if (formattedLink) {
+            window.location.href = formattedLink;
+          }
       },
     });
   });
