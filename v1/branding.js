@@ -19,7 +19,7 @@ jQuery(function ($) {
         }
 
         // Apply secondary color to elements with class 'rf_secondaryColor'
-        if (brandingData.secondarycolor) {
+        if (brandingData.secondaryColor) {
           $('.rf_secondarycolor').css('background', brandingData.secondaryColor);
         }
 
