@@ -14,18 +14,18 @@ jQuery(function ($) {
 
         // Apply primary color to elements with class 'rf_primaryColor'
         if (brandingData.primaryColor) {
-          $('.rf_primaryColor').css('color', brandingData.primaryColor);
+          $('.rf_primarycolor').css('background', brandingData.primaryColor);
           console.log('Primary Color', brandingData.primaryColor);
         }
 
         // Apply secondary color to elements with class 'rf_secondaryColor'
-        if (brandingData.secondaryColor) {
-          $('.rf_secondaryColor').css('color', brandingData.secondaryColor);
+        if (brandingData.secondarycolor) {
+          $('.rf_secondarycolor').css('background', brandingData.secondaryColor);
         }
 
         // Apply tertiary color to elements with class 'rf_tertiaryColor'
         if (brandingData.tertiaryColor) {
-          $('.rf_tertiaryColor').css('color', brandingData.tertiaryColor);
+          $('.rf_tertiarycolor').css('background', brandingData.tertiaryColor);
         }
       } else {
         console.error('Failed to fetch branding data:', response);
