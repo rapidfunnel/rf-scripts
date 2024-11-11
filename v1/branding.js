@@ -7,7 +7,7 @@ jQuery(function ($) {
 
   if (userId) {
     // Call the API to fetch branding details
-    $.getJSON(`https://s1app.rapidfunnel.com.com/api/branding/user/${userId}`, function (response) {
+    $.get(`https://s1app.rapidfunnel.com.com/api/branding/user/${userId}`, function (response) {
       if (response.status === 0 && response.data) {
         const brandingData = response.data;
         console.log('Branding data', brandingData);
