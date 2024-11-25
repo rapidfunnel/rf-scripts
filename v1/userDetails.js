@@ -10,10 +10,11 @@ jQuery(function ($) {
     console.log('Resource ID: ' + resourceId);
     console.log('Contact ID: ' + contactId);
   // delete
-$(".footer-social-links a").each(function () {
-  const socialId = $(this).attr("id"); // Get the id of the element (e.g., facebookUrl, twitterUrl)
-  console.log(socialId, "socialId");
-});
+if ($('.footer-social-links').length) {
+  console.log('class footer-social-links exist');
+} else {
+  console.log('class footer-social-links not exist');
+}
 // delete
     if (userId) {
       $.get(
