@@ -11,20 +11,13 @@ jQuery(function ($) {
     console.log('Contact ID: ' + contactId);
   // delete
 const phoneElements = document.querySelectorAll('.fa-phone');
-let hasBefore = false;
-phoneElements.forEach((element) => {
-  const beforeStyle = window.getComputedStyle(element, '::before');
-  if (beforeStyle && beforeStyle.content && beforeStyle.content !== 'none') {
-    hasBefore = true;
-  }
-});
-if (phoneElements.length > 1) {
-  for (let i = 1; i < phoneElements.length; i++) {
-    phoneElements[i].remove(); 
-  }
-}
-if (hasBefore) {
-  phoneElements[0].style.setProperty('content', 'none', 'important');
+if (phoneElements.length > 0) {
+  console.log(`find ${phoneElements.length} elements with 'fa-phone' class`);
+  phoneElements.forEach((element) => {
+    element.style.display = 'none';
+  });
+} else {
+  console.log('elements with "fa-phone" class not.');
 }
 // delete
     if (userId) {
