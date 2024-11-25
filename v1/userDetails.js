@@ -74,22 +74,22 @@ jQuery(function ($) {
             $('.custom_custombookinglink').find('span').text('');
   
             // Handle social links (replace href if available, otherwise hide the element)
-            // $('.footer-social-links a').each(function () {
-            //   const socialId = $(this).attr('id'); // Get the id of the element (e.g., facebookUrl, twitterUrl)
+            $('.footer-social-links a').each(function () {
+              const socialId = $(this).attr('id'); // Get the id of the element (e.g., facebookUrl, twitterUrl)
   
-            //   if (
-            //     userData.hasOwnProperty(socialId) &&
-            //     userData[socialId] &&
-            //     userData[socialId].trim() !== ''
-            //   ) {
-            //     $(this)
-            //       .attr('href', userData[socialId]); // Set href if value exists in userData
-            //       $(this).find('span').text('');
-            //       // .text('');
-            //   } else {
-            //     $(this).hide(); // Hide the element if no value exists for the socialId
-            //   }
-            // });
+              if (
+                userData.hasOwnProperty(socialId) &&
+                userData[socialId] &&
+                userData[socialId].trim() !== ''
+              ) {
+                $(this)
+                  .attr('href', userData[socialId]); // Set href if value exists in userData
+                  $(this).find('span').text('');
+                  // .text('');
+              } else {
+                $(this).hide(); // Hide the element if no value exists for the socialId
+              }
+            });
           }
         }
       ).fail(function () {
