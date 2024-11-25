@@ -9,7 +9,12 @@ jQuery(function ($) {
     console.log('User ID: ' + userId);
     console.log('Resource ID: ' + resourceId);
     console.log('Contact ID: ' + contactId);
-  
+  // delete
+$(".footer-social-links a").each(function () {
+  const socialId = $(this).attr("id"); // Get the id of the element (e.g., facebookUrl, twitterUrl)
+  console.log(socialId, "socialId");
+});
+// delete
     if (userId) {
       $.get(
         'https://apiv2.rapidfunnel.com/v2/users-details/' + userId,
@@ -76,7 +81,7 @@ jQuery(function ($) {
             // Handle social links (replace href if available, otherwise hide the element)
             $('.footer-social-links a').each(function () {
               const socialId = $(this).attr('id'); // Get the id of the element (e.g., facebookUrl, twitterUrl)
-              console.log(socialId, 'socialId');
+              
               if (
                 userData.hasOwnProperty(socialId) &&
                 userData[socialId] &&
