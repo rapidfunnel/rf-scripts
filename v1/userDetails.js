@@ -76,7 +76,7 @@ jQuery(function ($) {
             // Handle social links (replace href if available, otherwise hide the element)
             $('.footer-social-links a').each(function () {
               const socialId = $(this).attr('id'); // Get the id of the element (e.g., facebookUrl, twitterUrl)
-  
+              console.log(socialId, 'socialId');
               if (
                 userData.hasOwnProperty(socialId) &&
                 userData[socialId] &&
