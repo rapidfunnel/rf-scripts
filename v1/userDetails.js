@@ -9,17 +9,7 @@ jQuery(function ($) {
     console.log('User ID: ' + userId);
     console.log('Resource ID: ' + resourceId);
     console.log('Contact ID: ' + contactId);
-  // delete
-const phoneElements = document.querySelectorAll('.fa-phone');
-if (phoneElements.length > 0) {
-  console.log(`find ${phoneElements.length} elements with 'fa-phone' class`);
-  phoneElements.forEach((element) => {
-    element.style.display = 'none';
-  });
-} else {
-  console.log('elements with "fa-phone" class not.');
-}
-// delete
+
     if (userId) {
       $.get(
         'https://apiv2.rapidfunnel.com/v2/users-details/' + userId,
