@@ -16,7 +16,7 @@ jQuery(function ($) {
     function isPseudoElementVisible(element, pseudo) {
   const computedStyle = window.getComputedStyle(element, pseudo);
   const content = computedStyle.getPropertyValue('content');
-  return content && content !== 'none' && content !== '""';
+  console.log(content.width, content.offsetWidth);
 }
 
     if (emailIcon) {
