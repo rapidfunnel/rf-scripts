@@ -13,56 +13,8 @@ jQuery(function ($) {
     console.log('Contact ID: ' + contactId);
 
     //
-function getPseudoElementWidth(element, pseudo) {
-  const computedStyle = window.getComputedStyle(element, pseudo);
-  const content = computedStyle.getPropertyValue('content');
-
-  if (!content || content === 'none' || content === '""') {
-    return 0;
-  }
-
-  const tempElement = document.createElement('span');
-  tempElement.style.position = 'absolute';
-  tempElement.style.visibility = 'hidden';
-  tempElement.style.font = computedStyle.getPropertyValue('font');
-  tempElement.textContent = content.replace(/["']/g, '');
-  document.body.appendChild(tempElement);
-
-  const width = tempElement.offsetWidth;
-  document.body.removeChild(tempElement);
-
-  return width;
-}
-
-function processIcons(iconSelector) {
-  const icon = document.querySelector(iconSelector);
-
-  if (!icon) {
-    return;
-  }
-
-  const elementWidth = icon.getBoundingClientRect().width;
-  const beforeWidth = getPseudoElementWidth(icon, '::before');
-
-  console.log(`for ${iconSelector}:`);
-  console.log(`width without ::before: ${elementWidth}px`);
-  console.log(`width ::before: ${beforeWidth}px`);
-
-  if (Math.abs(elementWidth - beforeWidth) > 0.1) {
-    const styleSheet = document.styleSheets[0];
-    styleSheet.insertRule(
-      `${iconSelector}::before { content: ""; }`,
-      styleSheet.cssRules.length
-    );
-    console.log(` ::before для ${iconSelector} deleted.`);
-  } else {
-    console.log(` ::before для ${iconSelector} left.`);
-  }
-}
-
-processIcons('span.fa.fa-envelope.fa-lg');
-processIcons('span.fa.fa-phone.fa-lg');
-
+    console.log('emailIcon clientHeight:', emailIcon.clientHeight);
+    console.log('phoneIcon clientHeight:', phoneIcon.clientHeight);
     //
 
     if (emailIcon) {
