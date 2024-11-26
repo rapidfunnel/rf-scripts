@@ -7,19 +7,14 @@ jQuery(function ($) {
     const contactId = parsedUrl.searchParams.get('contactId');
     const emailIcon = document.querySelector('span.fa.fa-envelope.fa-lg');
     const phoneIcon = document.querySelector('span.fa.fa-phone.fa-lg');
+    console.log(emailIcon.offsetWidth, 'emailIcon.offsetWidth');
+    console.log(phoneIcon.offsetWidth, 'phoneIcon.offsetWidth');
     
     console.log('User ID: ' + userId);
     console.log('Resource ID: ' + resourceId);
     console.log('Contact ID: ' + contactId);
 
     if (emailIcon) {
-      const computedStyle = window.getComputedStyle(emailIcon, '::before');
-  const contentValue = computedStyle.getPropertyValue('content');
-  const isBeforeVisible = contentValue && contentValue !== 'none' && contentValue !== '""';
-  const iconWidth = emailIcon.offsetWidth;
-      console.log('width1', iconWidth.offsetWidth);
-      console.log('width2', emailIcon.offsetWidth);
-      
       const styleSheet = document.styleSheets[0];
       styleSheet.insertRule(
         'span.fa.fa-envelope.fa-lg::before { content: ""; }',
@@ -34,14 +29,6 @@ jQuery(function ($) {
         styleSheet.cssRules.length
       );
     }
-
-    //
-    if (emailIcon) {
-  const computedStyle = window.getComputedStyle(emailIcon, '::before');
-  const contentValue = computedStyle.getPropertyValue('content');
-  console.log('Content of emailIcon ::before:', contentValue);
-}
-    //
 
     if (userId) {
       $.get(
