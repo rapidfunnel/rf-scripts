@@ -43,7 +43,7 @@ if (socialIcons.length > 0) {
     const content = computedStyle.getPropertyValue("content");
     console.log(content, 'content123');
   
-    if (content && content !== 'none' && content !== '""') {
+    if (content !== "") {
       const styleSheet = document.styleSheets[0];
       styleSheet.insertRule(
         `span.fa-xl::before { content: ""; }`,
