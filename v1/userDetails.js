@@ -29,7 +29,11 @@ jQuery(function ($) {
     }
 
     //
-    
+    if (emailIcon) {
+  const computedStyle = window.getComputedStyle(emailIcon, '::before');
+  const contentValue = computedStyle.getPropertyValue('content');
+  console.log('Content of emailIcon ::before:', contentValue);
+}
     //
 
     if (userId) {
