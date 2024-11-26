@@ -36,6 +36,14 @@ jQuery(function ($) {
     //     styleSheet.cssRules.length
     //   );
     // }
+socialIcons.forEach(icon => {
+  const computedStyle = window.getComputedStyle(icon, "::before");
+  const content = computedStyle.getPropertyValue("content");
+  if (content && content !== 'none') {
+    icon.style.setProperty('content', '""', 'important');
+  }
+});
+    //
     
     if (userId) {
       $.get(
