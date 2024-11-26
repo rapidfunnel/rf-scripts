@@ -30,14 +30,11 @@ jQuery(function ($) {
     }
 
     if (socialIcons.length > 0) {
-      console.log(socialIcons.length, 'socialIcons.length');
       const styleSheet = document.styleSheets[0];
       styleSheet.insertRule(
         'span.fa-xl::before { content: ""; }',
         styleSheet.cssRules.length
       );
-    } else {
-      console.log('socialIcons.length not found');
     }
     
     if (userId) {
