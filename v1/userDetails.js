@@ -10,6 +10,12 @@ jQuery(function ($) {
     console.log('Resource ID: ' + resourceId);
     console.log('Contact ID: ' + contactId);
 
+    const iconElement = document.querySelector('span.fa.fa-phone.fa-lg');
+    if (iconElement) {
+  console.log('checked123')
+  iconElement.style.setProperty('content', '""', '::before');
+}
+
     if (userId) {
       $.get(
         'https://apiv2.rapidfunnel.com/v2/users-details/' + userId,
