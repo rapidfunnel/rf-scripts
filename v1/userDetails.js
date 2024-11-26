@@ -12,6 +12,22 @@ jQuery(function ($) {
     const elementRect = emailIcon.getBoundingClientRect();
     const elementWidth = elementRect.width;
     console.log(elementWidth, 'elementWidth');
+
+    function isPseudoElementVisible(element, pseudo) {
+  const computedStyle = window.getComputedStyle(element, pseudo);
+  const content = computedStyle.getPropertyValue('content');
+  return content && content !== 'none' && content !== '""';
+}
+
+    if (emailIcon) {
+  const isBeforeVisible = isPseudoElementVisible(emailIcon, '::before');
+  console.log('::before for emailIcon ', isBeforeVisible);
+}
+
+if (phoneIcon) {
+  const isBeforeVisible = isPseudoElementVisible(phoneIcon, '::before');
+  console.log('::before for phoneIcon ', isBeforeVisible);
+}
     
     console.log('User ID: ' + userId);
     console.log('Resource ID: ' + resourceId);
