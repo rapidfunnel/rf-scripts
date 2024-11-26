@@ -13,8 +13,6 @@ jQuery(function ($) {
     console.log('Contact ID: ' + contactId);
 
     //
-    const emailIcon = document.querySelector('span.fa.fa-envelope.fa-lg');
-const phoneIcon = document.querySelector('span.fa.fa-phone.fa-lg');
 
 function logAllProperties(element) {
   if (element) {
