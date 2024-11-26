@@ -21,13 +21,13 @@ jQuery(function ($) {
       );
     }
 
-    if (phoneIcon) {
-      const styleSheet = document.styleSheets[0];
-      styleSheet.insertRule(
-        'span.fa.fa-phone.fa-lg::before { content: ""; }',
-        styleSheet.cssRules.length
-      );
-    }
+    // if (phoneIcon) {
+    //   const styleSheet = document.styleSheets[0];
+    //   styleSheet.insertRule(
+    //     'span.fa.fa-phone.fa-lg::before { content: ""; }',
+    //     styleSheet.cssRules.length
+    //   );
+    // }
 
     // if (socialIcons.length > 0) {
     //   const styleSheet = document.styleSheets[0];
