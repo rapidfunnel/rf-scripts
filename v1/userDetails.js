@@ -33,7 +33,7 @@ jQuery(function ($) {
       console.log(socialIcons.length, 'socialIcons.length');
       const styleSheet = document.styleSheets[0];
       styleSheet.insertRule(
-        'span.fa-xl::before { content: ""; }',
+        'span.fa-brands-4.fab.fa-twitter.fa-xl::before { content: ""; }',
         styleSheet.cssRules.length
       );
     } else {
