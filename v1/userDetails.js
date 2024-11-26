@@ -29,13 +29,13 @@ jQuery(function ($) {
       );
     }
 
-    if (socialIcons.length > 0) {
-      const styleSheet = document.styleSheets[0];
-      styleSheet.insertRule(
-        'span.fa-xl::before { content: ""; }',
-        styleSheet.cssRules.length
-      );
-    }
+    // if (socialIcons.length > 0) {
+    //   const styleSheet = document.styleSheets[0];
+    //   styleSheet.insertRule(
+    //     'span.fa-xl::before { content: ""; }',
+    //     styleSheet.cssRules.length
+    //   );
+    // }
     
     if (userId) {
       $.get(
