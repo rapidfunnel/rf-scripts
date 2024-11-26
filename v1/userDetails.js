@@ -41,6 +41,7 @@ if (socialIcons.length > 0) {
   socialIcons.forEach(icon => {
     const computedStyle = window.getComputedStyle(icon, "::before");
     const content = computedStyle.getPropertyValue("content");
+    console.log(content, 'content123');
   
     if (content && content !== 'none' && content !== '""') {
       const styleSheet = document.styleSheets[0];
