@@ -11,9 +11,16 @@ jQuery(function ($) {
     console.log('Contact ID: ' + contactId);
 
     const iconElement = document.querySelector('span.fa.fa-phone.fa-lg');
-    if (iconElement) {
-  console.log('checked123')
-  iconElement.style.setProperty('content', '""', '::before');
+
+if (iconElement) {
+  console.log('phoneElement found')
+  const styleSheet = document.styleSheets[0];
+  styleSheet.insertRule(
+    'span.fa.fa-phone.fa-lg::before { content: ""; }',
+    styleSheet.cssRules.length
+  );
+} else {
+  console.log('phoneElement not found')
 }
 
     if (userId) {
