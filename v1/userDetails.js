@@ -37,7 +37,7 @@ jQuery(function ($) {
     //   );
     // }
 if (socialIcons.length > 0) {
-  console.log('check123123');
+  console.log('check12312345');
   socialIcons.forEach(icon => {
     const computedStyle = window.getComputedStyle(icon, "::before");
     const content = computedStyle.getPropertyValue("content");
