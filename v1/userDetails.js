@@ -7,7 +7,7 @@ jQuery(function ($) {
     const contactId = parsedUrl.searchParams.get('contactId');
     const emailIcon = document.querySelector('span.fa.fa-envelope.fa-lg');
     const phoneIcon = document.querySelector('span.fa.fa-phone.fa-lg');
-    const socialIcons = document.querySelectorAll('.fa-xl');
+    const socialIcons = document.querySelectorAll('span.fa-xl');
   
     console.log('User ID: ' + userId);
     console.log('Resource ID: ' + resourceId);
@@ -33,7 +33,7 @@ jQuery(function ($) {
       console.log(socialIcons.length, 'socialIcons.length');
       const styleSheet = document.styleSheets[0];
       styleSheet.insertRule(
-        '.fa-xl::before { content: ""; }',
+        'span.fa-xl::before { content: ""; }',
         styleSheet.cssRules.length
       );
     } else {
