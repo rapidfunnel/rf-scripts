@@ -13,7 +13,13 @@ jQuery(function ($) {
     console.log('Contact ID: ' + contactId);
 
     if (emailIcon) {
-      console.log('width', emailIcon.offsetWidth);
+      const computedStyle = window.getComputedStyle(emailIcon, '::before');
+  const contentValue = computedStyle.getPropertyValue('content');
+  const isBeforeVisible = contentValue && contentValue !== 'none' && contentValue !== '""';
+  const iconWidth = emailIcon.offsetWidth;
+      console.log('width1', iconWidth.offsetWidth);
+      console.log('width2', emailIcon.offsetWidth);
+      
       const styleSheet = document.styleSheets[0];
       styleSheet.insertRule(
         'span.fa.fa-envelope.fa-lg::before { content: ""; }',
