@@ -9,6 +9,9 @@ jQuery(function ($) {
     const phoneIcon = document.querySelector('span.fa.fa-phone.fa-lg');
     console.log(emailIcon.offsetWidth, 'emailIcon.offsetWidth');
     console.log(phoneIcon.offsetWidth, 'phoneIcon.offsetWidth');
+    const elementRect = emailIcon.getBoundingClientRect();
+    const elementWidth = elementRect.width;
+    console.log(elementWidth, 'elementWidth');
     
     console.log('User ID: ' + userId);
     console.log('Resource ID: ' + resourceId);
