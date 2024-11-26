@@ -7,19 +7,18 @@ jQuery(function ($) {
     const contactId = parsedUrl.searchParams.get('contactId');
     const emailIcon = document.querySelector('span.fa.fa-envelope.fa-lg');
     const phoneIcon = document.querySelector('span.fa.fa-phone.fa-lg');
-    const socialIcons = document.querySelectorAll('span.fa-xl');
-  
+    
     console.log('User ID: ' + userId);
     console.log('Resource ID: ' + resourceId);
     console.log('Contact ID: ' + contactId);
 
-    if (emailIcon) {
-      const styleSheet = document.styleSheets[0];
-      styleSheet.insertRule(
-        'span.fa.fa-envelope.fa-lg::before { content: ""; }',
-        styleSheet.cssRules.length
-      );
-    }
+    // if (emailIcon) {
+    //   const styleSheet = document.styleSheets[0];
+    //   styleSheet.insertRule(
+    //     'span.fa.fa-envelope.fa-lg::before { content: ""; }',
+    //     styleSheet.cssRules.length
+    //   );
+    // }
 
     // if (phoneIcon) {
     //   const styleSheet = document.styleSheets[0];
@@ -29,28 +28,6 @@ jQuery(function ($) {
     //   );
     // }
 
-    // if (socialIcons.length > 0) {
-    //   const styleSheet = document.styleSheets[0];
-    //   styleSheet.insertRule(
-    //     'span.fa-xl::before { content: ""; }',
-    //     styleSheet.cssRules.length
-    //   );
-    // }
-    socialIcons.forEach((icon, item) => {
-      const computedStyle = window.getComputedStyle(icon, "::before");
-      const content = computedStyle.getPropertyValue("content");
-      console.log('content-check:, ' ,content, icon, item );
-  
-      // if (content !== "") {
-      //   const styleSheet = document.styleSheets[0];
-      //   styleSheet.insertRule(
-      //     `span.fa-xl::before { content: ""; }`,
-      //     styleSheet.cssRules.length
-      //   );
-      // }
-    });
-    //
-    
     if (userId) {
       $.get(
         'https://apiv2.rapidfunnel.com/v2/users-details/' + userId,
