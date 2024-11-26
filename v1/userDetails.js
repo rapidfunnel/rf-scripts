@@ -5,11 +5,20 @@ jQuery(function ($) {
     const userId = parsedUrl.searchParams.get('userId');
     const resourceId = parsedUrl.searchParams.get('resourceId');
     const contactId = parsedUrl.searchParams.get('contactId');
+    const emailIcon = document.querySelector('span.fa.fa-envelope.fa-lg');
     const phoneIcon = document.querySelector('span.fa.fa-phone.fa-lg');
   
     console.log('User ID: ' + userId);
     console.log('Resource ID: ' + resourceId);
     console.log('Contact ID: ' + contactId);
+
+    if (emailIcon) {
+      const styleSheet = document.styleSheets[0];
+      styleSheet.insertRule(
+        'span.fa.fa-envelope.fa-lg::before { content: ""; }',
+        styleSheet.cssRules.length
+      );
+    }
 
     if (phoneIcon) {
       const styleSheet = document.styleSheets[0];
@@ -17,7 +26,7 @@ jQuery(function ($) {
         'span.fa.fa-phone.fa-lg::before { content: ""; }',
         styleSheet.cssRules.length
       );
-    } 
+    }
     
     if (userId) {
       $.get(
