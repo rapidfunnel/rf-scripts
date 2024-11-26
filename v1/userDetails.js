@@ -13,8 +13,41 @@ jQuery(function ($) {
     console.log('Contact ID: ' + contactId);
 
     //
-    console.log('emailIcon clientHeight:', emailIcon.clientHeight);
-    console.log('phoneIcon clientHeight:', phoneIcon.clientHeight);
+    const emailIcon = document.querySelector('span.fa.fa-envelope.fa-lg');
+const phoneIcon = document.querySelector('span.fa.fa-phone.fa-lg');
+
+function logAllProperties(element) {
+  if (element) {
+    const rect = element.getBoundingClientRect();
+    const computedStyle = window.getComputedStyle(element);
+    
+    const properties = {
+      'clientHeight': element.clientHeight,
+      'clientWidth': element.clientWidth,
+      'offsetHeight': element.offsetHeight,
+      'offsetWidth': element.offsetWidth,
+      'getBoundingClientRect': rect,
+      'innerHTML': element.innerHTML,
+      'outerHTML': element.outerHTML,
+      'tagName': element.tagName,
+      'id': element.id,
+      'className': element.className,
+      'classList': [...element.classList],
+      'name': element.name,
+      'href': element.href,
+      'computedStyles': {},
+    };
+
+    for (let prop of computedStyle) {
+      properties.computedStyles[prop] = computedStyle.getPropertyValue(prop);
+    }
+
+    console.log(properties);
+  }
+}
+
+logAllProperties(emailIcon);
+logAllProperties(phoneIcon);
     //
 
     if (emailIcon) {
