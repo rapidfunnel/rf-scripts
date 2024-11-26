@@ -5,24 +5,20 @@ jQuery(function ($) {
     const userId = parsedUrl.searchParams.get('userId');
     const resourceId = parsedUrl.searchParams.get('resourceId');
     const contactId = parsedUrl.searchParams.get('contactId');
+    const phoneIcon = document.querySelector('span.fa.fa-phone.fa-lg');
   
     console.log('User ID: ' + userId);
     console.log('Resource ID: ' + resourceId);
     console.log('Contact ID: ' + contactId);
 
-    const iconElement = document.querySelector('span.fa.fa-phone.fa-lg');
-
-if (iconElement) {
-  console.log('phoneElement found')
-  const styleSheet = document.styleSheets[0];
-  styleSheet.insertRule(
-    'span.fa.fa-phone.fa-lg::before { content: ""; }',
-    styleSheet.cssRules.length
-  );
-} else {
-  console.log('phoneElement not found')
-}
-
+    if (phoneIcon) {
+      const styleSheet = document.styleSheets[0];
+      styleSheet.insertRule(
+        'span.fa.fa-phone.fa-lg::before { content: ""; }',
+        styleSheet.cssRules.length
+      );
+    } 
+    
     if (userId) {
       $.get(
         'https://apiv2.rapidfunnel.com/v2/users-details/' + userId,
