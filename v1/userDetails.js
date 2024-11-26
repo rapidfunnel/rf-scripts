@@ -7,7 +7,7 @@ jQuery(function ($) {
     const contactId = parsedUrl.searchParams.get('contactId');
     const emailIcon = document.querySelector('span.fa.fa-envelope.fa-lg');
     const phoneIcon = document.querySelector('span.fa.fa-phone.fa-lg');
-    const socialIcons = document.querySelectorAll('span.fa-xl');
+    // const socialIcons = document.querySelectorAll('span.fa-xl');
   
     console.log('User ID: ' + userId);
     console.log('Resource ID: ' + resourceId);
@@ -36,23 +36,6 @@ jQuery(function ($) {
     //     styleSheet.cssRules.length
     //   );
     // }
-if (socialIcons.length > 0) {
-  console.log('check12312345');
-  socialIcons.forEach(icon => {
-    const computedStyle = window.getComputedStyle(icon, "::before");
-    const content = computedStyle.getPropertyValue("content");
-    console.log(content, 'content123');
-  
-    if (content !== "") {
-      const styleSheet = document.styleSheets[0];
-      styleSheet.insertRule(
-        `span.fa-xl::before { content: ""; }`,
-        styleSheet.cssRules.length
-      );
-    }
-  });
-}
-    //
     
     if (userId) {
       $.get(
