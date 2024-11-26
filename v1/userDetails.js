@@ -12,42 +12,6 @@ jQuery(function ($) {
     console.log('Resource ID: ' + resourceId);
     console.log('Contact ID: ' + contactId);
 
-    //
-
-function logAllProperties(element) {
-  if (element) {
-    const rect = element.getBoundingClientRect();
-    const computedStyle = window.getComputedStyle(element);
-    
-    const properties = {
-      'clientHeight': element.clientHeight,
-      'clientWidth': element.clientWidth,
-      'offsetHeight': element.offsetHeight,
-      'offsetWidth': element.offsetWidth,
-      'getBoundingClientRect': rect,
-      'innerHTML': element.innerHTML,
-      'outerHTML': element.outerHTML,
-      'tagName': element.tagName,
-      'id': element.id,
-      'className': element.className,
-      'classList': [...element.classList],
-      'name': element.name,
-      'href': element.href,
-      'computedStyles': {},
-    };
-
-    for (let prop of computedStyle) {
-      properties.computedStyles[prop] = computedStyle.getPropertyValue(prop);
-    }
-
-    console.log(properties);
-  }
-}
-
-logAllProperties(emailIcon);
-logAllProperties(phoneIcon);
-    //
-
     if (emailIcon) {
       const styleSheet = document.styleSheets[0];
       styleSheet.insertRule(
