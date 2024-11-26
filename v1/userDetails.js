@@ -8,15 +8,6 @@ jQuery(function ($) {
     const emailIcon = document.querySelector('span.fa.fa-envelope.fa-lg');
     const phoneIcon = document.querySelector('span.fa.fa-phone.fa-lg');
 
-    //
-    console.log(emailIcon.offsetWidth, emailIcon.width, 'emailIcon.offsetWidth');
-    console.log(phoneIcon.offsetWidth, phoneIcon.width, 'phoneIcon.offsetWidth');
-    const emailIcon1 = document.querySelector('span.fa.fa-envelope.fa-lg::before');
-    const phoneIcon1 = document.querySelector('span.fa.fa-phone.fa-lg::before');
-    console.log(emailIcon1.offsetWidth, emailIcon1.width, 'emailIcon1.offsetWidth');
-    console.log(phoneIcon1.offsetWidth, phoneIcon1.width, 'phoneIcon1.offsetWidth');
-    //
-
     console.log('User ID: ' + userId);
     console.log('Resource ID: ' + resourceId);
     console.log('Contact ID: ' + contactId);
