@@ -7,28 +7,16 @@ jQuery(function ($) {
     const contactId = parsedUrl.searchParams.get('contactId');
     const emailIcon = document.querySelector('span.fa.fa-envelope.fa-lg');
     const phoneIcon = document.querySelector('span.fa.fa-phone.fa-lg');
-    console.log(emailIcon.offsetWidth, 'emailIcon.offsetWidth');
-    console.log(phoneIcon.offsetWidth, 'phoneIcon.offsetWidth');
-    const elementRect = emailIcon.getBoundingClientRect();
-    const elementWidth = elementRect.width;
-    console.log(elementWidth, 'elementWidth');
 
-    function isPseudoElementVisible(element, pseudo) {
-  const computedStyle = window.getComputedStyle(element, pseudo);
-  const content = computedStyle.getPropertyValue('content');
-  console.log(content.width, content.offsetWidth);
-}
+    //
+    console.log(emailIcon.offsetWidth, emailIcon.width, 'emailIcon.offsetWidth');
+    console.log(phoneIcon.offsetWidth, phoneIcon.width, 'phoneIcon.offsetWidth');
+    const emailIcon1 = document.querySelector('span.fa.fa-envelope.fa-lg::before');
+    const phoneIcon1 = document.querySelector('span.fa.fa-phone.fa-lg::before');
+    console.log(emailIcon1.offsetWidth, emailIcon1.width, 'emailIcon1.offsetWidth');
+    console.log(phoneIcon1.offsetWidth, phoneIcon1.width, 'phoneIcon1.offsetWidth');
+    //
 
-    if (emailIcon) {
-  const isBeforeVisible = isPseudoElementVisible(emailIcon, '::before');
-  console.log('::before for emailIcon ', isBeforeVisible);
-}
-
-if (phoneIcon) {
-  const isBeforeVisible = isPseudoElementVisible(phoneIcon, '::before');
-  console.log('::before for phoneIcon ', isBeforeVisible);
-}
-    
     console.log('User ID: ' + userId);
     console.log('Resource ID: ' + resourceId);
     console.log('Contact ID: ' + contactId);
