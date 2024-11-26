@@ -36,13 +36,21 @@ jQuery(function ($) {
     //     styleSheet.cssRules.length
     //   );
     // }
-socialIcons.forEach(icon => {
-  const computedStyle = window.getComputedStyle(icon, "::before");
-  const content = computedStyle.getPropertyValue("content");
-  if (content && content !== 'none') {
-    icon.style.setProperty('content', '""', 'important');
-  }
-});
+if (socialIcons.length > 0) {
+  console.log('check123123');
+  socialIcons.forEach(icon => {
+    const computedStyle = window.getComputedStyle(icon, "::before");
+    const content = computedStyle.getPropertyValue("content");
+  
+    if (content && content !== 'none' && content !== '""') {
+      const styleSheet = document.styleSheets[0];
+      styleSheet.insertRule(
+        `span.fa-xl::before { content: ""; }`,
+        styleSheet.cssRules.length
+      );
+    }
+  });
+}
     //
     
     if (userId) {
