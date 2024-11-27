@@ -30,26 +30,16 @@ jQuery(function ($) {
     }
 
     if (socialIcons.length > 0) {
+      socialIcons.forEach((icon) => {
+      console.log('check12345');
       const styleSheet = document.styleSheets[0];
       styleSheet.insertRule(
         'span.fa-xl::before { content: ""; }',
         styleSheet.cssRules.length
       );
+    });
     }
     
-    socialIcons.forEach((icon) => {
-      const computedStyle = window.getComputedStyle(icon, "::before");
-      const content = computedStyle.getPropertyValue("content");
-      console.log('check123');
-      if (content !== "") {
-        const styleSheet = document.styleSheets[0];
-        styleSheet.insertRule(
-          'span.fa-xl::before { content: ""; }',
-          styleSheet.cssRules.length
-        );
-      }
-    });
-
     if (userId) {
       $.get(
         'https://apiv2.rapidfunnel.com/v2/users-details/' + userId,
