@@ -8,18 +8,18 @@ jQuery(function ($) {
   const numericUserId = Number(userId);
 
   //
-let contactFormLink = $('#contactForm form').attr('redirect') || $('#contactForm form').data('redirect');
-  if (contactFormLink) {
+let requestCallFormLink = $('#requestCallForm form').attr('redirect') || $('#requestCallForm form').data('redirect');
+  if (requestCallFormLink) {
     // Format the redirect URL with the dynamic values
-    contactFormLink = contactFormLink
+    requestCallFormLink = requestCallFormLink
       .replace('[user-id]', userId || '')
       .replace('[resourceID]', resourceId || '')
       .replace('[contactId]', contactId || '');
     
-    console.log('Formatted Redirect URL:', contactFormLink);
+    console.log('Formatted Redirect URL:', requestCallFormLink);
 
     // Remove redirect attributes immediately to prevent Webflow's default behavior
-    $('#contactForm form').removeAttr('redirect').removeAttr('data-redirect');
+    $('#requestCallForm form').removeAttr('redirect').removeAttr('data-redirect');
   }
   //
 
