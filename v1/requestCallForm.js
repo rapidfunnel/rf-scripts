@@ -74,10 +74,7 @@ jQuery(function ($) {
   }
 
   $('#requestCallBtn').on('click', requestCallButtonSubmit);
-  $('#requestForm').on('submit', function (event) {
-    // console.log(1);
-    event.preventDefault();
-    // console.log(2);
+  $('#requestForm form').on('submit', function (event) {
     requestCallFormSubmit();
   });
 });
