@@ -7,6 +7,22 @@ jQuery(function ($) {
   const contactId = parsedUrl.searchParams.get('contactId');
   const numericUserId = Number(userId);
 
+  //
+let contactFormLink = $('#contactForm form').attr('redirect') || $('#contactForm form').data('redirect');
+  if (contactFormLink) {
+    // Format the redirect URL with the dynamic values
+    contactFormLink = contactFormLink
+      .replace('[user-id]', userId || '')
+      .replace('[resourceID]', resourceId || '')
+      .replace('[contactId]', contactId || '');
+    
+    console.log('Formatted Redirect URL:', contactFormLink);
+
+    // Remove redirect attributes immediately to prevent Webflow's default behavior
+    $('#contactForm form').removeAttr('redirect').removeAttr('data-redirect');
+  }
+  //
+
   if(contactId) {
     $('#requestCallForm').hide();
   } else {
@@ -74,41 +90,7 @@ jQuery(function ($) {
   }
 
   $('#requestCallBtn').on('click', requestCallButtonSubmit);
-  // $('#requestForm').on('submit', function (event) {
-  //   requestCallFormSubmit();
-  // });
-  //
-$('#requestForm').on('submit', function (event) {
-  event.preventDefault(); 
-  $(this).removeAttr('redirect').removeAttr('data-redirect');
-
-  const contactFirstName = $('#contactFirstNameRequestForm').val();
-  const contactLastName = $('#contactLastNameRequestForm').val();
-  const contactPhoneNumber = $('#contactPhoneRequestForm').val();
-
-  $.ajax({
-    url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email',
-    type: 'POST',
-    contentType: 'application/json',
-    dataType: 'json',
-    data: JSON.stringify({
-      legacyUserId: numericUserId,
-      contactFirstName: contactFirstName,
-      contactLastName: contactLastName,
-      contactPhoneNumber: contactPhoneNumber,
-      requestCallSourcePage: resourceDescriptionForRequestCall,
-    }),
-    success: function (response) {
-      console.log('Request Call email sent successfully', response);
-      $('#requestForm .w-form-done').show(); 
-      $('#requestForm .w-form-fail').hide();
-    },
-    error: function (xhr, status, error) {
-      console.error('Request Call email failed', error);
-      $('#requestForm .w-form-fail').show(); 
-      $('#requestForm .w-form-done').hide();
-    },
+  $('#requestForm').on('submit', function (event) {
+    requestCallFormSubmit();
   });
-});
-  //
 });
