@@ -19,7 +19,9 @@ jQuery(function ($) {
       success: function (response) {
         if (response && response.data) {
           // Update the href attribute of the button
-          $(button).attr('href', response.data.resourceUrl);
+          const resourceUrl = response.data.resourceUrl + '/res/' + ctaResourceId;
+          console.log(resourceUrl);
+          $(button).attr('href', resourceUrl);
         }
       },
       error: function (error) {
