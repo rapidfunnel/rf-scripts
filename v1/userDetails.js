@@ -40,11 +40,11 @@ jQuery(function ($) {
     socialIcons.forEach((icon) => {
       const computedStyle = window.getComputedStyle(icon, "::before");
       const content = computedStyle.getPropertyValue("content");
-  
+      console.log('check123');
       if (content !== "") {
         const styleSheet = document.styleSheets[0];
         styleSheet.insertRule(
-          span.fa-xl::before { content: ""; },
+          'span.fa-xl::before { content: ""; }',
           styleSheet.cssRules.length
         );
       }
