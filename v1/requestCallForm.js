@@ -51,24 +51,6 @@ jQuery(function ($) {
       const contactFirstName = $('#contactFirstNameRequestForm').val();
       const contactLastName = $('#contactLastNameRequestForm').val();
       const contactPhoneNumber = $('#contactPhoneRequestForm').val();
-
-    // del
-  let requestCallFormLink = $('#requestCallForm form').attr('redirect') || $('#requestCallForm form').data('redirect');
-  if (requestCallFormLink) {
-    // Format the redirect URL with the dynamic values
-    requestCallFormLink = requestCallFormLink
-      .replace('[user-id]', userId || '')
-      .replace('[resourceID]', resourceId || '')
-      .replace('[contactId]', contactId || '');
-    
-    console.log('Formatted Redirect URL:', requestCallFormLink);
-
-    // Remove redirect attributes immediately to prevent Webflow's default behavior
-    $('#requestCallForm form').removeAttr('redirect').removeAttr('data-redirect');
-  } else {
-      console.log('not found');
-    }
-  // del
     
       $.ajax({
       url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email',
@@ -93,9 +75,6 @@ jQuery(function ($) {
 
   $('#requestCallBtn').on('click', requestCallButtonSubmit);
   $('#requestForm').on('submit', function (event) {
-    // del
-event.preventDefault(); // Prevent the default form submission behavior
-    // del
     requestCallFormSubmit();
   });
 });
