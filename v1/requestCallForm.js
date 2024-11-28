@@ -7,6 +7,10 @@ jQuery(function ($) {
   const contactId = parsedUrl.searchParams.get('contactId');
   const numericUserId = Number(userId);
 
+  // del
+  $('#requestForm .w-form-fail').hide();
+  // del
+
   if(contactId) {
     $('#requestCallForm').hide();
   } else {
@@ -67,7 +71,7 @@ jQuery(function ($) {
       success: function (response) {
         console.log('Request Call email sent successfully', response);
         // del
-        // $('#requestForm .w-form-done').show(); 
+        $('#requestForm .w-form-done').show(); 
         $('#requestForm .w-form-fail').hide();
         // del
       },
