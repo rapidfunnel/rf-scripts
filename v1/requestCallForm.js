@@ -70,8 +70,8 @@ jQuery(function ($) {
         $('.error-message.w-form-fail').hide();
         $('.error-message.w-form-fail').css('visibility', 'hidden');
         
-        $('#requestForm .w-form-done').show(); 
         $('#requestForm .w-form-fail').hide();
+        $('#requestForm .w-form-done').show(); 
         // del
       },
       error: function (xhr, status, error) {
