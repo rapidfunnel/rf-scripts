@@ -7,11 +7,6 @@ jQuery(function ($) {
   const contactId = parsedUrl.searchParams.get('contactId');
   const numericUserId = Number(userId);
 
-  // del
-  $('.error-message.w-form-fail').hide();
-  $('.error-message.w-form-fail').css('visibility', 'hidden');
-  // del
-
   if(contactId) {
     $('#requestCallForm').hide();
   } else {
@@ -58,9 +53,9 @@ jQuery(function ($) {
       const contactPhoneNumber = $('#contactPhoneRequestForm').val();
     
       $.ajax({
-      url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email123',
-      type: 'POST123',
-      contentType: 'application/json123',
+      url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email',
+      type: 'POST',
+      contentType: 'application/json',
       dataType: "json",
       data: JSON.stringify({
         legacyUserId: numericUserId,
@@ -72,6 +67,9 @@ jQuery(function ($) {
       success: function (response) {
         console.log('Request Call email sent successfully', response);
         // del
+        $('.error-message.w-form-fail').hide();
+        $('.error-message.w-form-fail').css('visibility', 'hidden');
+        
         $('#requestForm .w-form-done').show(); 
         $('#requestForm .w-form-fail').hide();
         // del
