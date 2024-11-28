@@ -27,7 +27,7 @@ jQuery(function ($) {
         const contactData = response.data;
         // Make a POST request with contactData to send request call email to user
         $.ajax({
-          url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email',
+          url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email123123123123',
           type: 'POST',
           contentType: 'application/json',
           dataType: "json",
