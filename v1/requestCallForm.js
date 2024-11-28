@@ -7,10 +7,6 @@ jQuery(function ($) {
   const contactId = parsedUrl.searchParams.get('contactId');
   const numericUserId = Number(userId);
 
-  // del
-  $('.error-message').hide();
-  // del
-
   if(contactId) {
     $('#requestCallForm').hide();
   } else {
@@ -18,6 +14,9 @@ jQuery(function ($) {
   }
 
   function requestCallButtonSubmit() {
+    // del
+  $('.error-message').hide();
+  // del
     // Called for known contact
     if(contactId) {
       $.get(
