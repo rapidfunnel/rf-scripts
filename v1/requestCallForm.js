@@ -7,6 +7,11 @@ jQuery(function ($) {
   const contactId = parsedUrl.searchParams.get('contactId');
   const numericUserId = Number(userId);
 
+  // del
+  $('.error-message.w-form-fail').hide();
+  $('.error-message.w-form-fail').css('visibility', 'hidden');
+  // del
+
   if(contactId) {
     $('#requestCallForm').hide();
   } else {
@@ -14,9 +19,6 @@ jQuery(function ($) {
   }
 
   function requestCallButtonSubmit() {
-    // del
-  $('.error-message').hide();
-  // del
     // Called for known contact
     if(contactId) {
       $.get(
@@ -70,15 +72,15 @@ jQuery(function ($) {
       success: function (response) {
         console.log('Request Call email sent successfully', response);
         // del
-        // $('#requestForm .w-form-done').show(); 
-        // $('#requestForm .w-form-fail').hide();
+        $('#requestForm .w-form-done').show(); 
+        $('#requestForm .w-form-fail').hide();
         // del
       },
       error: function (xhr, status, error) {
         console.error('Request Call email failed', error);
         // del
-        // $('#requestForm .w-form-fail').show(); 
-        // $('#requestForm .w-form-done').hide();
+        $('#requestForm .w-form-fail').show(); 
+        $('#requestForm .w-form-done').hide();
         // del
       }
     });
