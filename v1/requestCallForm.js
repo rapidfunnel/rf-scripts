@@ -7,10 +7,6 @@ jQuery(function ($) {
   const contactId = parsedUrl.searchParams.get('contactId');
   const numericUserId = Number(userId);
 
-  // del
-  $('.w-form-fail').hide();
-  // del
-
   if(contactId) {
     $('#requestCallForm').hide();
   } else {
