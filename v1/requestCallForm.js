@@ -54,33 +54,34 @@ jQuery(function ($) {
   }
 
   function requestCallFormSubmit() {
-      const contactFirstName = $('#contactFirstNameRequestForm').val();
-      const contactLastName = $('#contactLastNameRequestForm').val();
-      const contactPhoneNumber = $('#contactPhoneRequestForm').val();
+    console.log('check123');
+    //   const contactFirstName = $('#contactFirstNameRequestForm').val();
+    //   const contactLastName = $('#contactLastNameRequestForm').val();
+    //   const contactPhoneNumber = $('#contactPhoneRequestForm').val();
     
-      $.ajax({
-      url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email',
-      type: 'POST',
-      contentType: 'application/json',
-      dataType: "json",
-      data: JSON.stringify({
-        legacyUserId: numericUserId,
-        contactFirstName: contactFirstName,
-        contactLastName: contactLastName,
-        contactPhoneNumber: contactPhoneNumber,
-        requestCallSourcePage: resourceDescriptionForRequestCall
-      }),
-      success: function (response) {
-        console.log('Request Call email sent successfully', response);
-        // del
-        // $('#requestForm .w-form-done').show(); 
-        // $('#requestForm .w-form-fail').hide();
-        // del
-      },
-      error: function (xhr, status, error) {
-        console.error('Request Call email failed', error);
-      }
-    });
+    //   $.ajax({
+    //   url: 'https://app.rapidfunnel.com/api/mail/send-request-call-email',
+    //   type: 'POST',
+    //   contentType: 'application/json',
+    //   dataType: "json",
+    //   data: JSON.stringify({
+    //     legacyUserId: numericUserId,
+    //     contactFirstName: contactFirstName,
+    //     contactLastName: contactLastName,
+    //     contactPhoneNumber: contactPhoneNumber,
+    //     requestCallSourcePage: resourceDescriptionForRequestCall
+    //   }),
+    //   success: function (response) {
+    //     console.log('Request Call email sent successfully', response);
+    //     // del
+    //     // $('#requestForm .w-form-done').show(); 
+    //     // $('#requestForm .w-form-fail').hide();
+    //     // del
+    //   },
+    //   error: function (xhr, status, error) {
+    //     console.error('Request Call email failed', error);
+    //   }
+    // });
   }
 
   $('#requestCallBtn').on('click', requestCallButtonSubmit);
