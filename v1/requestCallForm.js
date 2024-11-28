@@ -8,9 +8,9 @@ jQuery(function ($) {
   const numericUserId = Number(userId);
 
   // del
-  $('.error-message.w-form-fail').hide();
-  $('.error-message.w-form-fail').css('visibility', 'hidden');
-  $('.error-message.w-form-fail').css('display', 'none');
+  // $('.error-message.w-form-fail').hide();
+  // $('.error-message.w-form-fail').css('visibility', 'hidden');
+  // $('.error-message.w-form-fail').css('display', 'none');
   // del
 
   if(contactId) {
@@ -73,7 +73,7 @@ jQuery(function ($) {
       success: function (response) {
         console.log('Request Call email sent successfully', response);
         // del
-        $('#requestForm .w-form-done').show(); 
+        // $('#requestForm .w-form-done').show(); 
         // $('#requestForm .w-form-fail').hide();
         // del
       },
