@@ -34,6 +34,10 @@ jQuery(function ($) {
             requestCallSourcePage: resourceDescriptionForRequestCall
           }),
           success: function (response) {
+            // del
+      $('#requestForm .w-form-done').show(); 
+      $('#requestForm .w-form-fail').hide();
+        // del
             console.log('Request Call email sent successfully', response);
           },
           error: function (xhr, status, error) {
