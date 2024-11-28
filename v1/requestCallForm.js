@@ -66,6 +66,10 @@ jQuery(function ($) {
       }),
       success: function (response) {
         console.log('Request Call email sent successfully', response);
+        // del
+      $('#requestForm .w-form-done').show(); 
+      $('#requestForm .w-form-fail').hide();
+        // del
       },
       error: function (xhr, status, error) {
         console.error('Request Call email failed', error);
@@ -101,8 +105,8 @@ $('#requestForm form').on('submit', function (event) {
     }),
     success: function (response) {
       console.log('Request Call email sent successfully', response);
-      // $('#requestForm .w-form-done').show(); 
-      // $('#requestForm .w-form-fail').hide();
+      $('#requestForm .w-form-done').show(); 
+      $('#requestForm .w-form-fail').hide();
     },
     error: function (xhr, status, error) {
       console.error('Request Call email failed', error);
