@@ -8,7 +8,7 @@ jQuery(function ($) {
   const numericUserId = Number(userId);
 
   // del
-  $('#requestForm .w-form-fail').hide();
+  $('.w-form-fail').hide();
   // del
 
   if(contactId) {
