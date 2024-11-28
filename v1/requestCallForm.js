@@ -7,6 +7,12 @@ jQuery(function ($) {
   const contactId = parsedUrl.searchParams.get('contactId');
   const numericUserId = Number(userId);
 
+  // del
+  $('.error-message.w-form-fail').hide();
+  $('.error-message.w-form-fail').css('visibility', 'hidden');
+  $('.error-message.w-form-fail').css('display', 'none');
+  // del
+
   if(contactId) {
     $('#requestCallForm').hide();
   } else {
@@ -67,19 +73,12 @@ jQuery(function ($) {
       success: function (response) {
         console.log('Request Call email sent successfully', response);
         // del
-        $('.error-message.w-form-fail').hide();
-        $('.error-message.w-form-fail').css('visibility', 'hidden');
-        
-        $('#requestForm .w-form-fail').hide();
         $('#requestForm .w-form-done').show(); 
+        // $('#requestForm .w-form-fail').hide();
         // del
       },
       error: function (xhr, status, error) {
         console.error('Request Call email failed', error);
-        // del
-        $('#requestForm .w-form-fail').show(); 
-        $('#requestForm .w-form-done').hide();
-        // del
       }
     });
   }
