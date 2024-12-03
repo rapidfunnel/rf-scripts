@@ -16,6 +16,7 @@ jQuery(function ($) {
 
     // Capture and format the redirect URL immediately
   let contactFormLink = $('#contactForm form').attr('redirect') || $('#contactForm form').data('redirect');
+  let originalContactFormLink = contactFormLink;
   if (contactFormLink) {
     // Format the redirect URL with the dynamic values
     contactFormLink = contactFormLink
@@ -63,8 +64,6 @@ jQuery(function ($) {
     event.preventDefault(); // Prevent the default form submission behavior
     $(':button').attr('disabled', true);
 
-    // Get additional attributes from the form
-    const contactForm = $('#contactForm');
     var formData = 'firstName=' + document.getElementById('contactFirstName').value +
           '&lastName=' + document.getElementById('contactLastName').value +
           '&email=' + document.getElementById('contactEmail').value +
@@ -87,6 +86,12 @@ jQuery(function ($) {
         console.log(response);
         if (response.contactId > 0) {
           alert('Form submitted successfully!');
+
+          contactFormLink = originalContactFormLink
+            .replace('[user-id]', userId || '')
+            .replace('[resourceID]', resourceId || '')
+            .replace('[contactId]', response.contactId || '');
+          console.log('Contact Form redirect URL with contactId', contactFormLink);
 
           // Open linked URL
           if (contactFormLink) {
