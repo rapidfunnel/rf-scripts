@@ -41,7 +41,6 @@ jQuery(function ($) {
 
   function handleCtaResourceButtonClick(buttonId) {
     const ctaResLocation = $('#' + buttonId).attr('data-cta-res-location');
-    const ctaResLocation = eval(buttonId);
     const redirectUrl = $('#' + buttonId).attr('href');
     const target = $('#' + buttonId).attr('target');
 
