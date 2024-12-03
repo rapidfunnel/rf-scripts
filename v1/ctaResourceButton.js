@@ -14,7 +14,7 @@ jQuery(function ($) {
 
     // Call the API with userId, resourceId, contactId, and ctaResourceId
     $.ajax({
-      url: `https://s1app.rapidfunnel.com/api/resources/resource-details/?userId=${userId}&resourceId=${ctaResourceId}`,
+      url: `https://s1app.rapidfunnel.com/api/api/resources/resource-details/?userId=${userId}&resourceId=${ctaResourceId}`,
       method: 'GET',
       success: function (response) {
         console.log(response);
