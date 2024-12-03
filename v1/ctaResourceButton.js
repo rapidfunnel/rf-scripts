@@ -17,11 +17,10 @@ jQuery(function ($) {
       url: `https://s1app.rapidfunnel.com/api/resources/resource-details/?userId=${userId}&resourceId=${ctaResourceId}`,
       method: 'GET',
       success: function (response) {
+        console.log(response);
         if (response && response.data) {
           // Update the href attribute of the button
-          const resourceUrl = response.data.resourceUrl + '/res/' + ctaResourceId;
-          console.log(resourceUrl);
-          $(button).attr('href', resourceUrl);
+          $(button).attr('href', response.data.resourceUrl);
         }
       },
       error: function (error) {
