@@ -80,7 +80,7 @@ jQuery(function ($) {
   }
 
   $('#requestCallBtn').on('click', requestCallButtonSubmit);
-  $('#requestForm').on('submit', function (event) {
+  $('#requestForm form').on('submit', function (event) {
     event.preventDefault();
     requestCallFormSubmit();
   });
