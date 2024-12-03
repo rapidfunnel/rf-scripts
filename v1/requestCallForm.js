@@ -81,6 +81,7 @@ jQuery(function ($) {
 
   $('#requestCallBtn').on('click', requestCallButtonSubmit);
   $('#requestForm').on('submit', function (event) {
+    event.preventDefault();
     requestCallFormSubmit();
   });
 });
