@@ -11,6 +11,8 @@ jQuery(function ($) {
   // Function to handle API call and update href for each CTA resource button
   function updateCtaResourceButtonLinks(button) {
     const ctaResourceId = $(button).attr('data-cta-resource-id');
+    console.log('resId', ctaResourceId);
+    console.log('API URL', `https://s1app.rapidfunnel.com/api/api/resources/resource-details/?userId=${userId}&resourceId=${ctaResourceId}`);
 
     // Call the API with userId, resourceId, contactId, and ctaResourceId
     $.ajax({
@@ -31,6 +33,7 @@ jQuery(function ($) {
 
   // Iterate over each CTA resource button and update href on load
   $('[id^="ctaResourceButton"]').each(function () {
+    console.log('CTA Resource Button exists', this);
     updateCtaResourceButtonLinks(this);
   });
 
