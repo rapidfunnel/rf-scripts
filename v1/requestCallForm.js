@@ -70,11 +70,13 @@ jQuery(function ($) {
       }),
       success: function (response) {
         console.log('Request Call email sent successfully', response);
-        // $('#requestForm .w-form-done').show(); 
-        // $('#requestForm .w-form-fail').hide();
+        $('#requestForm .w-form-done').show(); 
+        $('#requestForm .w-form-fail').hide();
       },
       error: function (xhr, status, error) {
         console.error('Request Call email failed', error);
+        $('#requestForm .w-form-done').hide(); 
+        $('#requestForm .w-form-fail').show();
       }
     });
   }
