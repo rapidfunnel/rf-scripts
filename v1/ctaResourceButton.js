@@ -14,7 +14,7 @@ jQuery(function ($) {
 
     // Call the API with userId, resourceId, contactId, and ctaResourceId
     $.ajax({
-      url: `https://s1app.rapidfunnel.com/api/api/resources/resource-details/?userId=${userId}&resourceId=${ctaResourceId}`,
+      url: `https://app.rapidfunnel.com/api/api/resources/resource-details/?userId=${userId}&resourceId=${ctaResourceId}`,
       method: 'GET',
       success: function (response) {
         console.log(response);
@@ -47,13 +47,13 @@ jQuery(function ($) {
     // Get contact details
     if(contactId) {
       $.get(
-      'https://s1apiv2.rapidfunnel.com/v2/contact-details/' + contactId,
+      'https://apiv2.rapidfunnel.com/v2/contact-details/' + contactId,
       function (response) {
         const contactData = response.data;
         const numericUserId = Number(userId);
         // Make a POST request with contactData to send cta button email to user
         $.ajax({
-          url: 'https://s1app.rapidfunnel.com/api/mail/send-cta-email',
+          url: 'https://app.rapidfunnel.com/api/mail/send-cta-email',
           type: 'POST',
           contentType: 'application/json',
           dataType: "json",
