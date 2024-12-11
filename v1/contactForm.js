@@ -69,7 +69,10 @@ jQuery(function ($) {
           '&email=' + document.getElementById('contactEmail').value +
           '&phone=' + document.getElementById('contactPhone').value +
           '&campaign=' + assignCampaignId +
-          '&contactTag=' + labelId;
+          '&contactTag=' + labelId +
+          '&streetaddress=' + 'testStreet' +
+          '&city=' + 'Denver' +
+          '&pincode=' + '80401';
 
     // Submit the form data to the API
     $.ajax({
