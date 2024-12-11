@@ -27,6 +27,12 @@ jQuery(function ($) {
         if (brandingData.tertiaryColor) {
           $('.rf_tertiarycolor').css('background', brandingData.tertiaryColor);
         }
+
+        // Hide the "Powered by RF" logo based on hidePoweredByRFLogoOnResources
+        if (brandingData.hidePoweredByRFLogoOnResources) {
+          $('.pbrf_logo').hide();
+        }
+        
       } else {
         console.error('Failed to fetch branding data:', response);
       }
