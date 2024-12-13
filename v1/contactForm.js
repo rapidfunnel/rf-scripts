@@ -92,10 +92,10 @@ jQuery(function ($) {
       },
       success: function (response) {
         console.log(response);
+    
         if (response.contactId > 0) {
             alert('Form submitted successfully!');
     
-            // Update the redirect URL with the response contactId
             contactFormLink = originalContactFormLink
                 .replace('[user-id]', userId || '')
                 .replace('[resourceID]', resourceId || '')
@@ -103,19 +103,19 @@ jQuery(function ($) {
     
             console.log('Contact Form redirect URL with contactId', contactFormLink);
     
-            // Redirect to the URL only if the contact is successfully created
             if (contactFormLink) {
                 window.location.href = contactFormLink;
             }
         } else {
             alert('A contact could not be added!');
-            // Do not perform any redirection if contactId is not present
+            contactFormLink = null;
         }
     },
     error: function (error) {
         alert('Error submitting the form.');
         console.error(error);
-        // No redirection on error
+    
+        contactFormLink = null;
     },
     });
   });
