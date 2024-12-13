@@ -15,7 +15,7 @@ jQuery(function ($) {
   console.log('Contact ID: ' + contactId);
 
     // Capture and format the redirect URL immediately
-  let contactFormLink = $('#contactForm').attr('data-redirect') || $('#contactForm').data('redirect');
+  let contactFormLink = $('#contactForm').attr('data-redirect') || $('#submit-btn').data('redirect');
   console.log('contactFormLink', contactFormLink);
   console.log('contactFormLink redirdect', $('#contactForm').attr('data-redirect'));
   let originalContactFormLink = contactFormLink;
@@ -62,7 +62,7 @@ jQuery(function ($) {
   }
 
   // Handle form submission
-  $('#contactFormContainer form').on('submit', function (event) {
+  $('#submit-btn').on('click', function (event) {
     event.preventDefault(); // Prevent the default form submission behavior
     $(':button').attr('disabled', true);
 
