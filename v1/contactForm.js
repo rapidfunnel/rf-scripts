@@ -15,9 +15,9 @@ jQuery(function ($) {
   console.log('Contact ID: ' + contactId);
 
     // Capture and format the redirect URL immediately
-  let contactFormLink = $('#contactFormSubmitBtn').attr('data-redirect') || $('#contactFormSubmitBtn').data('redirect');
+  let contactFormLink = $('#contactFormSubmitContainer').attr('data-redirect') || $('#contactFormSubmitContainer').data('redirect');
   console.log('contactFormLink', contactFormLink);
-  console.log('contactFormLink redirdect', $('#contactFormSubmitBtn').attr('data-redirect'));
+  console.log('contactFormLink redirdect', $('#contactFormSubmitContainer').attr('data-redirect'));
   let originalContactFormLink = contactFormLink;
   if (contactFormLink) {
     // Format the redirect URL with the dynamic values
