@@ -15,9 +15,9 @@ jQuery(function ($) {
   console.log('Contact ID: ' + contactId);
 
     // Capture and format the redirect URL immediately
-  let contactFormLink = $('#contactForm').attr('data-redirect') || $('#submit-btn').data('redirect');
+  let contactFormLink = $('#contactFormSubmitBtn').attr('data-redirect') || $('#contactFormSubmitBtn').data('redirect');
   console.log('contactFormLink', contactFormLink);
-  console.log('contactFormLink redirdect', $('#contactForm').attr('data-redirect'));
+  console.log('contactFormLink redirdect', $('#contactFormSubmitBtn').attr('data-redirect'));
   let originalContactFormLink = contactFormLink;
   if (contactFormLink) {
     // Format the redirect URL with the dynamic values
@@ -29,7 +29,7 @@ jQuery(function ($) {
     console.log('Formatted Redirect URL:', contactFormLink);
 
     // Remove redirect attributes immediately to prevent Webflow's default behavior
-    $('#contactForm form').removeAttr('redirect').removeAttr('data-redirect');
+    $('#contactFormSubmitBtn').removeAttr('redirect').removeAttr('data-redirect');
   }
 
   // If contactId exists, make an API call to get contact details
@@ -62,7 +62,7 @@ jQuery(function ($) {
   }
 
   // Handle form submission
-  $('#submit-btn').on('click', function (event) {
+  $('#contactFormSubmitBtn').on('click', function (event) {
     event.preventDefault(); // Prevent the default form submission behavior
     $(':button').attr('disabled', true);
 
