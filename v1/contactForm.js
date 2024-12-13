@@ -64,7 +64,7 @@ jQuery(function ($) {
   // Handle form submission
   $('#contactFormSubmitBtn').on('click', function (event) {
     event.preventDefault(); // Prevent the default form submission behavior
-    $(':button').attr('disabled', true);
+    $(':button').attr('disabled', false)
 
     var formData = 'firstName=' + document.getElementById('contactFirstName').value +
           '&lastName=' + document.getElementById('contactLastName').value +
