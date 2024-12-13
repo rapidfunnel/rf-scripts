@@ -107,14 +107,10 @@ jQuery(function ($) {
           }
         } else {
           alert('A contact could not be added!');
-          // Set contactFormLink to null to prevent redirection
-          contactFormLink = null;
       },
       error: function (error) {
           alert('Error submitting the form.');
           console.error(error);
-          // Set contactFormLink to null to prevent redirection
-          contactFormLink = null;
       },
       },
     });
