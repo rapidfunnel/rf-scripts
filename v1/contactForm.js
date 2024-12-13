@@ -93,29 +93,34 @@ jQuery(function ($) {
       success: function (response) {
         console.log(response);
         if (response.contactId > 0) {
-            alert('Form submitted successfully!');
-    
-            // Update the redirect URL with the response contactId
-            contactFormLink = originalContactFormLink
-                .replace('[user-id]', userId || '')
-                .replace('[resourceID]', resourceId || '')
-                .replace('[contactId]', response.contactId || '');
-    
-            console.log('Contact Form redirect URL with contactId', contactFormLink);
-    
-            // Redirect to the URL only if the contact is successfully created
-            if (contactFormLink) {
-                window.location.href = contactFormLink;
-            }
+          alert('Form submitted successfully!');
+
+          contactFormLink = originalContactFormLink
+            .replace('[user-id]', userId || '')
+            .replace('[resourceID]', resourceId || '')
+            .replace('[contactId]', response.contactId || '');
+          console.log('Contact Form redirect URL with contactId', contactFormLink);
+
+          // Open linked URL
+          if (contactFormLink) {
+            window.location.href = contactFormLink;
+          }
         } else {
-            alert('A contact could not be added!');
+          alert('A contact could not be added!');
+          // Open linked URL
+          if (contactFormLink) {
+            window.location.href = contactFormLink;
+          }
         }
-    },
-    error: function (error) {
+      },
+      error: function (error) {
         alert('Error submitting the form.');
         console.error(error);
-        // Do not redirect on error
-    },
+        // Open linked URL
+          if (contactFormLink) {
+            window.location.href = contactFormLink;
+          }
+      },
     });
   });
 });
