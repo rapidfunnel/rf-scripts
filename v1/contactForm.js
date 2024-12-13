@@ -25,7 +25,7 @@ jQuery(function ($) {
       .replace('[user-id]', userId || '')
       .replace('[resourceID]', resourceId || '')
       .replace('[contactId]', contactId || '');
-    
+
     console.log('Formatted Redirect URL:', contactFormLink);
 
     // Remove redirect attributes immediately to prevent Webflow's default behavior
@@ -36,7 +36,7 @@ jQuery(function ($) {
   if (contactId) {
     $('#contactEmail').prop('disabled', true);  // Disable the email input field
     $('label[for="email"]').css('color', '#aaa');
-    
+
     $.get(
       'https://apiv2.rapidfunnel.com/v2/contact-details/' + contactId,
       function (response) {
@@ -77,7 +77,7 @@ jQuery(function ($) {
     //      '&streetaddress=' + 'testStreet' +
     //      '&city=' + 'Denver' +
     //      '&pincode=' + '80401';
-          
+
 
     // Submit the form data to the API
     $.ajax({
