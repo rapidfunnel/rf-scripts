@@ -107,11 +107,19 @@ jQuery(function ($) {
           }
         } else {
           alert('A contact could not be added!');
+          // Open linked URL
+          if (contactFormLink) {
+            window.location.href = contactFormLink;
+          }
+        }
       },
       error: function (error) {
-          alert('Error submitting the form.');
-          console.error(error);
-      },
+        alert('Error submitting the form.');
+        console.error(error);
+        // Open linked URL
+          if (contactFormLink) {
+            window.location.href = contactFormLink;
+          }
       },
     });
   });
