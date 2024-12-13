@@ -15,7 +15,9 @@ jQuery(function ($) {
   console.log('Contact ID: ' + contactId);
 
     // Capture and format the redirect URL immediately
-  let contactFormLink = $('#contactForm form').attr('redirect') || $('#contactForm form').data('redirect');
+  let contactFormLink = $('#contactFormSubmitContainer').attr('data-redirect') || $('#contactFormSubmitContainer').data('redirect');
+  console.log('contactFormLink', contactFormLink);
+  console.log('contactFormLink redirdect', $('#contactFormSubmitContainer').attr('data-redirect'));
   let originalContactFormLink = contactFormLink;
   if (contactFormLink) {
     // Format the redirect URL with the dynamic values
@@ -27,7 +29,7 @@ jQuery(function ($) {
     console.log('Formatted Redirect URL:', contactFormLink);
 
     // Remove redirect attributes immediately to prevent Webflow's default behavior
-    $('#contactForm form').removeAttr('redirect').removeAttr('data-redirect');
+    // $('#contactFormSubmitBtn').removeAttr('redirect').removeAttr('data-redirect');
   }
 
   // If contactId exists, make an API call to get contact details
@@ -60,7 +62,7 @@ jQuery(function ($) {
   }
 
   // Handle form submission
-  $('#contactForm form').on('submit', function (event) {
+  $('#contactFormSubmitBtn').on('click', function (event) {
     event.preventDefault(); // Prevent the default form submission behavior
     $(':button').attr('disabled', true);
 
@@ -70,6 +72,12 @@ jQuery(function ($) {
           '&phone=' + document.getElementById('contactPhone').value +
           '&campaign=' + assignCampaignId +
           '&contactTag=' + labelId;
+
+    // You can add city and state by appending the following to formData variable:
+    //      '&streetaddress=' + 'testStreet' +
+    //      '&city=' + 'Denver' +
+    //      '&pincode=' + '80401';
+          
 
     // Submit the form data to the API
     $.ajax({
