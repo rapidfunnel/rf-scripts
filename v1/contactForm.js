@@ -92,31 +92,35 @@ jQuery(function ($) {
       },
       success: function (response) {
         console.log(response);
-    
         if (response.contactId > 0) {
-            alert('Form submitted successfully!');
-    
-            contactFormLink = originalContactFormLink
-                .replace('[user-id]', userId || '')
-                .replace('[resourceID]', resourceId || '')
-                .replace('[contactId]', response.contactId || '');
-    
-            console.log('Contact Form redirect URL with contactId', contactFormLink);
-    
-            if (contactFormLink) {
-                window.location.href = contactFormLink;
-            }
+          alert('Form submitted successfully!');
+
+          contactFormLink = originalContactFormLink
+            .replace('[user-id]', userId || '')
+            .replace('[resourceID]', resourceId || '')
+            .replace('[contactId]', response.contactId || '');
+          console.log('Contact Form redirect URL with contactId', contactFormLink);
+
+          // Open linked URL
+          if (contactFormLink) {
+            window.location.href = contactFormLink;
+          }
         } else {
-            alert('A contact could not be added!');
-            contactFormLink = null;
+          alert('A contact could not be added!');
+          // Open linked URL
+          if (contactFormLink) {
+            window.location.href = contactFormLink;
+          }
         }
-    },
-    error: function (error) {
+      },
+      error: function (error) {
         alert('Error submitting the form.');
         console.error(error);
-    
-        contactFormLink = null;
-    },
+        // Open linked URL
+          if (contactFormLink) {
+            window.location.href = contactFormLink;
+          }
+      },
     });
   });
 });
