@@ -29,7 +29,7 @@ jQuery(function ($) {
     console.log('Formatted Redirect URL:', contactFormLink);
 
     // Remove redirect attributes immediately to prevent Webflow's default behavior
-    $('#contactFormSubmitBtn').removeAttr('redirect').removeAttr('data-redirect');
+    // $('#contactFormSubmitBtn').removeAttr('redirect').removeAttr('data-redirect');
   }
 
   // If contactId exists, make an API call to get contact details
