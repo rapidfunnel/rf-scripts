@@ -109,7 +109,7 @@ jQuery(function ($) {
           alert('A contact could not be added!');
           // Open linked URL
           if (contactFormLink) {
-            window.location.href = contactFormLink;
+            contactFormLink = contactFormLink.replace(contactFormLink, "null");
           }
         }
       },
@@ -118,7 +118,7 @@ jQuery(function ($) {
         console.error(error);
         // Open linked URL
           if (contactFormLink) {
-            window.location.href = contactFormLink;
+            contactFormLink = contactFormLink.replace(contactFormLink, "null");
           }
       },
     });
