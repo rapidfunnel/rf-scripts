@@ -18,14 +18,30 @@ jQuery(function ($) {
           console.log('Primary Color', brandingData.primaryColor);
         }
 
+                // Apply primary color to elements with class 'rf_primaryColorOff'
+        if (brandingData.primaryColorOffset) {
+          $('.rf_primaryColorOff').css('background', brandingData.primaryColorOffset);
+          console.log('Primary Color', brandingData.primaryColorOffset);
+        }
+
         // Apply secondary color to elements with class 'rf_secondaryColor'
         if (brandingData.secondaryColor) {
           $('.rf_secondarycolor').css('background', brandingData.secondaryColor);
         }
 
+                // Apply secondary color to elements with class 'rf_secondaryColorOff'
+        if (brandingData.secondaryColorOffset) {
+          $('.rf_secondaryColorOff').css('background', brandingData.secondaryColorOffset);
+        }
+
         // Apply tertiary color to elements with class 'rf_tertiaryColor'
         if (brandingData.tertiaryColor) {
           $('.rf_tertiarycolor').css('background', brandingData.tertiaryColor);
+        }
+
+                // Apply tertiary color to elements with class 'rf_tertiaryColorOff'
+        if (brandingData.tertiaryColorOffset) {
+          $('.rf_tertiaryColorOff').css('background', brandingData.tertiaryColorOffset);
         }
 
         // Hide the "Powered by RF" logo based on hidePoweredByRFLogoOnResources
