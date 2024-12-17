@@ -93,8 +93,6 @@ jQuery(function ($) {
       success: function (response) {
         console.log(response);
         if (response.contactId > 0) {
-          alert('Form submitted successfully!');
-
           contactFormLink = originalContactFormLink
             .replace('[user-id]', userId || '')
             .replace('[resourceID]', resourceId || '')
