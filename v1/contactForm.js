@@ -86,7 +86,7 @@ jQuery(function ($) {
       dataType: "json",
       data: {
         formData: formData,
-        resourceId: resourceId,
+        //resourceId: resourceId,
         senderId: userId,
         sentFrom: 'customPage'
       },
