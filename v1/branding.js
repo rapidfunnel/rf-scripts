@@ -48,10 +48,10 @@ jQuery(function ($) {
         $('#pbrf_logo').show();
 
         // Debug the hidePoweredByRFLogoOnResources value
-        console.log('removeRFLogoOnDashboard:', brandingData.removeRFLogoOnDashboard);
+        console.log('hidePoweredByRFLogoOnResources:', brandingData.hidePoweredByRFLogoOnResources);
 
         // Hide the "Powered by RF" logo if hidePoweredByRFLogoOnResources is true
-        if (brandingData.removeRFLogoOnDashboard === true) {
+        if (brandingData.hidePoweredByRFLogoOnResources === true) {
           $('#pbrf_logo').hide();
         }
         
