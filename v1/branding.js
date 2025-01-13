@@ -18,10 +18,10 @@ jQuery(function ($) {
           console.log('Primary Color', brandingData.primaryColor);
         }
 
-                // Apply primary color to elements with class 'rf_primaryColorOff'
+        // Apply primary color offset to elements with class 'rf_primaryColorOff'
         if (brandingData.primaryColorOffset) {
           $('.rf_primaryColorOff').css('background', brandingData.primaryColorOffset);
-          console.log('Primary Color', brandingData.primaryColorOffset);
+          console.log('Primary Color Offset', brandingData.primaryColorOffset);
         }
 
         // Apply secondary color to elements with class 'rf_secondaryColor'
@@ -29,7 +29,7 @@ jQuery(function ($) {
           $('.rf_secondarycolor').css('background', brandingData.secondaryColor);
         }
 
-                // Apply secondary color to elements with class 'rf_secondaryColorOff'
+        // Apply secondary color offset to elements with class 'rf_secondaryColorOff'
         if (brandingData.secondaryColorOffset) {
           $('.rf_secondaryColorOff').css('background', brandingData.secondaryColorOffset);
         }
@@ -39,14 +39,17 @@ jQuery(function ($) {
           $('.rf_tertiarycolor').css('background', brandingData.tertiaryColor);
         }
 
-                // Apply tertiary color to elements with class 'rf_tertiaryColorOff'
+        // Apply tertiary color offset to elements with class 'rf_tertiaryColorOff'
         if (brandingData.tertiaryColorOffset) {
           $('.rf_tertiaryColorOff').css('background', brandingData.tertiaryColorOffset);
         }
 
-        // Hide the "Powered by RF" logo based on hidePoweredByRFLogoOnResources
+        // Ensure the "Powered by RF" logo is visible by default
+        $('#pbrf_logo').show();
+
+        // Hide the "Powered by RF" logo if hidePoweredByRFLogoOnResources is true
         if (brandingData.hidePoweredByRFLogoOnResources) {
-          $('.pbrf_logo').hide();
+          $('#pbrf_logo').hide();
         }
         
       } else {
