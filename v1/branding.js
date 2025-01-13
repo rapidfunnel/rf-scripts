@@ -14,7 +14,7 @@ jQuery(function ($) {
 
         // Apply primary color to elements with class 'rf_primaryColor'
         if (brandingData.primaryColor) {
-          $('.rf_primarycolor').css('background', brandingData.primaryColor);
+          $('.rf_primaryColor').css('background', brandingData.primaryColor);
           console.log('Primary Color', brandingData.primaryColor);
         }
 
@@ -26,7 +26,7 @@ jQuery(function ($) {
 
         // Apply secondary color to elements with class 'rf_secondaryColor'
         if (brandingData.secondaryColor) {
-          $('.rf_secondarycolor').css('background', brandingData.secondaryColor);
+          $('.rf_secondaryColor').css('background', brandingData.secondaryColor);
         }
 
         // Apply secondary color offset to elements with class 'rf_secondaryColorOff'
@@ -36,7 +36,7 @@ jQuery(function ($) {
 
         // Apply tertiary color to elements with class 'rf_tertiaryColor'
         if (brandingData.tertiaryColor) {
-          $('.rf_tertiarycolor').css('background', brandingData.tertiaryColor);
+          $('.rf_tertiaryColor').css('background', brandingData.tertiaryColor);
         }
 
         // Apply tertiary color offset to elements with class 'rf_tertiaryColorOff'
@@ -47,8 +47,11 @@ jQuery(function ($) {
         // Ensure the "Powered by RF" logo is visible by default
         $('#pbrf_logo').show();
 
+        // Debug the hidePoweredByRFLogoOnResources value
+        console.log('hidePoweredByRFLogoOnResources:', brandingData.hidePoweredByRFLogoOnResources);
+
         // Hide the "Powered by RF" logo if hidePoweredByRFLogoOnResources is true
-        if (brandingData.hidePoweredByRFLogoOnResources) {
+        if (brandingData.hidePoweredByRFLogoOnResources === true) {
           $('#pbrf_logo').hide();
         }
         
