@@ -1,3 +1,5 @@
+src="https://code.jquery.com/jquery-3.6.0.min.js"
+
 jQuery(function ($) {
   $(document).ready(function () {
     // Parse the URL and extract the userId
