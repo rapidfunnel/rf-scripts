@@ -1,4 +1,4 @@
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+src="https://code.jquery.com/jquery-3.6.0.min.js"
 
   jQuery(function ($) {
     $(document).ready(function () {
