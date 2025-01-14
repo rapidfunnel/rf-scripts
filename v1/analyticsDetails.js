@@ -20,13 +20,13 @@ jQuery(function ($) {
           const accountAnalytics = data.accountData || {};
 
           // Dynamically update Webflow placeholders
-          document.getElementById('google-tracking-code').textContent = userAnalytics.googleTrackingCode || 'Not Available';
-          document.getElementById('fb-tracking-code').textContent = userAnalytics.fbTrackingCode || 'Not Available';
-          document.getElementById('fb-page-id').textContent = userAnalytics.fbPageId || 'Not Available';
+          document.getElementById('google-tracking-code') = userAnalytics.googleTrackingCode;
+          document.getElementById('fb-tracking-code') = userAnalytics.fbTrackingCode;
+          document.getElementById('fb-page-id') = userAnalytics.fbPageId;
 
-          document.getElementById('account-google-tracking-code').textContent = accountAnalytics.googleTrackingCode || 'Not Available';
-          document.getElementById('gtm-tracking-code').textContent = accountAnalytics.gtmTrackingCode || 'Not Available';
-          document.getElementById('account-fb-tracking-code').textContent = accountAnalytics.fbTrackingCode || 'Not Available';
+          document.getElementById('account-google-tracking-code') = accountAnalytics.googleTrackingCode;
+          document.getElementById('gtm-tracking-code') = accountAnalytics.gtmTrackingCode;
+          document.getElementById('account-fb-tracking-code') = accountAnalytics.fbTrackingCode;
         }
       ).fail(function (error) {
         // Handle the error if the API request fails
