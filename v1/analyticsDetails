@@ -9,7 +9,7 @@ jQuery(function ($) {
         console.log('User ID:', userId);
   
         // Fetch analytics data using the userId
-        fetch(`https://apiv2.rapidfunnel.com/v2/analytics/${userId}`)
+        fetch(`https://apiv2.rapidfunnel.com/v2/analytics/` + userId)
           .then((response) => {
             if (!response.ok) {
               throw new Error(`HTTP error! Status: ${response.status}`);
