@@ -1,6 +1,4 @@
-src="https://code.jquery.com/jquery-3.6.0.min.js"
-
-jQuery(function ($) {
+(function ($) {
   $(document).ready(function () {
     // Parse the URL and extract the userId
     const parsedUrl = new URL(window.location.href);
@@ -8,7 +6,7 @@ jQuery(function ($) {
 
     if (userId) {
       // Log the userId to the console
-      console.log('User ID:', userId);
+      console.log('Found User ID:', userId);
 
       // Fetch analytics data using the userId
       $.get(
