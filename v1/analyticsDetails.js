@@ -1,4 +1,4 @@
-(function ($) {
+jQuery(function ($) {
   $(document).ready(function () {
     // Parse the URL and extract the userId
     const parsedUrl = new URL(window.location.href);
