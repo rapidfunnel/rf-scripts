@@ -70,7 +70,7 @@ jQuery(function ($) {
           '&lastName=' + document.getElementById('contactLastName').value +
           '&email=' + document.getElementById('contactEmail').value +
           '&phone=' + document.getElementById('contactPhone').value +
-          '&campaign=' + CampaignId +
+          '&campaign=' + assignCampaignId +
           '&contactTag=' + labelId;
 
     // You can add city and state by appending the following to formData variable:
