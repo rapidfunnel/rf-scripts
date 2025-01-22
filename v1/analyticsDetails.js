@@ -27,6 +27,8 @@ jQuery(function ($) {
             function gtag() { dataLayer.push(arguments); }
             gtag('js', new Date());
             gtag('config', userAnalytics.googleTrackingCode);
+
+            console.log('Google Analytics script successfully injected.');
           };
         }
 
@@ -47,6 +49,8 @@ jQuery(function ($) {
             fbq('track', 'PageView');
           `;
           document.head.appendChild(fbScript);
+
+          console.log('Facebook Pixel script successfully injected.');
         }
 
         // Dynamically inject GTM (Google Tag Manager) script if available
@@ -60,6 +64,8 @@ jQuery(function ($) {
             })(window,document,'script','dataLayer','${accountAnalytics.gtmTrackingCode}');
           `;
           document.head.appendChild(gtmScript);
+
+          console.log('Google Tag Manager script successfully injected.');
         }
       }).fail(function (error) {
         console.error('Error fetching analytics data:', error);
