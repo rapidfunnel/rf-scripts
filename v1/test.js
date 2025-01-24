@@ -1,12 +1,13 @@
 jQuery(function ($) {
-  
+
     // Adding Wistia analytics tracking class to iframes
     $("iframe").each(function() {
         var str = $(this).attr('src');
-        if (str.indexOf("wistia") >= 0) {
+        if (str && str.indexOf("wistia") >= 0) {
             $(this).addClass('wistia_embed').attr('name', 'wistia_embed');
         }
     });
+
     videoAnalytics();
 
     // Listen for the custom event
@@ -17,20 +18,20 @@ jQuery(function ($) {
     // Function to check the booking link and show/hide the request call container
     function checkBookingLink() {
         if ($('#customBookingLink').attr('href') && $('#customBookingLink').attr('href') !== '#') {
-            console.log("We should hide request call container since there's a booking link");
+            console.log("Hiding request call container - booking link exists");
             $('#requestCallContainer').hide();
         } else {
-            console.log("We should show request call container since there's no booking link");
+            console.log("Showing request call container - no booking link");
             $('#requestCallContainer').show();
         }
     }
 
     // Run the check initially in case the href value is already set on page load
     checkBookingLink();
-  
+
     // Wistia video analytics tracking setup
     function videoAnalytics() {
-        console.log('Inside video analytics');
+        console.log('Inside video analytics setup');
         window._wq = window._wq || [];
         _wq.push({
             "_all": function(video) {
@@ -38,20 +39,23 @@ jQuery(function ($) {
                     userId,
                     resourceId,
                     url = window.location.href,
-                    webinar = $('#webinar').val();
+                    webinar = $('#webinar').val(),
+                    args;
 
                 const parsedUrl = new URL(url);
                 userId = parsedUrl.searchParams.get('userId');
                 resourceId = parsedUrl.searchParams.get('resourceId');
                 contactId = parsedUrl.searchParams.get('contactId');
 
-                console.log('timeInSeconds', showBookMeAfterTimeInSecondsPassedInVideo);
-                if (showBookMeAfterTimeInSecondsPassedInVideo > 0) {
-                    $('.bookMeContainer').hide(); // Changed to class selector
+                // Ensure showBookMeAfterTimeInSecondsPassedInVideo is a valid number
+                var showBookMeAfter = parseInt(showBookMeAfterTimeInSecondsPassedInVideo, 10) || 45;
+                console.log('Threshold for showing book me container:', showBookMeAfter);
+
+                if (showBookMeAfter > 0) {
+                    $('#bookMeContainer').hide();
                 }
 
-                if ('' !== contactId &&
-                    $.isNumeric(resourceId) && $.isNumeric(userId)) {
+                if (contactId && $.isNumeric(resourceId) && $.isNumeric(userId)) {
                     var analyticObject = {
                         resourceId: resourceId,
                         contactId: contactId,
@@ -67,7 +71,7 @@ jQuery(function ($) {
                     };
 
                     video.bind('play', function() {
-                        console.log("Percent Watched: ", video.percentWatched());
+                        console.log("Video started playing");
                         analyticObject.percentWatched = video.percentWatched();
                         analyticObject.mediaHash = video.hashedId();
                         analyticObject.duration = video.duration();
@@ -77,30 +81,22 @@ jQuery(function ($) {
                         analyticObject.delayProcess = 1;
                         sqsPushAnalytics(analyticObject);
                         analyticObject.delayProcess = 0;
-                        console.log("Analytic Object: ", analyticObject);
+                        console.log("Analytic Object sent:", analyticObject);
+                    });
+
+                    video.bind("secondchange", function() {
+                        let secondsWatched = video.secondsWatched();
+                        console.log("Seconds watched:", secondsWatched);
+
+                        if (secondsWatched >= showBookMeAfter) {
+                            console.log("Showing book me container - required time passed");
+                            $('#bookMeContainer').css("display", "block");
+                        }
                     });
 
                     video.bind('percentwatchedchanged', function (percent, lastPercent) {
                         if (percent !== lastPercent) {
-                            console.log('Percent Watched: ', percent);
-                        }
-                    });
-
-                    video.bind("secondchange", function() {
-                        console.log("book me href value", $('#customBookingLink').attr('href'));
-                        if (video.secondsWatched() >= showBookMeAfterTimeInSecondsPassedInVideo) {
-                            console.log("We should now show book me container as time specified has passed");
-                            $('.bookMeContainer').show(); // Changed to class selector
-                        }
-                        if (video.secondsWatched() == 5) {
-                            console.log("You've watched 5 seconds of this video!");
-                        }
-                        if (video.secondsWatched() == 10) {
-                            console.log("You've watched 10 seconds of this video!");
-                            console.log('video script, customBookingLink: ', window.sharedData.customBookingLink);
-                        }
-                        if (video.secondsWatched() == 15) {
-                            console.log("You've watched 15 seconds of this video!");
+                            console.log('Percent Watched:', percent);
                         }
                     });
 
@@ -132,7 +128,7 @@ jQuery(function ($) {
             },
             success: function(response) {
                 if (!response) {
-                    bootbox.confirm('Some error occurred. Please reload your video once.', function(result) {
+                    bootbox.confirm('Some error occurred. Please reload your video.', function(result) {
                         if (result) {
                             location.reload();
                         }
@@ -140,12 +136,12 @@ jQuery(function ($) {
                 }
             },
             error: function() {
-                bootbox.confirm('Some error occurred. Please reload your video once.', function(result) {
+                bootbox.confirm('Some error occurred. Please reload your video.', function(result) {
                     if (result) {
                         location.reload();
                     }
                 });
             }
-        });
+        })
     }
 });
