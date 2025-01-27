@@ -8,6 +8,11 @@ jQuery(function ($) {
   const resourceId = parsedUrl.searchParams.get('resourceId');
   const contactId = parsedUrl.searchParams.get('contactId');
 
+  // Log the extracted IDs to the console
+  console.log('userId:', userId);
+  console.log('resourceId:', resourceId);
+  console.log('contactId:', contactId);
+
   // Iterate over all links on the page
   $('a').each(function () {
     // Get the original href attribute
