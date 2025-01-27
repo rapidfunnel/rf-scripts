@@ -29,6 +29,4 @@ jQuery(function ($) {
       $(this).attr('href', href);
     }
   });
-
-  console.log('Links updated with URL parameters'); 
 });
