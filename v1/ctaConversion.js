@@ -45,7 +45,7 @@ jQuery(function ($) {
   var resourceId = parsedUrl.searchParams.get('resourceId');
   var contactId = parsedUrl.searchParams.get('contactId');
   
-  $('[id^="ctaButton"]').on('click', function(event) {
+  $('[id^="ctaConversionButton"]').on('click', function(event) {
     event.preventDefault();
     console.log("Clicked CTA Button: ", this.id);
     
