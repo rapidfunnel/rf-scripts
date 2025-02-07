@@ -7,7 +7,7 @@ jQuery(function ($) {
   const contactId = parsedUrl.searchParams.get('contactId');
 
   function handleCtaButtonClick(buttonId) {
-    const ctaButtonLocation = eval(buttonId);
+    const ctaButtonLocation = $(this).attr('data-description');
     const redirectUrl = $('#' + buttonId).attr('href');
     const target = $('#' + buttonId).attr('target');
 
