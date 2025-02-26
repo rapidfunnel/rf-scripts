@@ -1,100 +1,169 @@
 jQuery(function ($) {
-  // Parse the URL and extract the userId
+  console.log('DOM ready, initializing analytics tracking...');
+  
+  // Track which tracking codes have been injected to prevent duplicates
+  const injectedTrackingCodes = {
+    ga: new Set(),
+    fb: new Set(),
+    gtm: new Set()
+  };
+  
   try {
     const parsedUrl = new URL(window.location.href);
     const userId = parsedUrl.searchParams.get('userId');
     
+    console.log('Current URL:', window.location.href);
+    console.log('User ID from URL:', userId);
+    
     if (!userId) {
-      console.log('No userId found in the URL.');
+      console.log('No userId found in the URL. Tracking will not be initialized.');
       return;
     }
     
-    // Log the userId to the console
-    console.log('Found User ID:', userId);
+    const apiUrl = `https://apiv2.rapidfunnel.com/v2/analytics/${userId}`;
+    console.log('Attempting to fetch analytics data from:', apiUrl);
     
-    // Fetch analytics data using the userId
-    $.get(`https://apiv2.rapidfunnel.com/v2/analytics/${userId}`)
-      .done(function (data) {
-        console.log('Analytics Data:', data);
-        const userAnalytics = data.userData || {};
-        const accountAnalytics = data.accountData || {};
+    $.ajax({
+      url: apiUrl,
+      type: 'GET',
+      dataType: 'json',
+      beforeSend: function() {
+        console.log('API request starting...');
+      },
+      success: function(response) {
+        console.log('API request successful, response:', response);
         
-        // Inject Google Analytics script
-        if (userAnalytics.googleTrackingCode) {
-          injectGoogleAnalytics(userAnalytics.googleTrackingCode);
+        // Verify response structure
+        if (!response) {
+          console.error('API response is empty or invalid');
+          return;
         }
         
-        // Inject Facebook Pixel script
-        if (userAnalytics.fbTrackingCode) {
-          injectFacebookPixel(userAnalytics.fbTrackingCode);
+        // Extract data based on the actual API response structure shown in the logs
+        const data = response.data || {};
+        const userData = data.userData || {};
+        
+        console.log('Extracted userData object:', userData);
+        
+        // Check Google Analytics tracking code in userData
+        if (userData.googleTrackingCode && !injectedTrackingCodes.ga.has(userData.googleTrackingCode)) {
+          console.log('Found Google Analytics tracking code in userData:', userData.googleTrackingCode);
+          injectGoogleAnalytics(userData.googleTrackingCode);
+        } else {
+          console.log('No Google Analytics tracking code found or already injected');
         }
         
-        // Inject GTM script
-        if (accountAnalytics.gtmTrackingCode) {
-          injectGoogleTagManager(accountAnalytics.gtmTrackingCode);
+        // Check Facebook Pixel code in userData
+        if (userData.fbTrackingCode && !injectedTrackingCodes.fb.has(userData.fbTrackingCode)) {
+          console.log('Found Facebook Pixel code in userData:', userData.fbTrackingCode);
+          injectFacebookPixel(userData.fbTrackingCode);
+        } else {
+          console.log('No Facebook Pixel tracking code found or already injected');
         }
-      })
-      .fail(function (error) {
-        console.error('Error fetching analytics data:', error);
-      });
+        
+        // Check for GTM code in userData
+        if (userData.googleTrackingCode && userData.googleTrackingCode.startsWith('GTM-') && !injectedTrackingCodes.gtm.has(userData.googleTrackingCode)) {
+          console.log('Found GTM tracking code in userData:', userData.googleTrackingCode);
+          injectGoogleTagManager(userData.googleTrackingCode);
+        } else {
+          console.log('No GTM tracking code found or already injected');
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error('API request failed:', status, error);
+        console.error('Response:', xhr.responseText);
+      }
+    });
   } catch (error) {
-    console.error('Error parsing URL:', error);
+    console.error('Error in analytics tracking script:', error);
   }
   
-  // Helper function to inject Google Analytics
+  // Helper functions with duplicate prevention
   function injectGoogleAnalytics(trackingId) {
+    // Ensure correct trackingId is being passed and avoid literal injection
+    if (injectedTrackingCodes.ga.has(trackingId)) {
+      console.log(`Google Analytics with ID ${trackingId} already injected, skipping...`);
+      return;
+    }
+    
+    console.log('Injecting Google Analytics with ID:', trackingId);
+    
     const gaScript = document.createElement('script');
     gaScript.async = true;
     gaScript.src = `https://www.googletagmanager.com/gtag/js?id=${trackingId}`;
     
     gaScript.onload = () => {
-      window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', trackingId);
-      console.log('Google Analytics script successfully injected.');
+      console.log('Google Analytics script loaded successfully');
+      
+      const gaInitScript = document.createElement('script');
+      gaInitScript.innerHTML = `
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', '${trackingId}');
+      `;
+      document.head.appendChild(gaInitScript);
+      
+      console.log('Google Analytics initialization script injected');
     };
     
-    gaScript.onerror = () => {
-      console.error('Failed to load Google Analytics script.');
+    gaScript.onerror = (e) => {
+      console.error('Failed to load Google Analytics script:', e);
     };
     
     document.head.appendChild(gaScript);
+    console.log('Google Analytics script added to DOM');
+    
+    // Mark this tracking ID as injected
+    injectedTrackingCodes.ga.add(trackingId);
   }
   
-  // Helper function to inject Facebook Pixel
   function injectFacebookPixel(pixelId) {
-    const fbScript = document.createElement('script');
-    fbScript.innerHTML = `
-      !function(f,b,e,v,n,t,s){
-        if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-        n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-        if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-        n.queue=[];t=b.createElement(e);t.async=!0;
-        t.src=v;s=b.getElementsByTagName(e)[0];
-        s.parentNode.insertBefore(t,s)
-      }(window, document,'script',
-      'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '${pixelId}');
-      fbq('track', 'PageView');
-    `;
-    document.head.appendChild(fbScript);
+    // Ensure correct pixelId is being passed
+    if (injectedTrackingCodes.fb.has(pixelId)) {
+      console.log(`Facebook Pixel with ID ${pixelId} already injected, skipping...`);
+      return;
+    }
     
-    // Add the noscript pixel image as well
-    const fbNoscript = document.createElement('noscript');
-    const fbPixelImg = document.createElement('img');
-    fbPixelImg.height = 1;
-    fbPixelImg.width = 1;
-    fbPixelImg.style = "display:none";
-    fbPixelImg.src = `https://www.facebook.com/tr?id=${pixelId}&ev=PageView&noscript=1`;
-    fbNoscript.appendChild(fbPixelImg);
-    document.body.appendChild(fbNoscript);
+    console.log('Injecting Facebook Pixel with ID:', pixelId);
     
-    console.log('Facebook Pixel script successfully injected.');
+    // Check if fbq is already defined (another way to prevent duplication)
+    if (window.fbq) {
+      console.log('Facebook Pixel already initialized, adding this pixel ID');
+      window.fbq('init', pixelId);
+      window.fbq('track', 'PageView');
+    } else {
+      const fbScript = document.createElement('script');
+      fbScript.innerHTML = `
+        !function(f,b,e,v,n,t,s){
+          if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)}; 
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0'; 
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)
+        }(window, document,'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+        fbq('init', '${pixelId}');
+        fbq('track', 'PageView');
+      `;
+      document.head.appendChild(fbScript);
+      console.log('Facebook Pixel script added to DOM');
+    }
+    
+    // Mark this pixel ID as injected
+    injectedTrackingCodes.fb.add(pixelId);
   }
   
-  // Helper function to inject Google Tag Manager
   function injectGoogleTagManager(gtmId) {
+    // Ensure correct GTM ID is being passed
+    if (injectedTrackingCodes.gtm.has(gtmId)) {
+      console.log(`Google Tag Manager with ID ${gtmId} already injected, skipping...`);
+      return;
+    }
+    
+    console.log('Injecting Google Tag Manager with ID:', gtmId);
+    
     // Add GTM script to head
     const gtmScript = document.createElement('script');
     gtmScript.innerHTML = `
@@ -105,17 +174,9 @@ jQuery(function ($) {
       })(window,document,'script','dataLayer','${gtmId}');
     `;
     document.head.appendChild(gtmScript);
+    console.log('Google Tag Manager script added to DOM');
     
-    // Add GTM noscript iframe to body
-    const gtmNoscript = document.createElement('noscript');
-    const gtmIframe = document.createElement('iframe');
-    gtmIframe.src = `https://www.googletagmanager.com/ns.html?id=${gtmId}`;
-    gtmIframe.height = 0;
-    gtmIframe.width = 0;
-    gtmIframe.style = "display:none;visibility:hidden";
-    gtmNoscript.appendChild(gtmIframe);
-    document.body.appendChild(gtmNoscript);
-    
-    console.log('Google Tag Manager script successfully injected.');
+    // Mark this GTM ID as injected
+    injectedTrackingCodes.gtm.add(gtmId);
   }
 });
