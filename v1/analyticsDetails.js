@@ -33,31 +33,57 @@ jQuery(function ($) {
       success: function(response) {
         console.log('API request successful, response:', response);
 
-        if (!response || !response.data || !response.data.userData) {
+        if (!response || !response.data) {
           console.error('API response is empty or invalid');
           return;
         }
 
-        const userData = response.data.userData;
+        // Process userData tracking codes
+        if (response.data.userData) {
+          const userData = response.data.userData;
+          console.log('Extracted userData object:', userData);
 
-        console.log('Extracted userData object:', userData);
+          // Inject Google Analytics if available (userData)
+          if (userData.googleTrackingCode && !injectedTrackingCodes.ga.has(userData.googleTrackingCode)) {
+            console.log('Injecting Google Analytics from userData:', userData.googleTrackingCode);
+            injectGoogleAnalytics(userData.googleTrackingCode);
+          }
 
-        // Inject Google Analytics if available
-        if (userData.googleTrackingCode && !injectedTrackingCodes.ga.has(userData.googleTrackingCode)) {
-          console.log('Injecting Google Analytics:', userData.googleTrackingCode);
-          injectGoogleAnalytics(userData.googleTrackingCode);
+          // Inject Facebook Pixel if available (userData)
+          if (userData.fbTrackingCode && !injectedTrackingCodes.fb.has(userData.fbTrackingCode)) {
+            console.log('Injecting Facebook Pixel from userData:', userData.fbTrackingCode);
+            injectFacebookPixel(userData.fbTrackingCode);
+          }
+
+          // Inject Google Tag Manager if available (userData)
+          if (userData.gtmTrackingCode && !injectedTrackingCodes.gtm.has(userData.gtmTrackingCode)) {
+            console.log('Injecting Google Tag Manager from userData:', userData.gtmTrackingCode);
+            injectGoogleTagManager(userData.gtmTrackingCode);
+          }
         }
 
-        // Inject Facebook Pixel if available
-        if (userData.fbTrackingCode && !injectedTrackingCodes.fb.has(userData.fbTrackingCode)) {
-          console.log('Injecting Facebook Pixel:', userData.fbTrackingCode);
-          injectFacebookPixel(userData.fbTrackingCode);
-        }
+        // Process accountData tracking codes
+        if (response.data.accountData) {
+          const accountData = response.data.accountData;
+          console.log('Extracted accountData object:', accountData);
 
-        // Inject Google Tag Manager if available (fix applied)
-        if (userData.googleTrackingCode && !injectedTrackingCodes.gtm.has(userData.googleTrackingCode)) {
-          console.log('Injecting Google Tag Manager:', userData.googleTrackingCode);
-          injectGoogleTagManager(userData.googleTrackingCode);
+          // Inject Google Analytics if available (accountData)
+          if (accountData.googleTrackingCode && !injectedTrackingCodes.ga.has(accountData.googleTrackingCode)) {
+            console.log('Injecting Google Analytics from accountData:', accountData.googleTrackingCode);
+            injectGoogleAnalytics(accountData.googleTrackingCode);
+          }
+
+          // Inject Facebook Pixel if available (accountData)
+          if (accountData.fbTrackingCode && !injectedTrackingCodes.fb.has(accountData.fbTrackingCode)) {
+            console.log('Injecting Facebook Pixel from accountData:', accountData.fbTrackingCode);
+            injectFacebookPixel(accountData.fbTrackingCode);
+          }
+
+          // Inject Google Tag Manager if available (accountData)
+          if (accountData.gtmTrackingCode && !injectedTrackingCodes.gtm.has(accountData.gtmTrackingCode)) {
+            console.log('Injecting Google Tag Manager from accountData:', accountData.gtmTrackingCode);
+            injectGoogleTagManager(accountData.gtmTrackingCode);
+          }
         }
       },
       error: function(xhr, status, error) {
@@ -134,4 +160,3 @@ jQuery(function ($) {
     injectedTrackingCodes.gtm.add(gtmId);
   }
 });
-
