@@ -1,7 +1,6 @@
 jQuery(function ($) {
     // This is the next page that will be loaded when the form is submitted.
     // Leave this blank if you want to stay on this page
-    const nextPage = "";
     
     const url = window.location.href;
     const parsedUrl = new URL(url);
