@@ -1,114 +1,111 @@
 jQuery(function ($) {
-    // Add Wistia analytics tracking class to iframes
-    function addWistiaTrackingClass() {
-        $("iframe").each(function () {
-            var src = $(this).attr('src');
-            if (src && src.includes("wistia")) {
-                $(this).addClass('wistia_embed').attr('name', 'wistia_embed');
-            }
-        });
+    // This is the next page that will be loaded when the form is submitted.
+    // Leave this blank if you want to stay on this page
+    const nextPage = "";
+    
+    const url = window.location.href;
+    const parsedUrl = new URL(url);
+    var userId = parsedUrl.searchParams.get('userId');
+    var resourceId = parsedUrl.searchParams.get('resourceId');
+    var contactId = parsedUrl.searchParams.get('contactId');
+
+    // URL validation function
+    function isValidUrl(url) {
+        const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[^\s]*)?$/;
+        return urlPattern.test(url);
     }
 
-    // Check the booking link and show/hide the request call container
-    function checkBookingLink() {
-        const bookingLink = $('#customBookingLink').attr('href');
-        if (bookingLink && bookingLink !== '#') {
-            console.log("Hiding request call container - Booking link exists");
-            $('#requestCallContainer').hide();
+    // Function to check if a URL has parameters
+    function hasUrlParameters(url) {
+        return url.includes("?");
+    }
+
+    $(document).ready(() => {
+        if (nextPage && isValidUrl(nextPage)) {
+            console.log('Next Page URL is valid:', nextPage);
+
+            let RFparameters = "?userId=" + userId + "&resourceId=" + resourceId;
+            if (hasUrlParameters(nextPage)) {
+                console.log('Next Page URL already has parameters.');
+                RFparameters = "&userId=" + userId + "&resourceId=" + resourceId;
+            }
+
+            // Set the next page target
+            console.log('Next Page URL (Original)', $('#contactFormSubmitContainer').attr('data-redirect'));
+            const submitContainer = document.getElementById("contactFormSubmitContainer");
+            submitContainer.setAttribute("data-redirect", nextPage + RFparameters);
+            console.log('Next Page URL (Updated)', $('#contactFormSubmitContainer').attr('data-redirect'));
         } else {
-            console.log("Showing request call container - No booking link");
-            $('#requestCallContainer').show();
+            console.error('Invalid nextPage URL:', nextPage);
+            alert('Invalid nextPage URL detected!');
         }
-    }
 
-    // Wistia video analytics tracking setup
-    function videoAnalytics() {
-        console.log('Initializing video analytics');
-        window._wq = window._wq || [];
-        _wq.push({
-            "_all": function (video) {
-                const urlParams = new URLSearchParams(window.location.search);
-                const userId = urlParams.get('userId');
-                const resourceId = urlParams.get('resourceId');
-                const contactId = urlParams.get('contactId');
-                const webinar = $('#webinar').val();
-                
-                if (contactId && $.isNumeric(resourceId) && $.isNumeric(userId)) {
-                    const analyticObject = {
-                        resourceId,
-                        contactId,
-                        userId,
-                        percentWatched: 0,
-                        mediaHash: '',
-                        duration: '',
-                        visitorKey: '',
-                        eventKey: '',
-                        asyncStats: true,
-                        delayProcess: 0,
-                        webinar
-                    };
-                    
-                    video.bind('play', function () {
-                        console.log("Video started - Tracking analytics");
-                        analyticObject.percentWatched = video.percentWatched();
-                        analyticObject.mediaHash = video.hashedId();
-                        analyticObject.duration = video.duration();
-                        analyticObject.visitorKey = video.visitorKey();
-                        analyticObject.eventKey = video.eventKey();
-                        analyticObject.delayProcess = 1;
-                        sqsPushAnalytics(analyticObject);
-                    });
-                    
-                    video.bind('percentwatchedchanged', function (percent, lastPercent) {
-                        if (percent !== lastPercent) {
-                            console.log('Percent Watched:', percent);
-                        }
-                    });
-                    
-                    video.bind("secondchange", function () {
-                        const timeWatched = video.secondsWatched();
-                        console.log("Time watched: ", timeWatched);
-                        
-                        if (timeWatched >= showBookMeAfterTimeInSecondsPassedInVideo) {
-                            console.log("Displaying 'Book Me' button");
-                            $('#bookMeContainer').show();
-                        }
-                    });
-                    
-                    video.email($('#contactEmail').val());
+        // If contactId exists, make an API call to get contact details and fill the form
+        if (contactId) {
+            $('#contactEmail').prop('disabled', true);  // Disable the email input field
+            $('label[for="email"]').css('color', '#aaa');
+            $.get(
+                'https://apiv2.rapidfunnel.com/v2/contact-details/' + contactId,
+                function (response) {
+                    const contactData = response.data;
+                    // Populate the form with contact details
+                    $('.contactfirstname').val(contactData.firstName);
+                    $('.contactlastname').val(contactData.lastName);
+                    $('.contactemail').val(contactData.email);
+                    $('.contactphone').val(contactData.phone);
+                    $('.contactnote').val(contactData.note);
                 }
-            }
-        });
-    }
+            ).fail(function () {
+                console.error('Cannot prefill form - API failure');
+            });
+        } else {
+            console.log('Cannot prefill form - no contact ID specified');
+        }
+    });
 
-    // Function to push video analytics data
-    function sqsPushAnalytics(analyticObject) {
+    // Handle form submission
+    $('#contactFormSubmitBtn').on('click', function (event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+        $('#contactFormSubmitBtn').attr('disabled', false);
+        var formData = 'firstName=' + document.getElementById('contactFirstName').value +
+            '&lastName=' + document.getElementById('contactLastName').value +
+            '&email=' + document.getElementById('contactEmail').value +
+            '&phone=' + document.getElementById('contactPhone').value +
+            '&campaign=' + campaignId +
+            '&contactTag=' + labelId;
+        // Submit the form data to the API
         $.ajax({
-            type: "POST",
-            url: "https://my.rapidfunnel.com/landing/resource/push-to-sqs",
+            url: 'https://my.rapidfunnel.com/landing/resource/create-custom-contact',
+            method: 'POST',
             dataType: "json",
-            async: analyticObject.asyncStats,
-            data: analyticObject,
+            data: {
+                formData: formData,
+                resourceId: resourceId,
+                senderId: userId,
+                sentFrom: 'customPage'
+            },
             success: function (response) {
-                if (!response) {
-                    bootbox.confirm('Error occurred. Reload video?', function (result) {
-                        if (result) location.reload();
-                    });
+                console.log(response);
+                if (response.contactId > 0) {
+                    console.log('Form submitted successfully!');
+                    let contactFormLink = $('#contactFormSubmitContainer').attr('data-redirect');
+                    
+                    if (contactFormLink) {
+                        // Ensure contactId is from the response
+                        contactFormLink = contactFormLink + "&contactId=" + response.contactId;
+                        console.log('Next Page URL (with ContactID) = ', contactFormLink);
+                        // Open the linked URL
+                        window.location.href = contactFormLink;
+                    }
+                } else {
+                    alert('Error: contact was not created');
+                    console.log('ERROR: no contact ID returned');
                 }
             },
-            error: function () {
-                bootbox.confirm('Error occurred. Reload video?', function (result) {
-                    if (result) location.reload();
-                });
-            }
+            error: function (error) {
+                alert('Error submitting the form.');
+                console.error(error);
+            },
         });
-    }
-
-    // Event listeners
-    $(document).on('customBookingLinkUpdated', checkBookingLink);
-    
-    // Initial execution
-    addWistiaTrackingClass();
-    checkBookingLink();
-    videoAnalytics();
+    });
 });
