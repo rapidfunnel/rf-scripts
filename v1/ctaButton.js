@@ -6,10 +6,32 @@ jQuery(function ($) {
   const resourceId = parsedUrl.searchParams.get('resourceId');
   const contactId = parsedUrl.searchParams.get('contactId');
 
+  // Function to get page name from meta tags
+  function getPageNameFromMetaTags() {
+    // Try to get page name from specific meta tag
+    let pageName = $('meta[name="page-name"]').attr('content');
+    
+    // If not found, try alternative meta tags
+    if (!pageName) {
+      pageName = $('meta[property="og:title"]').attr('content');
+    }
+    
+    // If still not found, use document title
+    if (!pageName) {
+      pageName = document.title;
+    }
+    
+    // Fallback to a default value if all else fails
+    return pageName || 'Unnamed Page';
+  }
+
   function handleCtaButtonClick(buttonId) {
     const ctaButtonLocation = $(this).attr('data-description');
     const redirectUrl = $('#' + buttonId).attr('href');
     const target = $('#' + buttonId).attr('target');
+    
+    // Get page name from meta tags
+    const pageName = getPageNameFromMetaTags();
 
     // Get contact details
     if(contactId) {
@@ -67,8 +89,6 @@ jQuery(function ($) {
       }
     }
   }
-  
-
   
   $('[id^="ctaButton"]').on('click', function(event) {
       event.preventDefault();
