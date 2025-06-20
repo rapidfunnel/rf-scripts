@@ -34,8 +34,10 @@ jQuery(function ($) {
 
   // If contactId exists, make an API call to get contact details
   if (contactId) {
-    $('#contactEmail').prop('disabled', true);  // Disable the email input field
-    $('label[for="email"]').css('color', '#aaa');
+    // Removed the line that disables the email input field
+    // $('#contactEmail').prop('disabled', true);
+    // Removed the line that changes the color of the email label
+    // $('label[for="email"]').css('color', '#aaa');
 
     $.get(
       'https://apiv2.rapidfunnel.com/v2/contact-details/' + contactId,
@@ -124,3 +126,4 @@ jQuery(function ($) {
     });
   });
 });
+
