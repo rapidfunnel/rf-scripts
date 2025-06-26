@@ -1,0 +1,110 @@
+jQuery(function ($) {
+    // --- Configuration ---
+    const nextPage = "https://example.com"; // Next page URL. Leave blank to stay on current page
+    const apiEndpoint = 'https://my.rapidfunnel.com/landing/resource/create-custom-contact'; // API endpoint URL
+    const prefetchNextPage = false; // Optional
+
+    // --- Utility Functions ---
+    function isValidUrl(url) {
+        const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[^\s]*)?$/;
+        return urlPattern.test(url);
+    }
+
+    function hasUrlParameters(url) {
+        return url.includes("?");
+    }
+
+    $(document).ready(() => {
+        const url = window.location.href;
+        const parsedUrl = new URL(url);
+        const userId = parsedUrl.searchParams.get('userId');
+        const resourceId = parsedUrl.searchParams.get('resourceId');
+        const contactId = parsedUrl.searchParams.get('contactId');
+
+        // --- Prefill Form (if contactId is present) ---
+        if (contactId) {
+            $('#contactEmail').prop('disabled', true);  // Disable email input
+            $('label[for="email"]').css('color', '#aaa');
+
+            $.get(
+                'https://apiv2.rapidfunnel.com/v2/contact-details/' + contactId,
+                function (response) {
+                    const contactData = response.data;
+                    if (contactData) {
+                        $('.contactfirstname').val(contactData.firstName);
+                        $('.contactlastname').val(contactData.lastName);
+                        $('.contactemail').val(contactData.email);
+                        $('.contactphone').val(contactData.phone);
+                        $('.contactnote').val(contactData.note);
+                    } else {
+                        console.warn('No contact data found for contactId:', contactId);
+                    }
+                }
+            ).fail(function () {
+                console.error('Cannot prefill form - API failure');
+            });
+        } else {
+            console.log('Cannot prefill form - no contact ID specified');
+        }
+    });
+
+    // --- Form Submission Handling ---
+    $('#contactFormSubmitBtn').on('click', function (event) {
+        event.preventDefault();
+        $('#contactFormSubmitBtn').prop('disabled', true).text('Submitting...');
+
+        const url = window.location.href;
+        const parsedUrl = new URL(url);
+        const userId = parsedUrl.searchParams.get('userId');
+        const resourceId = parsedUrl.searchParams.get('resourceId');
+        const campaignId = 'yourCampaignId';   // <-- Replace with actual value
+        const labelId = 'yourLabelId';         // <-- Replace with actual value
+
+        // --- Prepare Form Data ---
+        const formData = {
+            firstName: $('#contactFirstName').val(),
+            lastName: $('#contactLastName').val(),
+            email: $('#contactEmail').val(),
+            phone: $('#contactPhone').val(),
+            campaign: campaignId,
+            contactTag: labelId,
+        };
+
+        // Submit to API
+        $.ajax({
+            url: apiEndpoint,
+            method: 'POST',
+            dataType: "json",
+            data: {
+                formData: $.param(formData),
+                resourceId: resourceId,
+                senderId: userId,
+                sentFrom: 'customPage'
+            },
+            success: function (response) {
+                console.log('API Response:', response);
+                if (response.contactId > 0) {
+                    console.log('Form submitted successfully!');
+
+                    if (nextPage && isValidUrl(nextPage)) {
+                        let separator = hasUrlParameters(nextPage) ? '&' : '?';
+                        let redirectUrl = `${nextPage}${separator}userId=${encodeURIComponent(userId)}&resourceId=${encodeURIComponent(resourceId)}&contactId=${encodeURIComponent(response.contactId)}`;
+                        console.log('Redirecting to:', redirectUrl);
+                        window.location.href = redirectUrl;
+                    } else {
+                        console.error('Invalid nextPage URL:', nextPage);
+                        alert('Error: Invalid redirect URL.');
+                    }
+                } else {
+                    alert('Error: Contact was not created.');
+                    console.error('No contact ID returned:', response);
+                }
+            },
+            error: function (error) {
+                alert('Error submitting the form. Please try again.');
+                console.error('Form submission error:', error);
+                console.error('Error response text:', error.responseText);
+            }
+        });
+    });
+});
