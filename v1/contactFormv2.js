@@ -50,7 +50,10 @@ jQuery(function ($) {
     // --- Form Submission Handling ---
     $('#contactFormSubmitBtn').on('click', function (event) {
         event.preventDefault();
-        $('#contactFormSubmitBtn').prop('disabled', true).text('Submitting...');
+
+        const $button = $('#contactFormSubmitBtn');
+        const originalButtonText = $button.text();
+        $button.prop('disabled', true).text('Submitting...');
 
         const url = window.location.href;
         const parsedUrl = new URL(url);
@@ -86,7 +89,7 @@ jQuery(function ($) {
                     console.log('Form submitted successfully!');
 
                     // Use data-redirect attribute for redirect URL
-                    let redirectUrl = $('#contactFormSubmitBtn').data('redirect');
+                    let redirectUrl = $button.data('redirect');
 
                     if (redirectUrl && isValidUrl(redirectUrl)) {
                         let separator = hasUrlParameters(redirectUrl) ? '&' : '?';
@@ -96,16 +99,19 @@ jQuery(function ($) {
                     } else {
                         console.error('Invalid redirect URL (data-redirect missing or not a valid URL):', redirectUrl);
                         alert('Error: Invalid or missing redirect URL.');
+                        $button.prop('disabled', false).text(originalButtonText);
                     }
                 } else {
                     alert('Error: Contact was not created.');
                     console.error('No contact ID returned:', response);
+                    $button.prop('disabled', false).text(originalButtonText);
                 }
             },
             error: function (error) {
                 alert('Error submitting the form. Please try again.');
                 console.error('Form submission error:', error);
                 console.error('Error response text:', error.responseText);
+                $button.prop('disabled', false).text(originalButtonText);
             }
         });
     });
