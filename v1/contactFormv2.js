@@ -1,8 +1,7 @@
 jQuery(function ($) {
     // --- Configuration ---
-    const nextPage = "https://example.com"; // Next page URL. Leave blank to stay on current page
     const apiEndpoint = 'https://my.rapidfunnel.com/landing/resource/create-custom-contact'; // API endpoint URL
-    const prefetchNextPage = false; // Optional
+    const prefetchNextPage = false; // Optional (currently unused)
 
     // --- Utility Functions ---
     function isValidUrl(url) {
@@ -57,8 +56,8 @@ jQuery(function ($) {
         const parsedUrl = new URL(url);
         const userId = parsedUrl.searchParams.get('userId');
         const resourceId = parsedUrl.searchParams.get('resourceId');
-        const campaignId = 'yourCampaignId';   // <-- Replace with actual value
-        const labelId = 'yourLabelId';         // <-- Replace with actual value
+        const campaignId = 'yourCampaignId';   // <-- Replace with actual value or use global constant
+        const labelId = 'yourLabelId';         // <-- Replace with actual value or use global constant
 
         // --- Prepare Form Data ---
         const formData = {
@@ -86,14 +85,17 @@ jQuery(function ($) {
                 if (response.contactId > 0) {
                     console.log('Form submitted successfully!');
 
-                    if (nextPage && isValidUrl(nextPage)) {
-                        let separator = hasUrlParameters(nextPage) ? '&' : '?';
-                        let redirectUrl = `${nextPage}${separator}userId=${encodeURIComponent(userId)}&resourceId=${encodeURIComponent(resourceId)}&contactId=${encodeURIComponent(response.contactId)}`;
+                    // Use data-redirect attribute for redirect URL
+                    let redirectUrl = $('#contactFormSubmitBtn').data('redirect');
+
+                    if (redirectUrl && isValidUrl(redirectUrl)) {
+                        let separator = hasUrlParameters(redirectUrl) ? '&' : '?';
+                        redirectUrl = `${redirectUrl}${separator}userId=${encodeURIComponent(userId)}&resourceId=${encodeURIComponent(resourceId)}&contactId=${encodeURIComponent(response.contactId)}`;
                         console.log('Redirecting to:', redirectUrl);
                         window.location.href = redirectUrl;
                     } else {
-                        console.error('Invalid nextPage URL:', nextPage);
-                        alert('Error: Invalid redirect URL.');
+                        console.error('Invalid redirect URL (data-redirect missing or not a valid URL):', redirectUrl);
+                        alert('Error: Invalid or missing redirect URL.');
                     }
                 } else {
                     alert('Error: Contact was not created.');
