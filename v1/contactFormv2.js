@@ -102,7 +102,7 @@ jQuery(function ($) {
                         $button.prop('disabled', false).text(originalButtonText);
                     }
                 } else {
-                    alert('Error: Contact was not created.');
+                    alert('Error: Invalid email used. Please try again');
                     console.error('No contact ID returned:', response);
                     $button.prop('disabled', false).text(originalButtonText);
                 }
