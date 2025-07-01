@@ -59,8 +59,6 @@ jQuery(function ($) {
         const parsedUrl = new URL(url);
         const userId = parsedUrl.searchParams.get('userId');
         const resourceId = parsedUrl.searchParams.get('resourceId');
-        const campaignId = 'yourCampaignId';   // <-- Replace with actual value or use global constant
-        const labelId = 'yourLabelId';         // <-- Replace with actual value or use global constant
 
         // --- Prepare Form Data ---
         const formData = {
