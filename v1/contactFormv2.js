@@ -1,7 +1,7 @@
 jQuery(function ($) {
     // --- Configuration ---
-    const apiEndpoint = 'https://my.rapidfunnel.com/landing/resource/create-custom-contact'; // API endpoint URL
-    const prefetchNextPage = false; // Optional (currently unused)
+    const apiEndpoint = 'https://my.rapidfunnel.com/landing/resource/create-custom-contact';
+    const prefetchNextPage = false;
 
     // --- Utility Functions ---
     function isValidUrl(url) {
