@@ -22,9 +22,6 @@ jQuery(function ($) {
 
         // --- Prefill Form (if contactId is present) ---
         if (contactId) {
-            $('#contactEmail').prop('disabled', true);  // Disable email input
-            $('label[for="email"]').css('color', '#aaa');
-
             $.get(
                 'https://apiv2.rapidfunnel.com/v2/contact-details/' + contactId,
                 function (response) {
