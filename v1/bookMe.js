@@ -1,6 +1,6 @@
 jQuery(function ($) {
     // Initially hide the button
-    const $bookMebutton = $('#customBookingLink');
+    const $bookMebutton = $('#bookMeBtn');
     $bookMebutton.hide();
 
     // Listen for the custom event
