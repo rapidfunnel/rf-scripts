@@ -34,32 +34,36 @@ jQuery(function ($) {
         function (data) {
           const userData = data.data[0];
           console.log('userdata', userData);
-  
+
           console.log('custom booking link', userData.customBookingLink);
-  
-          
+
+
           window.sharedData = window.sharedData || {};
           window.sharedData.customBookingLink = userData.customBookingLink;
           console.log('shared global custom booking link:', window.sharedData.customBookingLink);
-  
+
           // Loop over the userData keys
           for (const key of Object.keys(userData)) {
             const value = userData[key];
-            const $element = $('#' + key);
-  
-            if ($element.length) {
-              // If it's not the customBookingLink, set the text for the element (replace the placeholder text)
-              if (key !== 'customBookingLink' && !$element.hasClass('footer-btn-socials')) {
-                $element.text(value);
-              }
-  
-              if (key === 'profileImage') {
-                const imgSrc =
+            // Use attribute starts with selector
+            if (key.startsWith('profileImage')) {
+              $(`[id^=${key}]`).each(function() { // Select all elements which id starts with the value of key
+                 const imgSrc =
                   value !== ''
                     ? value
                     : 'https://rfres.com/assets/img/icon-user-default.png';
-                $element.attr('src', imgSrc);
-              } else if (key === 'email') {
+                $(this).attr('src', imgSrc);
+              });
+
+            }
+            const $element = $('#' + key);
+
+            if ($element.length && !key.startsWith('profileImage')) {
+
+              if (key !== 'customBookingLink' && !$element.hasClass('footer-btn-socials')) {
+                $element.text(value);
+              }
+              if (key === 'email') {
                 $element.attr('href', 'mailto:' + value).text(value);
               } else if (key === 'phoneNumber') {
                 if (value !== '') {
@@ -73,7 +77,7 @@ jQuery(function ($) {
                   $element.find('span').text('');
                   $('.custom_custombookinglink').attr('href', value);
                   $('.alternate-text').hide();
-  
+
                   // Trigger the custom event now that the href has been updated
                   $(document).trigger('customBookingLinkUpdated');
                   console.log('Custom Booking Link Updated event triggered');
@@ -84,17 +88,17 @@ jQuery(function ($) {
                 }
               }
             }
-  
+
             // $('.email-block').find('span').text('');
             $('.firstName').text(userData.firstName);
             $('.lastName').text(userData.lastName);
             // $('.phone-block').find('span').text('');
             $('.custom_custombookinglink').find('span').text('');
-  
+
             // Handle social links (replace href if available, otherwise hide the element)
             $('.footer-social-links a').each(function () {
               const socialId = $(this).attr('id'); // Get the id of the element (e.g., facebookUrl, twitterUrl)
-              
+
               if (
                 userData.hasOwnProperty(socialId) &&
                 userData[socialId] &&
