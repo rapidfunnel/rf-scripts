@@ -1,4 +1,4 @@
-<script>
+
 // Contact-Form Only Tracker
 (function () {
   "use strict";
@@ -209,4 +209,3 @@
     document.addEventListener("DOMContentLoaded", init);
   }
 })();
-</script>
