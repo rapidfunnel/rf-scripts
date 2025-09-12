@@ -10,7 +10,7 @@ function handleRedirect(url, target) {
 }
 
 // Modified function to accept redirect parameters
-function sendNotification(user, firstName, lastName, phone, email, btnLocation, redirectUrl, target) {
+function sendNotification(user, firstName, lastName, phone, email, btnLocation, redirectUrl, target, contactId) {
   const pageName = document.title || "Unknown Page"; // Ensure pageName is defined
 
   // Make a POST request to notify the user via email
@@ -26,7 +26,8 @@ function sendNotification(user, firstName, lastName, phone, email, btnLocation, 
       contactPhoneNumber: phone,
       contactEmail: email,
       ctaLocation: btnLocation,
-      ctaPageName: pageName
+      ctaPageName: pageName,
+      contactId: contactId
     }),
     success: function (response) {
       console.log('CTA Conversion notification sent successfully', response);
@@ -66,19 +67,21 @@ jQuery(function ($) {
             response.data.email, 
             ctaButtonLocation,
             redirectUrl,
-            target
+            target,
+            contactId
           );
         })
         .fail(function () {
           sendNotification(
             numericUserId, 
-            "System failed to answer", 
-            contactId, 
+            "System failed to answer",
+            "N/A", 
             "N/A", 
             "N/A", 
             ctaButtonLocation,
             redirectUrl,
-            target
+            target,
+            contactId
           );
         });
     } else {
@@ -90,7 +93,8 @@ jQuery(function ($) {
         "N/A", 
         ctaButtonLocation,
         redirectUrl,
-        target
+        target,
+        contactId
       );                
     }
   });
