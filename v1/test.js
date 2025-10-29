@@ -1,211 +1,252 @@
-
-// Contact-Form Only Tracker
-(function () {
-  "use strict";
-
-  // --- 1. URL PARAMS & PLACEHOLDERS ---
-
-  function getUrlParams() {
-    const params = new URLSearchParams(window.location.search);
-    return {
-      userId: params.get("userId"),
-      resourceId: params.get("resourceId"),
-      contactId: params.get("contactId"),
-    };
-  }
-
-  function replaceUrlPlaceholders({ userId, contactId }) {
-    const replaceIn = (els, attr) =>
-      els.forEach((el) => {
-        const val = el.getAttribute(attr);
-        if (val && val.includes("[user-id]")) {
-          el.setAttribute(attr, val.replace(/\[user-id\]/g, userId || ""));
+(function() {
+    'use strict';
+    
+    console.log('═══════════════════════════════════════════════════');
+    console.log('SCRIPT 2: CONTACT CREATION SCRIPT LOADING');
+    console.log('═══════════════════════════════════════════════════');
+    
+    // Check if validation was completed before this script loaded
+    if (!window.validationComplete) {
+        console.error('❌ ERROR: Contact creation script loaded but validation was not completed!');
+        console.error('This script should only be loaded after validation passes.');
+        return;
+    }
+    
+    console.log('✓ Validation confirmed complete - initializing contact creation script');
+    
+    let isSubmitting = false;
+    
+    // URL validation function
+    function isValidUrl(url) {
+        const urlPattern = /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[^\s]*)?$/;
+        return urlPattern.test(url);
+    }
+    
+    // Function to check if a URL has parameters
+    function hasUrlParameters(url) {
+        return url.includes("?");
+    }
+    
+    // Helper function to safely get attribute value
+    function getDataAttribute($element, attrName) {
+        if ($element.length === 0) {
+            console.error('Element not found when trying to get attribute:', attrName);
+            return null;
         }
-        if (val && val.includes("[contact-id]")) {
-          el.setAttribute(attr, val.replace(/\[contact-id\]/g, contactId || ""));
+        
+        const value = $element.attr(attrName);
+        
+        if (!value || value === 'undefined' || value.trim() === '') {
+            console.warn(`Attribute '${attrName}' is missing, empty, or undefined`);
+            return null;
         }
-      });
-
-    replaceIn(document.querySelectorAll("[href]"), "href");
-    replaceIn(document.querySelectorAll("[src]"), "src");
-    document.querySelectorAll("*").forEach((el) => {
-      Array.from(el.attributes).forEach((a) => {
-        if (a.name.startsWith("data-") && a.value.includes("[")) {
-          let v = a.value
-            .replace(/\[user-id\]/g, userId || "")
-            .replace(/\[contact-id\]/g, contactId || "");
-          el.setAttribute(a.name, v);
+        
+        return value;
+    }
+    
+    // Main contact creation function - exposed globally
+    window.createContactAfterValidation = function() {
+        console.log('═══════════════════════════════════════════════════');
+        console.log('SCRIPT 2: CONTACT CREATION FUNCTION CALLED');
+        console.log('═══════════════════════════════════════════════════');
+        console.log('Timestamp:', new Date().toISOString());
+        
+        // CRITICAL: Double-check validation is complete
+        if (!window.validationComplete || !window.VALIDATION_PASSED) {
+            console.error('❌ CRITICAL ERROR: Validation not complete! Cannot create contact.');
+            console.error('validationComplete:', window.validationComplete);
+            console.error('VALIDATION_PASSED:', window.VALIDATION_PASSED);
+            alert('Validation error. Please try submitting the form again.');
+            return;
         }
-      });
-    });
-  }
-
-  // --- 2. INPUT DISCOVERY ---
-
-  function findAllPageInputs() {
-    const fields = {
-      firstNameInput: null,
-      lastNameInput: null,
-      nameInput: null,
-      emailInput: document.querySelector('input[type="email"]'),
-      phoneInput: document.querySelector('input[type="tel"]'),
-    };
-    const patterns = {
-      firstName: [/first.?name/i, /fname/i],
-      lastName: [/last.?name/i, /lname/i],
-      name: [/^name$/i, /full.?name/i],
-      email: [/e.?mail/i],
-      phone: [/phone/i, /mobile/i],
-    };
-    const all = Array.from(
-      document.querySelectorAll(
-        'input[type="text"], input[type="email"], input[type="tel"], textarea'
-      )
-    );
-
-    const used = new Set();
-    for (let key in patterns) {
-      const metaKey = key + (key === "name" ? "Input" : "Input");
-      if (fields[metaKey] && key !== "email" && key !== "phone") continue;
-      for (let re of patterns[key]) {
-        const found = all.find((inp) => {
-          if (used.has(inp)) return false;
-          return ["id", "name", "class", "placeholder", "aria-label"].some(
-            (attr) => inp.getAttribute(attr)?.match(re)
-          );
+        
+        console.log('✓ Validation status confirmed - proceeding with contact creation');
+        
+        // Prevent double submission
+        if (isSubmitting) {
+            console.log('⚠ Contact creation already in progress');
+            return;
+        }
+        
+        isSubmitting = true;
+        console.log('✓ Submission flag set - preventing duplicates');
+        
+        // Get URL parameters
+        const url = window.location.href;
+        const parsedUrl = new URL(url);
+        const userId = parsedUrl.searchParams.get('userId');
+        const resourceId = parsedUrl.searchParams.get('resourceId');
+        
+        console.log('URL Parameters:', { userId, resourceId });
+        
+        // Get the container element
+        const $container = jQuery('#contactFormContainer');
+        
+        if ($container.length === 0) {
+            console.error('CRITICAL ERROR: contactFormContainer not found');
+            alert('Form configuration error. Please contact support.');
+            isSubmitting = false;
+            window.isValidating = false;
+            return;
+        }
+        
+        console.log('✓ Container element found');
+        
+        // Get campaign and label IDs
+        let campaignId = $container.attr('data-campaign');
+        let labelId = $container.attr('data-label');
+        
+        console.log('Initial values:', { campaignId, labelId });
+        
+        // Try alternative methods if not found
+        if (!campaignId || campaignId === 'undefined') {
+            campaignId = $container[0].getAttribute('data-campaign') || $container.data('campaign');
+        }
+        if (!labelId || labelId === 'undefined') {
+            labelId = $container[0].getAttribute('data-label') || $container.data('label');
+        }
+        
+        console.log('Final values:', { campaignId, labelId });
+        
+        // Validate campaign ID
+        if (!campaignId || campaignId === 'undefined' || campaignId === 'null' || campaignId === 'YOUR_CAMPAIGN_ID') {
+            console.error('❌ ERROR: Campaign ID is invalid');
+            alert('Form configuration error: Campaign ID is missing or invalid.');
+            isSubmitting = false;
+            window.isValidating = false;
+            return;
+        }
+        
+        console.log('✓ Campaign ID is valid');
+        
+        // Handle undefined label ID
+        if (!labelId || labelId === 'undefined' || labelId === 'null' || labelId === 'YOUR_LABEL_ID') {
+            console.warn('⚠ WARNING: Label ID is missing, using empty string');
+            labelId = '';
+        }
+        
+        // Get form field values
+        const firstName = document.getElementById('contactFirstName').value.trim();
+        const lastName = document.getElementById('contactLastName').value.trim();
+        const email = document.getElementById('contactEmail').value.trim();
+        const phone = document.getElementById('contactPhone').value.trim();
+        
+        console.log('Form data collected:', { firstName, lastName, email, phone });
+        
+        // Find submit button and disable it
+        const form = document.querySelector('.form-container form');
+        const submitButton = form ? form.querySelector('button[type="submit"], input[type="submit"]') : null;
+        
+        if (submitButton) {
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+            console.log('✓ Submit button disabled');
+        }
+        
+        // Build form data
+        const formData = 'firstName=' + encodeURIComponent(firstName) +
+            '&lastName=' + encodeURIComponent(lastName) +
+            '&email=' + encodeURIComponent(email) +
+            '&phone=' + encodeURIComponent(phone) +
+            '&campaign=' + encodeURIComponent(campaignId) +
+            '&contactTag=' + encodeURIComponent(labelId);
+        
+        const submissionData = {
+            formData: formData,
+            resourceId: resourceId,
+            senderId: userId,
+            sentFrom: 'customPage'
+        };
+        
+        console.log('Submission payload prepared:', submissionData);
+        console.log('🚀 SENDING API REQUEST...');
+        
+        // Submit to API
+        jQuery.ajax({
+            url: 'https://my.rapidfunnel.com/landing/resource/create-custom-contact',
+            method: 'POST',
+            dataType: 'json',
+            data: submissionData,
+            success: function(response) {
+                isSubmitting = false;
+                window.isValidating = false;
+                window.validationComplete = false;
+                window.VALIDATION_PASSED = false;
+                
+                console.log('═══════════════════════════════════════════════════');
+                console.log('API REQUEST SUCCESS');
+                console.log('═══════════════════════════════════════════════════');
+                console.log('Response:', response);
+                
+                if (response.contactId > 0) {
+                    console.log('✅ Contact created successfully! Contact ID:', response.contactId);
+                    
+                    // Get redirect URL
+                    let redirectUrl = $container.attr('data-redirect');
+                    
+                    if (redirectUrl && redirectUrl !== 'undefined' && redirectUrl !== 'YOUR_REDIRECT_URL' && isValidUrl(redirectUrl)) {
+                        const separator = hasUrlParameters(redirectUrl) ? '&' : '?';
+                        redirectUrl = redirectUrl + separator + 
+                                     'userId=' + userId + 
+                                     '&resourceId=' + resourceId + 
+                                     '&contactId=' + response.contactId;
+                        
+                        console.log('Redirecting to:', redirectUrl);
+                        window.location.href = redirectUrl;
+                    } else {
+                        console.log('No valid redirect URL, staying on page');
+                        alert('Form submitted successfully!');
+                        
+                        // Re-enable button
+                        if (submitButton) {
+                            submitButton.disabled = false;
+                            submitButton.textContent = 'Submit';
+                        }
+                        
+                        // Clear form
+                        document.getElementById('contactFirstName').value = '';
+                        document.getElementById('contactLastName').value = '';
+                        document.getElementById('contactEmail').value = '';
+                        document.getElementById('contactPhone').value = '';
+                    }
+                } else {
+                    console.error('❌ Contact was not created - invalid response');
+                    alert('Error: Contact was not created. Please try again.');
+                    
+                    // Re-enable button
+                    if (submitButton) {
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Submit';
+                    }
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                isSubmitting = false;
+                window.isValidating = false;
+                window.validationComplete = false;
+                window.VALIDATION_PASSED = false;
+                
+                console.error('═══════════════════════════════════════════════════');
+                console.error('API REQUEST FAILED');
+                console.error('═══════════════════════════════════════════════════');
+                console.error('Status:', textStatus);
+                console.error('Error:', errorThrown);
+                console.error('Response:', jqXHR.responseText);
+                
+                alert('Error submitting the form. Please try again.');
+                
+                // Re-enable button
+                if (submitButton) {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Submit';
+                }
+            }
         });
-        if (found) {
-          fields[metaKey] = found;
-          used.add(found);
-          break;
-        }
-      }
-    }
-
-    if (!fields.emailInput && !fields.phoneInput) {
-      console.warn("No email or phone input found; will not track contact form.");
-      return null;
-    }
-    return fields;
-  }
-
-  // --- 3. SUBMISSION HELPER ---
-
-  async function submitContactForm(formDataString, resourceId, senderId) {
-    const apiUrl =
-      "https://my.rapidfunnel.com/landing/resource/create-custom-contact";
-    const body = new URLSearchParams({
-      formData: formDataString,
-      resourceId,
-      senderId,
-      sentFrom: "customPage",
-    }).toString();
-    try {
-      const res = await fetch(apiUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body,
-      });
-      if (!res.ok) {
-        console.error("Contact submission failed:", res.status, res.statusText);
-        return null;
-      }
-      const data = await res.json();
-      return data.contactId > 0 ? data.contactId : null;
-    } catch (e) {
-      console.error("Error submitting contact form:", e);
-      return null;
-    }
-  }
-
-  // --- 4. FORM HANDLER ---
-
-  async function handleFormSubmit(event) {
-    event.preventDefault();
-    const params = getUrlParams();
-    const btn = event.submitter || event.target.querySelector('button, [type="submit"]');
-    const inputs = findAllPageInputs();
-    if (!inputs) return;
-
-    const email = inputs.emailInput?.value.trim();
-    const phone = inputs.phoneInput?.value.trim();
-    if (!email && !phone) {
-      console.warn("Email or phone required to submit form.");
-      return;
-    }
-    if (email && !/\S+@\S+\.\S+/.test(email)) {
-      console.warn("Invalid email format.");
-      return;
-    }
-
-    // Name splitting
-    let first = "", last = "";
-    if (inputs.firstNameInput?.value && inputs.lastNameInput?.value) {
-      first = inputs.firstNameInput.value.trim();
-      last = inputs.lastNameInput.value.trim();
-    } else if (inputs.nameInput?.value) {
-      [first, ...rest] = inputs.nameInput.value.trim().split(/\s+/);
-      last = rest.join(" ");
-    }
-
-    const payload = {};
-    if (first) payload.firstName = first;
-    if (last) payload.lastName = last;
-    if (email) payload.email = email;
-    if (phone) payload.phone = phone;
-    payload.campaign = window.rapidFunnelCampaignId || 0;
-    payload.contactTag = window.rapidFunnelLabelId || 0;
-
-    const formDataString = new URLSearchParams(payload).toString();
-    const resId = Number(params.resourceId);
-    const usrId = Number(params.userId);
-
-    // disable button
-    if (btn) btn.disabled = true;
-
-    const newContactId = await submitContactForm(
-      formDataString,
-      resId,
-      usrId
-    );
-
-    // handle redirect
-    let redirected = false;
-    const redirectUrlAttr = btn?.getAttribute("data-redirect");
-    if (newContactId && redirectUrlAttr) {
-      try {
-        const u = new URL(redirectUrlAttr, window.location.origin);
-        u.searchParams.set("userId", usrId);
-        u.searchParams.set("resourceId", resId);
-        u.searchParams.set("contactId", newContactId);
-        window.location.href = u.toString();
-        redirected = true;
-      } catch (e) {
-        console.error("Bad redirect URL:", e);
-      }
-    }
-
-    // re-enable if not redirected
-    if (btn && !redirected) btn.disabled = false;
-  }
-
-  // --- 5. INIT & BIND ---
-
-  function init() {
-    const params = getUrlParams();
-    replaceUrlPlaceholders(params);
-
-    document
-      .querySelectorAll("form")
-      .forEach((f) => f.addEventListener("submit", handleFormSubmit));
-  }
-
-  if (
-    document.readyState === "complete" ||
-    document.readyState === "interactive"
-  ) {
-    init();
-  } else {
-    document.addEventListener("DOMContentLoaded", init);
-  }
+    };
+    
+    console.log('✓ createContactAfterValidation function registered globally');
+    console.log('═══════════════════════════════════════════════════');
+    console.log('SCRIPT 2: CONTACT CREATION SCRIPT FULLY LOADED');
+    console.log('═══════════════════════════════════════════════════');
+    
 })();
