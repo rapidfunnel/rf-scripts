@@ -1,7 +1,16 @@
 (function() {
     'use strict';
     
-    console.log('=== SCRIPT 2: CONTACT CREATION LOADED ===');
+    console.log('=== SCRIPT 2: CONTACT CREATION SCRIPT LOADING ===');
+    
+    // Check if validation was completed before this script loaded
+    if (!window.validationComplete) {
+        console.error('❌ ERROR: Contact creation script loaded but validation was not completed!');
+        console.error('This script should only be loaded after validation passes.');
+        return; // Exit immediately if validation wasn't completed
+    }
+    
+    console.log('✓ Validation confirmed complete - initializing contact creation script');
     
     let isSubmitting = false;
     
@@ -35,8 +44,17 @@
     
     // Main contact creation function - exposed globally
     window.createContactAfterValidation = function() {
-        console.log('=== SCRIPT 2: CONTACT CREATION STARTED ===');
+        console.log('=== SCRIPT 2: CONTACT CREATION FUNCTION CALLED ===');
         console.log('Timestamp:', new Date().toISOString());
+        
+        // CRITICAL: Double-check validation is complete
+        if (!window.validationComplete) {
+            console.error('❌ CRITICAL ERROR: Validation not complete! Cannot create contact.');
+            alert('Validation error. Please try submitting the form again.');
+            return;
+        }
+        
+        console.log('✓ Validation status confirmed - proceeding with contact creation');
         
         // Prevent double submission
         if (isSubmitting) {
@@ -45,6 +63,7 @@
         }
         
         isSubmitting = true;
+        console.log('✓ Submission flag set - preventing duplicates');
         
         // Get URL parameters
         const url = window.location.href;
@@ -142,6 +161,7 @@
             success: function(response) {
                 isSubmitting = false;
                 window.isValidating = false;
+                window.validationComplete = false; // Reset for next submission
                 
                 console.log('=== API REQUEST SUCCESS ===');
                 console.log('Response:', response);
@@ -191,6 +211,7 @@
             error: function(jqXHR, textStatus, errorThrown) {
                 isSubmitting = false;
                 window.isValidating = false;
+                window.validationComplete = false; // Reset for next submission
                 
                 console.error('=== API REQUEST FAILED ===');
                 console.error('Status:', textStatus);
@@ -208,5 +229,6 @@
     };
     
     console.log('✓ createContactAfterValidation function registered globally');
+    console.log('=== SCRIPT 2: CONTACT CREATION SCRIPT FULLY LOADED ===');
     
 })();
