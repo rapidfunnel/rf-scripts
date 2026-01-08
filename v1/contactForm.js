@@ -66,12 +66,42 @@ jQuery(function ($) {
   // Handle form submission
   $('#contactFormSubmitBtn').on('click', function (event) {
     event.preventDefault(); // Prevent the default form submission behavior
-    $('#contactFormSubmitBtn').attr('disabled', false)
 
-    var formData = 'firstName=' + document.getElementById('contactFirstName').value +
-          '&lastName=' + document.getElementById('contactLastName').value +
-          '&email=' + document.getElementById('contactEmail').value +
-          '&phone=' + document.getElementById('contactPhone').value +
+    // Get form field values
+    var firstName = document.getElementById('contactFirstName').value.trim();
+    var lastName = document.getElementById('contactLastName').value.trim();
+    var email = document.getElementById('contactEmail').value.trim();
+    var phone = document.getElementById('contactPhone').value.trim();
+
+    // Validation: Check if all fields are filled
+    var missingFields = [];
+
+    if (!firstName) {
+      missingFields.push('First Name');
+    }
+    if (!lastName) {
+      missingFields.push('Last Name');
+    }
+    if (!email) {
+      missingFields.push('Email');
+    }
+    if (!phone) {
+      missingFields.push('Phone');
+    }
+
+    // If there are missing fields, show warning alert and stop submission
+    if (missingFields.length > 0) {
+      alert('Please fill in the following required fields:\n- ' + missingFields.join('\n- '));
+      return; // Stop form submission
+    }
+
+    // Disable button and show submitting state
+    $('#contactFormSubmitBtn').attr('disabled', true).text('Submitting...');
+
+    var formData = 'firstName=' + firstName +
+          '&lastName=' + lastName +
+          '&email=' + email +
+          '&phone=' + phone +
           '&campaign=' + assignCampaignId +
           '&contactTag=' + labelId;
 
@@ -106,9 +136,14 @@ jQuery(function ($) {
           // Open linked URL
           if (contactFormLink) {
             window.location.href = contactFormLink;
+          } else {
+            // Re-enable button if no redirect
+            $('#contactFormSubmitBtn').attr('disabled', false).text('Submit');
           }
         } else {
           alert('A contact could not be added!');
+          // Re-enable button on error
+          $('#contactFormSubmitBtn').attr('disabled', false).text('Submit');
           // Open linked URL
           if (contactFormLink) {
             contactFormLink = contactFormLink.replace(contactFormLink, "null");
@@ -118,6 +153,8 @@ jQuery(function ($) {
       error: function (error) {
         alert('Error submitting the form.');
         console.error(error);
+        // Re-enable button on error
+        $('#contactFormSubmitBtn').attr('disabled', false).text('Submit');
         // Open linked URL
           if (contactFormLink) {
             contactFormLink = contactFormLink.replace(contactFormLink, "null");
@@ -126,4 +163,3 @@ jQuery(function ($) {
     });
   });
 });
-
