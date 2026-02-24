@@ -1,0 +1,254 @@
+// ── 1. intl-tel-input init ───────────────────────────────────────────────
+
+const phoneEl = document.querySelector('#phone');
+
+const iti = window.intlTelInput(phoneEl, {
+  loadUtils: 'https://cdn.jsdelivr.net/npm/intl-tel-input@23.0.10/build/js/utils.js',
+  initialCountry: 'us',
+  separateDialCode: true,
+  autoPlaceholder: 'polite'
+});
+
+phoneEl._itiInstance = iti;
+
+
+// ── 2. Validation ────────────────────────────────────────────────────────
+
+function showError(fieldId, msg) {
+  const errEl = document.getElementById('err-' + fieldId);
+  const inputEl = document.getElementById(
+    'contact' + fieldId.charAt(0).toUpperCase() + fieldId.slice(1)
+  );
+
+  if (errEl) errEl.textContent = msg;
+  if (inputEl) inputEl.classList.toggle('error', !!msg);
+}
+
+function clearErrors() {
+  ['firstName', 'email'].forEach(f => showError(f, ''));
+}
+
+function validateForm() {
+  clearErrors();
+  let valid = true;
+
+  const firstName = document
+    .getElementById('contactFirstName')
+    .value.trim();
+
+  const email = document
+    .getElementById('contactEmail')
+    .value.trim();
+
+  // Only first name and email are required
+  if (!firstName) {
+    showError('firstName', 'First name is required.');
+    valid = false;
+  }
+
+  if (!email) {
+    showError('email', 'Email is required.');
+    valid = false;
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showError('email', 'Enter a valid email address.');
+    valid = false;
+  }
+
+  // Phone — no validation, build full number from dial code + raw input.
+  // getNumber() depends on utils.js being loaded (async) so we read
+  // dialCode + raw value directly, which is always synchronous.
+  const rawPhone = phoneEl.value.trim();
+  let fullPhone = rawPhone;
+  const dialCode = iti.getSelectedCountryData().dialCode;
+
+  if (dialCode && rawPhone && !rawPhone.startsWith('+')) {
+    fullPhone = '+' + dialCode + rawPhone;
+  }
+
+  document.getElementById('contactPhone').value = fullPhone;
+
+  return valid;
+}
+
+
+// ── 3. Contact creation ──────────────────────────────────────────────────
+
+let isSubmitting = false;
+
+function isValidUrl(url) {
+  return /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,6}(\/[^\s]*)?$/.test(url);
+}
+
+function hasUrlParameters(url) {
+  return url.includes('?');
+}
+
+function createContact() {
+  if (isSubmitting) return;
+  isSubmitting = true;
+
+  const parsedUrl = new URL(window.location.href);
+  const userId = parsedUrl.searchParams.get('userId');
+  const resourceId = parsedUrl.searchParams.get('resourceId');
+
+  const $container = jQuery('#contactFormContainer');
+
+  if ($container.length === 0) {
+    console.error('❌ #contactFormContainer not found');
+    alert('Form configuration error. Please contact support.');
+    isSubmitting = false;
+    return;
+  }
+
+  let campaignId = $container.attr('data-campaign');
+  let labelId = $container.attr('data-label');
+
+  if (!campaignId || campaignId === 'undefined') {
+    campaignId =
+      $container[0].getAttribute('data-campaign') ||
+      $container.data('campaign');
+  }
+
+  if (!labelId || labelId === 'undefined') {
+    labelId =
+      $container[0].getAttribute('data-label') ||
+      $container.data('label');
+  }
+
+  if (
+    !campaignId ||
+    campaignId === 'undefined' ||
+    campaignId === 'null' ||
+    campaignId === 'YOUR_CAMPAIGN_ID'
+  ) {
+    console.error('❌ Campaign ID is invalid');
+    alert('Form configuration error: Campaign ID is missing or invalid.');
+    isSubmitting = false;
+    return;
+  }
+
+  if (
+    !labelId ||
+    labelId === 'undefined' ||
+    labelId === 'null' ||
+    labelId === 'YOUR_LABEL_ID'
+  ) {
+    labelId = '';
+  }
+
+  const firstName = document
+    .getElementById('contactFirstName')
+    .value.trim();
+
+  const lastName = document
+    .getElementById('contactLastName')
+    .value.trim();
+
+  const email = document
+    .getElementById('contactEmail')
+    .value.trim();
+
+  const phone = document
+    .getElementById('contactPhone')
+    .value.trim();
+
+  const submitButton = document.querySelector(
+    '#contact-form button[type="submit"], #contact-form input[type="submit"]'
+  );
+
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Submitting...';
+  }
+
+  const formData = [
+    'firstName=' + encodeURIComponent(firstName),
+    'lastName=' + encodeURIComponent(lastName),
+    'email=' + encodeURIComponent(email),
+    'phone=' + encodeURIComponent(phone),
+    'campaign=' + encodeURIComponent(campaignId),
+    'contactTag=' + encodeURIComponent(labelId)
+  ].join('&');
+
+  const submissionData = {
+    formData: formData,
+    resourceId: resourceId,
+    senderId: userId,
+    sentFrom: 'customPage'
+  };
+
+  console.log('Payload:', submissionData);
+
+  jQuery.ajax({
+    url: 'https://my.rapidfunnel.com/landing/resource/create-custom-contact',
+    method: 'POST',
+    dataType: 'json',
+    data: submissionData,
+
+    success: function (response) {
+      isSubmitting = false;
+
+      if (response.contactId > 0) {
+        let redirectUrl = $container.attr('data-redirect');
+
+        if (
+          redirectUrl &&
+          redirectUrl !== 'undefined' &&
+          redirectUrl !== 'YOUR_REDIRECT_URL' &&
+          isValidUrl(redirectUrl)
+        ) {
+          const sep = hasUrlParameters(redirectUrl) ? '&' : '?';
+
+          redirectUrl +=
+            sep +
+            'userId=' +
+            userId +
+            '&resourceId=' +
+            resourceId +
+            '&contactId=' +
+            response.contactId;
+
+          window.location.href = redirectUrl;
+        } else {
+          alert('Form submitted successfully!');
+
+          if (submitButton) {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Submit';
+          }
+
+          document.getElementById('contactFirstName').value = '';
+          document.getElementById('contactLastName').value = '';
+          document.getElementById('contactEmail').value = '';
+          document.getElementById('contactPhone').value = '';
+        }
+      } else {
+        console.error('❌ Contact not created — invalid response');
+        alert('Error: Contact was not created. Please try again.');
+
+        if (submitButton) {
+          submitButton.disabled = false;
+          submitButton.textContent = 'Submit';
+        }
+      }
+    },
+
+    error: function (jqXHR, textStatus, errorThrown) {
+      isSubmitting = false;
+
+      console.error(
+        'API request failed:',
+        textStatus,
+        errorThrown,
+        jqXHR.responseText
+      );
+
+      alert('Error submitting the form. Please try again.');
+
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit';
+      }
+    }
+  });
+}
