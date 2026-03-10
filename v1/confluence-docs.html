@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RF Scripts v1 — Developer Documentation</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #172B4D;
+      background: #fff;
+      padding: 40px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* ── Page header ── */
+    .page-header {
+      border-bottom: 3px solid #0052CC;
+      padding-bottom: 20px;
+      margin-bottom: 32px;
+    }
+    .page-header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      color: #0052CC;
+      margin-bottom: 6px;
+    }
+    .page-header .subtitle {
+      font-size: 13px;
+      color: #5E6C84;
+    }
+
+    /* ── Info panel ── */
+    .info-panel {
+      background: #DEEBFF;
+      border-left: 4px solid #0052CC;
+      border-radius: 3px;
+      padding: 14px 18px;
+      margin-bottom: 32px;
+      font-size: 13px;
+      color: #172B4D;
+    }
+    .info-panel strong { color: #0052CC; }
+
+    /* ── Table of Contents ── */
+    .toc {
+      background: #F4F5F7;
+      border: 1px solid #DFE1E6;
+      border-radius: 4px;
+      padding: 20px 24px;
+      margin-bottom: 40px;
+    }
+    .toc h2 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #5E6C84;
+      margin-bottom: 12px;
+    }
+    .toc ol {
+      padding-left: 20px;
+      column-count: 2;
+      column-gap: 32px;
+    }
+    .toc li {
+      margin-bottom: 6px;
+      break-inside: avoid;
+    }
+    .toc a {
+      color: #0052CC;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    .toc a:hover { text-decoration: underline; }
+
+    /* ── Section ── */
+    .script-section {
+      border: 1px solid #DFE1E6;
+      border-radius: 6px;
+      margin-bottom: 32px;
+      overflow: hidden;
+    }
+
+    .script-header {
+      background: #0052CC;
+      color: #fff;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .script-header h2 {
+      font-size: 16px;
+      font-weight: 700;
+      margin: 0;
+    }
+    .script-filename {
+      background: rgba(255,255,255,0.2);
+      border-radius: 3px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      white-space: nowrap;
+    }
+
+    .script-body {
+      padding: 20px 24px;
+    }
+
+    .purpose {
+      background: #E3FCEF;
+      border-left: 4px solid #00875A;
+      border-radius: 3px;
+      padding: 10px 14px;
+      margin-bottom: 18px;
+      font-size: 13px;
+      color: #172B4D;
+    }
+    .purpose strong { color: #00875A; }
+
+    /* Part dividers inside a section */
+    .part-block {
+      background: #F4F5F7;
+      border: 1px solid #DFE1E6;
+      border-radius: 4px;
+      padding: 14px 18px;
+      margin: 14px 0;
+    }
+    .part-block h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0052CC;
+      text-transform: none;
+      letter-spacing: 0;
+      border-bottom: 1px solid #DFE1E6;
+      padding-bottom: 6px;
+      margin-bottom: 10px;
+    }
+
+    h3 {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #5E6C84;
+      margin: 18px 0 8px;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #DFE1E6;
+    }
+
+    p { margin-bottom: 10px; font-size: 13px; }
+    ul, ol { padding-left: 20px; margin-bottom: 10px; }
+    li { margin-bottom: 4px; font-size: 13px; }
+
+    /* ── Inline code ── */
+    code {
+      background: #F4F5F7;
+      border: 1px solid #DFE1E6;
+      border-radius: 3px;
+      padding: 1px 5px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 12px;
+      color: #BF2600;
+    }
+
+    /* ── Code blocks ── */
+    pre {
+      background: #1B2638;
+      color: #CDD5E0;
+      border-radius: 6px;
+      padding: 16px 20px;
+      overflow-x: auto;
+      margin: 10px 0 14px;
+      font-size: 12px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      line-height: 1.7;
+    }
+    pre .comment { color: #7A8FA6; }
+    pre .attr    { color: #79C0FF; }
+    pre .string  { color: #A5D6FF; }
+    pre .tag     { color: #7EE787; }
+
+    /* ── Tables ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0 14px;
+      font-size: 13px;
+    }
+    thead th {
+      background: #F4F5F7;
+      color: #5E6C84;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 8px 12px;
+      border: 1px solid #DFE1E6;
+      text-align: left;
+    }
+    tbody td {
+      padding: 8px 12px;
+      border: 1px solid #DFE1E6;
+      vertical-align: top;
+    }
+    tbody tr:nth-child(even) td { background: #F4F5F7; }
+    td code { background: none; border: none; padding: 0; color: #BF2600; }
+
+    /* ── Badges ── */
+    .badge {
+      display: inline-block;
+      border-radius: 3px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-right: 4px;
+      vertical-align: middle;
+    }
+    .badge-dep   { background: #EAE6FF; color: #403294; }
+    .badge-param { background: #E3FCEF; color: #006644; }
+    .badge-global { background: #FFFAE6; color: #974F0C; }
+
+    /* ── Note ── */
+    .note {
+      background: #FFFAE6;
+      border-left: 4px solid #FF8B00;
+      border-radius: 3px;
+      padding: 10px 14px;
+      margin: 12px 0;
+      font-size: 12px;
+      color: #172B4D;
+    }
+    .note strong { color: #FF8B00; }
+
+    /* ── Footer ── */
+    .page-footer {
+      text-align: center;
+      padding-top: 24px;
+      border-top: 1px solid #DFE1E6;
+      font-size: 12px;
+      color: #7A869A;
+      margin-top: 48px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════ PAGE HEADER ═══ -->
+<div class="page-header">
+  <h1>RF Scripts v1 — Developer Documentation</h1>
+  <div class="subtitle">
+    Client-side jQuery scripts for RapidFunnel-powered Webflow pages &nbsp;·&nbsp;
+    Repository: <code>rf-scripts/v1</code> &nbsp;·&nbsp;
+    Last updated: February 2026
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ INFO PANEL ═══ -->
+<div class="info-panel">
+  <strong>Overview:</strong> All scripts in this library are designed to be embedded in Webflow pages served by the RapidFunnel platform.
+  They read the URL query parameters <code>userId</code>, <code>resourceId</code>, and <code>contactId</code> to personalize behavior,
+  and communicate with the RapidFunnel REST API to fetch user data, submit contacts, and send notifications.
+  All scripts require <strong>jQuery</strong> to be loaded on the page.
+</div>
+
+<!-- ═══════════════════════════════════════════ TOC ═══════════ -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#analyticsDetails">analyticsDetails.js</a></li>
+    <li><a href="#bookMe">bookMe.js</a></li>
+    <li><a href="#branding">branding.js</a></li>
+    <li><a href="#contactForm">contactForm.js</a></li>
+    <li><a href="#contactFormGdpr">contactFormGdpr.js</a></li>
+    <li><a href="#contactFormv2">contactFormv2.js</a></li>
+    <li><a href="#ctaButton">ctaButton.js</a></li>
+    <li><a href="#ctaConversion">ctaConversion.js</a></li>
+    <li><a href="#ctaResourceButton">ctaResourceButton.js</a></li>
+    <li><a href="#placeholderScript">placeholderScript.js</a></li>
+    <li><a href="#requestCallForm">requestCallForm.js</a></li>
+    <li><a href="#userDetails">userDetails.js</a></li>
+    <li><a href="#videoScript">videoScript.js</a></li>
+  </ol>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  1. analyticsDetails.js                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="analyticsDetails">
+  <div class="script-header">
+    <span class="script-filename">analyticsDetails.js</span>
+    <h2>Analytics Details</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> Dynamically injects third-party analytics tracking codes (Google Analytics, Facebook Pixel, Google Tag Manager) fetched from the RapidFunnel API based on the current user.
+    </div>
+
+    <h3>How It Works</h3>
+    <ol>
+      <li>Reads <code>userId</code> from the page URL query string.</li>
+      <li>Calls <code>GET https://apiv2.rapidfunnel.com/v2/analytics/{userId}</code>.</li>
+      <li>The response contains <code>userData</code> and <code>accountData</code> objects, each optionally holding tracking codes.</li>
+      <li>Injects each tracking snippet into <code>&lt;head&gt;</code> if not already injected (deduplication via <code>Set</code>).</li>
+    </ol>
+
+    <h3>Supported Tracking Providers</h3>
+    <table>
+      <thead>
+        <tr><th>Provider</th><th>API Field</th><th>Injection Method</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Google Analytics 4</td><td><code>googleTrackingCode</code></td><td>Appends <code>gtag.js</code> + init script to <code>&lt;head&gt;</code></td></tr>
+        <tr><td>Facebook Pixel</td><td><code>fbTrackingCode</code></td><td>Appends standard <code>fbevents.js</code> snippet to <code>&lt;head&gt;</code></td></tr>
+        <tr><td>Google Tag Manager</td><td><code>gtmTrackingCode</code></td><td>Appends GTM loader script to <code>&lt;head&gt;</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-param">URL param: userId</span>
+
+    <h3>Required HTML</h3>
+    <p>None — the script runs on DOM ready with no required markup.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  2. bookMe.js                                               -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="bookMe">
+  <div class="script-header">
+    <span class="script-filename">bookMe.js</span>
+    <h2>Book Me Button</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> Controls visibility of the "Book Me" button based on whether a valid booking link has been loaded by <code>userDetails.js</code>.
+    </div>
+
+    <h3>How It Works</h3>
+    <ol>
+      <li>Hides <code>#bookMeBtn</code> on page load.</li>
+      <li>Listens for the custom event <code>customBookingLinkUpdated</code> (fired by <code>userDetails.js</code> once the booking link is populated).</li>
+      <li>Calls <code>checkAndShowButton()</code> on load and on every event trigger.</li>
+      <li>Shows the button only if its <code>href</code> is a non-empty, non-<code>#</code> value.</li>
+    </ol>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-dep">userDetails.js</span>
+
+    <h3>Required HTML</h3>
+    <pre><span class="tag">&lt;a</span> <span class="attr">id</span>=<span class="string">"bookMeBtn"</span> <span class="attr">href</span>=<span class="string">"#"</span><span class="tag">&gt;</span>Book Me<span class="tag">&lt;/a&gt;</span></pre>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  3. branding.js                                             -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="branding">
+  <div class="script-header">
+    <span class="script-filename">branding.js</span>
+    <h2>Branding</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> Fetches a user's branding settings from the API and applies their custom colors to page elements. Also controls the "Powered by RF" logo visibility.
+    </div>
+
+    <h3>How It Works</h3>
+    <ol>
+      <li>Reads <code>userId</code> from the URL.</li>
+      <li>Calls <code>GET https://app.rapidfunnel.com/api/branding/user/{userId}</code>.</li>
+      <li>Sets the <code>background</code> CSS property on elements matching the class names below.</li>
+      <li>Shows <code>#pbrf_logo</code> by default; hides it if <code>hidePoweredByRFLogoOnResources === true</code>.</li>
+    </ol>
+
+    <h3>CSS Class Mappings</h3>
+    <table>
+      <thead>
+        <tr><th>API Field</th><th>CSS Class to Target</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>primaryColor</code></td><td><code>.rf_primaryColor</code></td></tr>
+        <tr><td><code>primaryColorOffset</code></td><td><code>.rf_primaryColorOff</code></td></tr>
+        <tr><td><code>secondaryColor</code></td><td><code>.rf_secondaryColor</code></td></tr>
+        <tr><td><code>secondaryColorOffset</code></td><td><code>.rf_secondaryColorOff</code></td></tr>
+        <tr><td><code>tertiaryColor</code></td><td><code>.rf_tertiaryColor</code></td></tr>
+        <tr><td><code>tertiaryColorOffset</code></td><td><code>.rf_tertiaryColorOff</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-param">URL param: userId</span>
+
+    <h3>Required HTML</h3>
+    <p>Any elements using the CSS classes listed above, and optionally <code>&lt;div id="pbrf_logo"&gt;</code>.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  4. contactForm.js                                          -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="contactForm">
+  <div class="script-header">
+    <span class="script-filename">contactForm.js</span>
+    <h2>Contact Form</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> Handles a contact capture form — pre-populates fields for known contacts, validates input, and submits data to the RapidFunnel API.
+    </div>
+
+    <h3>How It Works</h3>
+    <ol>
+      <li>Reads <code>userId</code>, <code>resourceId</code>, and <code>contactId</code> from the URL.</li>
+      <li>If <code>contactId</code> is present, pre-populates the form by calling <code>GET /v2/contact-details/{contactId}</code>.</li>
+      <li>On submit button click (<code>#contactFormSubmitBtn</code>):
+        <ul>
+          <li>Validates that First Name, Last Name, Email, and Phone are all filled.</li>
+          <li>Disables the button and shows "Submitting..." text.</li>
+          <li>Posts to <code>https://my.rapidfunnel.com/landing/resource/create-custom-contact</code>.</li>
+          <li>Campaign and label IDs are read from global variables <code>assignCampaignId</code> and <code>labelId</code>.</li>
+        </ul>
+      </li>
+      <li>On success, redirects using the URL in <code>data-redirect</code> on <code>#contactFormSubmitContainer</code>, replacing <code>[user-id]</code>, <code>[resourceID]</code>, and <code>[contactId]</code> placeholders.</li>
+    </ol>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-param">URL params: userId, resourceId, contactId</span>
+    <span class="badge badge-global">Global vars: assignCampaignId, labelId</span>
+
+    <h3>Required HTML</h3>
+    <pre><span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="string">"contactFormSubmitContainer"</span>
+     <span class="attr">data-redirect</span>=<span class="string">"https://example.com?userId=[user-id]&amp;contactId=[contactId]"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"contactFirstName"</span>  <span class="attr">type</span>=<span class="string">"text"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"contactLastName"</span>   <span class="attr">type</span>=<span class="string">"text"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"contactEmail"</span>      <span class="attr">type</span>=<span class="string">"email"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"contactPhone"</span>      <span class="attr">type</span>=<span class="string">"tel"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;button</span> <span class="attr">id</span>=<span class="string">"contactFormSubmitBtn"</span><span class="tag">&gt;</span>Submit<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/div&gt;</span></pre>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  5. contactFormGdpr.js                                      -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="contactFormGdpr">
+  <div class="script-header">
+    <span class="script-filename">contactFormGdpr.js</span>
+    <h2>Contact Form — GDPR</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> A two-part script that handles GDPR-compliant contact form submission. Part 1 validates the form and consent fields; Part 2 creates the RapidFunnel contact via API. Both parts are defined in the same file and communicate through shared global flags on <code>window</code>.
+    </div>
+
+    <div class="part-block">
+      <h3>Part 1 — Validation</h3>
+      <ol>
+        <li>Listens for the click event on <code>#contactFormSubmitBtn</code>.</li>
+        <li>Sets <code>window.isValidating = true</code> to prevent duplicate triggers.</li>
+        <li>Validates that First Name, Last Name, Email, and Phone are all filled.</li>
+        <li>Validates that the <code>#gdprConsent</code> checkbox is checked.</li>
+        <li>If validation <strong>fails</strong>: shows inline error messages and resets <code>window.isValidating = false</code>.</li>
+        <li>If validation <strong>passes</strong>: sets <code>window.validationComplete = true</code> and calls <code>window.createContactAfterValidation()</code>.</li>
+      </ol>
+    </div>
+
+    <div class="part-block">
+      <h3>Part 2 — Contact Creation</h3>
+      <ol>
+        <li>Checks <code>window.validationComplete</code> on load — exits immediately if <code>false</code>.</li>
+        <li>Exposes <code>window.createContactAfterValidation()</code> globally, invoked by Part 1.</li>
+        <li>On invocation:
+          <ul>
+            <li>Double-checks <code>window.validationComplete</code>.</li>
+            <li>Reads <code>userId</code>, <code>resourceId</code> from the URL; reads <code>data-campaign</code> and <code>data-label</code> from <code>#contactFormContainer</code>.</li>
+            <li>Disables the submit button and shows the spinner.</li>
+            <li>Posts form data to <code>https://my.rapidfunnel.com/landing/resource/create-custom-contact</code>.</li>
+            <li>On success: redirects with <code>userId</code>, <code>resourceId</code>, and new <code>contactId</code> appended; or clears the form (including <code>#gdprConsent</code> and <code>#marketingConsent</code>) if no redirect URL is set.</li>
+          </ul>
+        </li>
+        <li>Uses <code>isSubmitting</code> flag to prevent duplicate API calls.</li>
+        <li>Resets <code>window.validationComplete</code> and <code>window.isValidating</code> after each attempt.</li>
+      </ol>
+    </div>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-param">URL params: userId, resourceId</span>
+
+    <h3>Required HTML</h3>
+    <pre><span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="string">"contactFormContainer"</span>
+     <span class="attr">data-campaign</span>=<span class="string">"CAMPAIGN_ID"</span>
+     <span class="attr">data-label</span>=<span class="string">"LABEL_ID"</span>
+     <span class="attr">data-redirect</span>=<span class="string">"https://example.com/thank-you"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"contactFirstName"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"contactLastName"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"contactEmail"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"contactPhone"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"gdprConsent"</span>      <span class="attr">type</span>=<span class="string">"checkbox"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"marketingConsent"</span> <span class="attr">type</span>=<span class="string">"checkbox"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;button</span> <span class="attr">id</span>=<span class="string">"contactFormSubmitBtn"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="string">"btn-text"</span><span class="tag">&gt;</span>Submit<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="string">"spinner"</span> <span class="attr">style</span>=<span class="string">"display:none"</span><span class="tag">&gt;&lt;/span&gt;</span>
+  <span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;/div&gt;</span></pre>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  6. contactFormv2.js                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="contactFormv2">
+  <div class="script-header">
+    <span class="script-filename">contactFormv2.js</span>
+    <h2>Contact Form v2 (Updated)</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> An updated version of <code>contactFormGdpr.js</code>, also a two-part script. Adds a stricter second validation flag (<code>window.VALIDATION_PASSED</code>) and uses a more generic submit button selector instead of a hard-coded ID.
+    </div>
+
+    <div class="part-block">
+      <h3>Part 1 — Validation</h3>
+      <ol>
+        <li>Listens for the submit event on the form inside <code>.form-container</code>.</li>
+        <li>Sets <code>window.isValidating = true</code> to prevent duplicate triggers.</li>
+        <li>Validates that First Name, Last Name, Email, and Phone are all filled.</li>
+        <li>Validates that the <code>#gdprConsent</code> checkbox is checked.</li>
+        <li>If validation <strong>fails</strong>: shows inline error messages and resets <code>window.isValidating = false</code>.</li>
+        <li>If validation <strong>passes</strong>: sets both <code>window.validationComplete = true</code> and <code>window.VALIDATION_PASSED = true</code>, then calls <code>window.createContactAfterValidation()</code>.</li>
+      </ol>
+    </div>
+
+    <div class="part-block">
+      <h3>Part 2 — Contact Creation</h3>
+      <p>Behaves the same as <code>contactFormGdpr.js</code> Part 2 with the following differences:</p>
+      <table>
+        <thead>
+          <tr><th>Feature</th><th>contactFormGdpr.js</th><th>contactFormv2.js</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Validation gate</td><td><code>window.validationComplete</code> only</td><td><code>window.validationComplete</code> <strong>AND</strong> <code>window.VALIDATION_PASSED</code></td></tr>
+          <tr><td>Submit button selector</td><td><code>#contactFormSubmitBtn</code> (by ID)</td><td><code>.form-container form button[type="submit"]</code> (generic)</td></tr>
+          <tr><td>GDPR fields cleared on success</td><td>Yes (<code>#gdprConsent</code>, <code>#marketingConsent</code>)</td><td>No</td></tr>
+          <tr><td>VALIDATION_PASSED reset after submit</td><td>Not applicable</td><td>Yes — <code>window.VALIDATION_PASSED = false</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-param">URL params: userId, resourceId</span>
+
+    <h3>Required HTML</h3>
+    <p>Same container structure as <code>contactFormGdpr.js</code>. The submit button only needs to be a <code>button[type="submit"]</code> or <code>input[type="submit"]</code> inside <code>.form-container form</code> — no specific ID required.</p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  7. ctaButton.js                                            -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="ctaButton">
+  <div class="script-header">
+    <span class="script-filename">ctaButton.js</span>
+    <h2>CTA Button</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> Intercepts clicks on CTA buttons, sends a notification email to the user with the contact's details and page context, then redirects the visitor to the button's linked URL.
+    </div>
+
+    <h3>How It Works</h3>
+    <ol>
+      <li>Reads <code>userId</code>, <code>resourceId</code>, and <code>contactId</code> from the URL.</li>
+      <li>Attaches a click handler to all elements whose ID starts with <code>ctaButton</code>.</li>
+      <li>On click:
+        <ul>
+          <li>If <code>contactId</code> is present: fetches contact details from <code>/v2/contact-details/{contactId}</code>, then POSTs to <code>https://app.rapidfunnel.com/api/mail/send-cta-email</code> with name, phone, email, button description (<code>data-description</code>), and page name.</li>
+          <li>Redirects to the button's <code>href</code> (in a new tab if <code>target="_blank"</code>) regardless of whether the email succeeded.</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-param">URL params: userId, contactId</span>
+
+    <h3>Required HTML</h3>
+    <pre><span class="tag">&lt;a</span> <span class="attr">id</span>=<span class="string">"ctaButton1"</span>
+   <span class="attr">href</span>=<span class="string">"https://example.com"</span>
+   <span class="attr">target</span>=<span class="string">"_blank"</span>
+   <span class="attr">data-description</span>=<span class="string">"Main Hero CTA"</span><span class="tag">&gt;</span>Get Started<span class="tag">&lt;/a&gt;</span></pre>
+    <div class="note"><strong>Note:</strong> Multiple buttons are supported — use incrementing IDs: <code>ctaButton1</code>, <code>ctaButton2</code>, etc.</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  8. ctaConversion.js                                        -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="ctaConversion">
+  <div class="script-header">
+    <span class="script-filename">ctaConversion.js</span>
+    <h2>CTA Conversion Button</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> Similar to <code>ctaButton.js</code> but uses the conversion-specific email endpoint (<code>send-cta-conversion-email</code>). Always sends an email even when no contact is found, using placeholder values.
+    </div>
+
+    <h3>How It Works</h3>
+    <ol>
+      <li>Reads <code>userId</code> and <code>contactId</code> from the URL.</li>
+      <li>Listens for clicks on elements with IDs starting with <code>ctaConversionButton</code>.</li>
+      <li>On click:
+        <ul>
+          <li>If <code>contactId</code> present: fetches contact details and sends email with real data.</li>
+          <li>If contact fetch fails: sends email with <code>"System failed to answer"</code> as placeholder name.</li>
+          <li>If no <code>contactId</code>: sends email with <code>"No contact ID found"</code> as placeholder name.</li>
+        </ul>
+      </li>
+      <li>Always redirects to the button's <code>href</code> after the email attempt.</li>
+    </ol>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-param">URL params: userId, contactId</span>
+
+    <h3>Required HTML</h3>
+    <pre><span class="tag">&lt;a</span> <span class="attr">id</span>=<span class="string">"ctaConversionButton1"</span>
+   <span class="attr">href</span>=<span class="string">"https://example.com/download"</span>
+   <span class="attr">data-description</span>=<span class="string">"Download PDF"</span><span class="tag">&gt;</span>Download<span class="tag">&lt;/a&gt;</span></pre>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  9. ctaResourceButton.js                                    -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="ctaResourceButton">
+  <div class="script-header">
+    <span class="script-filename">ctaResourceButton.js</span>
+    <h2>CTA Resource Button</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> Handles CTA buttons that link to RapidFunnel resources. Dynamically resolves and sets the button <code>href</code> from the API on page load, then sends a tracking email before redirecting on click.
+    </div>
+
+    <h3>How It Works</h3>
+    <ol>
+      <li>Reads <code>userId</code> and <code>contactId</code> from the URL.</li>
+      <li>On load, iterates all elements with IDs starting with <code>ctaResourceButton</code>:
+        <ul>
+          <li>Reads <code>data-cta-resource-id</code> from each button.</li>
+          <li>Calls <code>GET /api/api/resources/resource-details/?userId=...&resourceId=...&contactId=...</code>.</li>
+          <li>Sets the resolved URL (+ <code>userId</code> and optional <code>contactId</code> as path segments) as the button's <code>href</code>.</li>
+          <li>Disables the button on API failure.</li>
+        </ul>
+      </li>
+      <li>On click: fetches contact details and POSTs to <code>send-cta-email</code>, then redirects.</li>
+    </ol>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-param">URL params: userId, contactId</span>
+
+    <h3>Required HTML</h3>
+    <pre><span class="tag">&lt;a</span> <span class="attr">id</span>=<span class="string">"ctaResourceButton1"</span>
+   <span class="attr">data-cta-resource-id</span>=<span class="string">"123"</span>
+   <span class="attr">data-cta-res-location</span>=<span class="string">"Hero Section"</span>
+   <span class="attr">href</span>=<span class="string">"#"</span><span class="tag">&gt;</span>View Resource<span class="tag">&lt;/a&gt;</span></pre>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  10. placeholderScript.js                                   -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="placeholderScript">
+  <div class="script-header">
+    <span class="script-filename">placeholderScript.js</span>
+    <h2>Placeholder Script</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> A general-purpose utility that resolves URL token placeholders in every <code>&lt;a&gt;</code> tag's <code>href</code> on the page. Useful for pages built with static links that need dynamic IDs injected at runtime.
+    </div>
+
+    <h3>How It Works</h3>
+    <ol>
+      <li>Reads <code>userId</code>, <code>resourceId</code>, and <code>contactId</code> from the URL.</li>
+      <li>Iterates every <code>&lt;a&gt;</code> element on the page.</li>
+      <li>Replaces the following tokens in each <code>href</code> value:</li>
+    </ol>
+
+    <table>
+      <thead>
+        <tr><th>Token</th><th>Replaced With</th><th>Fallback</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>[user-id]</code></td><td>Value of <code>userId</code> URL param</td><td>Empty string</td></tr>
+        <tr><td><code>[userId]</code></td><td>Value of <code>userId</code> URL param</td><td>Empty string</td></tr>
+        <tr><td><code>[contactId]</code></td><td>Value of <code>contactId</code> URL param</td><td>Empty string</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-param">URL params: userId, contactId</span>
+
+    <h3>Usage Example</h3>
+    <pre><span class="comment">&lt;!-- Before script runs --&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="string">"https://example.com?u=[user-id]&amp;c=[contactId]"</span><span class="tag">&gt;</span>Link<span class="tag">&lt;/a&gt;</span>
+
+<span class="comment">&lt;!-- After script runs (e.g., userId=42, contactId=99) --&gt;</span>
+<span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="string">"https://example.com?u=42&amp;c=99"</span><span class="tag">&gt;</span>Link<span class="tag">&lt;/a&gt;</span></pre>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  11. requestCallForm.js                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="requestCallForm">
+  <div class="script-header">
+    <span class="script-filename">requestCallForm.js</span>
+    <h2>Request Call Form</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> Handles a "Request a Call" interaction. Adapts its display based on whether a contact is already known, and sends an email notification to the assigned user.
+    </div>
+
+    <h3>How It Works</h3>
+    <ol>
+      <li>Reads <code>userId</code>, <code>resourceId</code>, and <code>contactId</code> from the URL.</li>
+      <li>Display logic on load:
+        <ul>
+          <li>If <code>contactId</code> present → show <code>#requestCallBtn</code>, hide <code>#requestCallForm</code>.</li>
+          <li>If no <code>contactId</code> → show <code>#requestCallForm</code>, hide <code>#requestCallBtn</code>.</li>
+        </ul>
+      </li>
+      <li><strong>Button mode</strong> (known contact): On click, fetches contact details then POSTs to <code>send-request-call-email</code>.</li>
+      <li><strong>Form mode</strong> (anonymous): On form submit, reads First Name, Last Name, and Phone from the form inputs and POSTs to <code>send-request-call-email</code>. Shows <code>.w-form-done</code> on success, <code>.w-form-fail</code> on error.</li>
+    </ol>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-param">URL params: userId, contactId</span>
+    <span class="badge badge-global">Global var: resourceDescriptionForRequestCall</span>
+
+    <h3>Required HTML</h3>
+    <pre><span class="tag">&lt;button</span> <span class="attr">id</span>=<span class="string">"requestCallBtn"</span><span class="tag">&gt;</span>Request a Call<span class="tag">&lt;/button&gt;</span>
+
+<span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="string">"requestForm"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;form</span> <span class="attr">id</span>=<span class="string">"requestCallForm"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"contactFirstNameRequestForm"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"contactLastNameRequestForm"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"contactPhoneRequestForm"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;/form&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="string">"w-form-done"</span> <span class="attr">style</span>=<span class="string">"display:none"</span><span class="tag">&gt;</span>Thank you!<span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="string">"w-form-fail"</span> <span class="attr">style</span>=<span class="string">"display:none"</span><span class="tag">&gt;</span>Something went wrong.<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span></pre>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  12. userDetails.js                                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="userDetails">
+  <div class="script-header">
+    <span class="script-filename">userDetails.js</span>
+    <h2>User Details</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> Fetches the assigned user's full profile and populates page elements dynamically. The central script for personalizing a resource page — manages the profile photo, contact details, booking link, social links, and fires the <code>customBookingLinkUpdated</code> event consumed by other scripts.
+    </div>
+
+    <h3>How It Works</h3>
+    <ol>
+      <li>Reads <code>userId</code> from the URL.</li>
+      <li>Calls <code>GET https://apiv2.rapidfunnel.com/v2/users-details/{userId}</code>.</li>
+      <li>Iterates each key in the returned <code>userData</code> object and applies it to the DOM:</li>
+    </ol>
+
+    <table>
+      <thead>
+        <tr><th>Data Field</th><th>Behavior</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>profileImage*</code></td><td>Sets <code>src</code> on all <code>[id^=profileImage*]</code> elements. Falls back to default avatar if empty.</td></tr>
+        <tr><td><code>firstName</code> / <code>lastName</code></td><td>Populates elements by ID and by <code>.firstName</code> / <code>.lastName</code> classes.</td></tr>
+        <tr><td><code>email</code></td><td>Sets <code>href="mailto:..."</code> and text on <code>#email</code>.</td></tr>
+        <tr><td><code>phoneNumber</code></td><td>Sets <code>href="tel:..."</code> on <code>#phoneNumber</code>. Hides parent element if empty.</td></tr>
+        <tr><td><code>customBookingLink</code></td><td>Sets <code>href</code> on <code>#customBookingLink</code> and <code>.custom_custombookinglink</code>. Fires <code>customBookingLinkUpdated</code> event. Hides element if empty.</td></tr>
+        <tr><td>Social link fields (e.g., <code>facebookUrl</code>)</td><td>Sets <code>href</code> on matching <code>.footer-social-links a#[fieldName]</code>. Hides the link if the value is empty.</td></tr>
+        <tr><td>All other fields</td><td>Sets text content on <code>#{fieldName}</code> if the element exists.</td></tr>
+      </tbody>
+    </table>
+
+    <ol start="4">
+      <li>Stores <code>customBookingLink</code> in <code>window.sharedData.customBookingLink</code> for cross-script access.</li>
+      <li>Suppresses Font Awesome pseudo-content for email and phone icons to prevent duplicate rendering.</li>
+    </ol>
+
+    <h3>Custom Event Fired</h3>
+    <p><code>customBookingLinkUpdated</code> — dispatched on <code>document</code> after the booking link is set. Consumed by <code>bookMe.js</code> and <code>videoScript.js</code>.</p>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-param">URL param: userId</span>
+
+    <h3>Required HTML</h3>
+    <p>Elements with IDs matching RapidFunnel user data field names. Common examples:</p>
+    <pre><span class="tag">&lt;img</span>  <span class="attr">id</span>=<span class="string">"profileImage"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;span</span> <span class="attr">id</span>=<span class="string">"firstName"</span><span class="tag">&gt;&lt;/span&gt;</span>
+<span class="tag">&lt;span</span> <span class="attr">id</span>=<span class="string">"lastName"</span><span class="tag">&gt;&lt;/span&gt;</span>
+<span class="tag">&lt;a</span>    <span class="attr">id</span>=<span class="string">"email"</span><span class="tag">&gt;&lt;/a&gt;</span>
+<span class="tag">&lt;a</span>    <span class="attr">id</span>=<span class="string">"phoneNumber"</span><span class="tag">&gt;&lt;/a&gt;</span>
+<span class="tag">&lt;a</span>    <span class="attr">id</span>=<span class="string">"customBookingLink"</span> <span class="attr">href</span>=<span class="string">"#"</span><span class="tag">&gt;&lt;/a&gt;</span>
+
+<span class="comment">&lt;!-- Social links --&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="string">"footer-social-links"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;a</span> <span class="attr">id</span>=<span class="string">"facebookUrl"</span>  <span class="attr">href</span>=<span class="string">"#"</span><span class="tag">&gt;&lt;/a&gt;</span>
+  <span class="tag">&lt;a</span> <span class="attr">id</span>=<span class="string">"twitterUrl"</span>   <span class="attr">href</span>=<span class="string">"#"</span><span class="tag">&gt;&lt;/a&gt;</span>
+  <span class="tag">&lt;a</span> <span class="attr">id</span>=<span class="string">"linkedinUrl"</span>  <span class="attr">href</span>=<span class="string">"#"</span><span class="tag">&gt;&lt;/a&gt;</span>
+<span class="tag">&lt;/div&gt;</span></pre>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  13. videoScript.js                                         -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="script-section" id="videoScript">
+  <div class="script-header">
+    <span class="script-filename">videoScript.js</span>
+    <h2>Video Script (Wistia)</h2>
+  </div>
+  <div class="script-body">
+    <div class="purpose">
+      <strong>Purpose:</strong> Integrates Wistia-embedded videos with RapidFunnel analytics tracking. Pushes play events and watch-percentage data to the SQS queue, and controls "Book Me" container visibility based on how long the visitor has watched.
+    </div>
+
+    <h3>How It Works</h3>
+    <ol>
+      <li>Adds Wistia embed classes to any <code>&lt;iframe&gt;</code> whose <code>src</code> contains <code>"wistia"</code>.</li>
+      <li>Listens for <code>customBookingLinkUpdated</code> event to toggle <code>#requestCallContainer</code> visibility.</li>
+      <li>If <code>showBookMeAfterTimeInSecondsPassedInVideo &gt; 0</code>, hides <code>#bookMeContainer</code> on load.</li>
+      <li>Uses the Wistia <code>_wq</code> API to bind to all embedded videos:
+        <ul>
+          <li><strong>play event:</strong> Captures metadata (<code>hashedId</code>, <code>duration</code>, <code>visitorKey</code>, <code>eventKey</code>) and POSTs to <code>/landing/resource/push-to-sqs</code>.</li>
+          <li><strong>secondchange event:</strong> Shows <code>#bookMeContainer</code> once <code>secondsWatched &ge; showBookMeAfterTimeInSecondsPassedInVideo</code>.</li>
+        </ul>
+      </li>
+      <li>Only activates tracking if <code>contactId</code>, <code>userId</code>, and <code>resourceId</code> are all valid numerics.</li>
+    </ol>
+
+    <h3>Dependencies</h3>
+    <span class="badge badge-dep">jQuery</span>
+    <span class="badge badge-dep">Wistia embed script</span>
+    <span class="badge badge-dep">userDetails.js</span>
+    <span class="badge badge-param">URL params: userId, resourceId, contactId</span>
+    <span class="badge badge-global">Global var: showBookMeAfterTimeInSecondsPassedInVideo</span>
+
+    <h3>Required HTML</h3>
+    <p>Wistia <code>&lt;iframe&gt;</code> embeds, plus:</p>
+    <pre><span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="string">"bookMeContainer"</span><span class="tag">&gt;</span>...<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">id</span>=<span class="string">"requestCallContainer"</span><span class="tag">&gt;</span>...<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;a</span>   <span class="attr">id</span>=<span class="string">"customBookingLink"</span> <span class="attr">href</span>=<span class="string">"#"</span><span class="tag">&gt;&lt;/a&gt;</span>
+<span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"contactEmail"</span> <span class="attr">type</span>=<span class="string">"hidden"</span><span class="tag">&gt;</span>     <span class="comment">&lt;!-- optional, for Wistia email tracking --&gt;</span>
+<span class="tag">&lt;input</span> <span class="attr">id</span>=<span class="string">"webinar"</span>       <span class="attr">type</span>=<span class="string">"hidden"</span><span class="tag">&gt;</span>     <span class="comment">&lt;!-- optional --&gt;</span></pre>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  FOOTER                                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="page-footer">
+  RF Scripts v1 &nbsp;·&nbsp; RapidFunnel Developer Documentation &nbsp;·&nbsp; February 2026
+</div>
+
+</body>
+</html>
