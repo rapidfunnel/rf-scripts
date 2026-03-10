@@ -37,7 +37,6 @@ jQuery(function ($) {
 
           console.log('custom booking link', userData.customBookingLink);
 
-
           window.sharedData = window.sharedData || {};
           window.sharedData.customBookingLink = userData.customBookingLink;
           console.log('shared global custom booking link:', window.sharedData.customBookingLink);
@@ -47,19 +46,18 @@ jQuery(function ($) {
             const value = userData[key];
             // Use attribute starts with selector
             if (key.startsWith('profileImage')) {
-              $(`[id^=${key}]`).each(function() { // Select all elements which id starts with the value of key
-                 const imgSrc =
+              $(`[id^=${key}]`).each(function() {
+                const imgSrc =
                   value !== ''
                     ? value
                     : 'https://rfres.com/assets/img/icon-user-default.png';
                 $(this).attr('src', imgSrc);
               });
-
             }
+            
             const $element = $('#' + key);
 
             if ($element.length && !key.startsWith('profileImage')) {
-
               if (key !== 'customBookingLink' && !$element.hasClass('footer-btn-socials')) {
                 $element.text(value);
               }
@@ -69,12 +67,16 @@ jQuery(function ($) {
                 if (value !== '') {
                   $element.attr('href', 'tel:' + value).text(value);
                 } else {
-                  $element.parent().hide(); // Hide the parent if phoneNumber is empty
+                  $element.parent().hide();
                 }
               } else if (key === 'customBookingLink') {
                 if (value !== '') {
-                  $element.attr('href', value);
-                  $element.find('span').text('');
+                  // Update ALL elements with IDs starting with "customBookingLink"
+                  $('[id^="customBookingLink"]').each(function() {
+                    $(this).attr('href', value);
+                    $(this).find('span').text('');
+                  });
+                  
                   $('.custom_custombookinglink').attr('href', value);
                   $('.alternate-text').hide();
 
@@ -83,33 +85,30 @@ jQuery(function ($) {
                   console.log('Custom Booking Link Updated event triggered');
                 } else {
                   console.log('Custom Booking Link Hidden as no value returned in API');
-                  $element.hide();
+                  // Hide ALL elements with IDs starting with "customBookingLink"
+                  $('[id^="customBookingLink"]').hide();
                   $('.custom_custombookinglink').hide();
                 }
               }
             }
 
-            // $('.email-block').find('span').text('');
             $('.firstName').text(userData.firstName);
             $('.lastName').text(userData.lastName);
-            // $('.phone-block').find('span').text('');
             $('.custom_custombookinglink').find('span').text('');
 
-            // Handle social links (replace href if available, otherwise hide the element)
+            // Handle social links
             $('.footer-social-links a').each(function () {
-              const socialId = $(this).attr('id'); // Get the id of the element (e.g., facebookUrl, twitterUrl)
+              const socialId = $(this).attr('id');
 
               if (
                 userData.hasOwnProperty(socialId) &&
                 userData[socialId] &&
                 userData[socialId].trim() !== ''
               ) {
-                $(this)
-                  .attr('href', userData[socialId]); // Set href if value exists in userData
-                  $(this).find('span').text('');
-                  // .text('');
+                $(this).attr('href', userData[socialId]);
+                $(this).find('span').text('');
               } else {
-                $(this).hide(); // Hide the element if no value exists for the socialId
+                $(this).hide();
               }
             });
           }
