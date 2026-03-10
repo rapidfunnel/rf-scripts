@@ -356,7 +356,7 @@
       method: 'POST',
       dataType: 'json',
       data: submissionData,
-      timeout: 10000,
+      timeout: 60000,
       success: function(response) {
         handleSuccess(response, config, urlParams);
       },
