@@ -1,5 +1,12 @@
 jQuery(function ($) {
 
+    // Adding Wistia analytics tracking class to iframes
+    $("iframe").each(function() {
+        var str = $(this).attr('src');
+        if (str.indexOf("wistia") >= 0) {
+            $(this).addClass('wistia_embed').attr('name', 'wistia_embed');
+        }
+    });
     videoAnalytics();
 
     // Listen for the custom event
@@ -7,7 +14,6 @@ jQuery(function ($) {
         checkBookingLink();
     });
 
-    // Function to check the booking link and show/hide the request call container
     function checkBookingLink() {
         if ($('#customBookingLink').attr('href') && $('#customBookingLink').attr('href') !== '#') {
             console.log("We should hide request call container since there's a booking link");
@@ -18,21 +24,18 @@ jQuery(function ($) {
         }
     }
 
-    // Run the check initially in case the href value is already set on page load
     checkBookingLink();
 
-    // Wistia video analytics tracking setup
     function videoAnalytics() {
-        console.log('Inside videoAnalytics');
+        console.log('Inside video analytics');
         window._wq = window._wq || [];
         _wq.push({
-            "_all": function (video) {
+            "_all": function(video) {
                 var contactId,
                     userId,
                     resourceId,
                     url = window.location.href,
-                    webinar = $('#webinar').val(),
-                    args;
+                    webinar = $('#webinar').val();
 
                 const parsedUrl = new URL(url);
                 userId     = parsedUrl.searchParams.get('userId');
@@ -61,19 +64,21 @@ jQuery(function ($) {
                         webinar:        webinar
                     };
 
-                    // Capture metadata on play — do NOT push analytics here
-                    video.bind('play', function () {
+                    // Capture metadata on play so it's available when pause/end fires
+                    video.bind('play', function() {
                         analyticObject.mediaHash  = video.hashedId();
                         analyticObject.duration   = video.duration();
                         analyticObject.visitorKey = video.visitorKey();
                         analyticObject.eventKey   = video.eventKey();
                         analyticObject.asyncStats = true;
+                        analyticObject.delayProcess = 1;
 
                         console.log('Video started. Metadata captured:', analyticObject);
+                        analyticObject.delayProcess = 0;
                     });
 
-                    // Push analytics when the viewer pauses or finishes
-                    video.bind('pause end', function () {
+                    // Push analytics on pause or end with correct percentage
+                    video.bind('pause end', function() {
                         var duration       = video.duration();
                         var secondsWatched = video.secondsWatched();
 
@@ -92,8 +97,13 @@ jQuery(function ($) {
                         sqsPushAnalytics(analyticObject);
                     });
 
-                    // Track secondchange for bookMe visibility
-                    video.bind('secondchange', function () {
+                    video.bind('percentwatchedchanged', function(percent, lastPercent) {
+                        if (percent !== lastPercent) {
+                            console.log('Percent Watched:', percent);
+                        }
+                    });
+
+                    video.bind('secondchange', function() {
                         console.log('book me href value', $('#customBookingLink').attr('href'));
                         if (video.secondsWatched() >= showBookMeAfterTimeInSecondsPassedInVideo) {
                             console.log('Showing bookMeContainer — time threshold reached');
@@ -107,19 +117,12 @@ jQuery(function ($) {
                         if (video.secondsWatched() == 15) console.log("You've watched 15 seconds of this video!");
                     });
 
-                    video.bind('percentwatchedchanged', function (percent, lastPercent) {
-                        if (percent !== lastPercent) {
-                            console.log('Percent Watched:', percent);
-                        }
-                    });
-
                     video.email($('#contactEmail').val());
                 }
             }
         });
     }
 
-    // Function to push video analytics to a remote server
     function sqsPushAnalytics(analyticObject) {
         var postUrl = "https://my.rapidfunnel.com/landing/resource/push-to-sqs";
         $.ajax({
@@ -139,15 +142,15 @@ jQuery(function ($) {
                 delayProcess:      analyticObject.delayProcess,
                 webinar:           analyticObject.webinar
             },
-            success: function (response) {
+            success: function(response) {
                 if (!response) {
-                    bootbox.confirm('Some error occurred. Please reload your video once.', function (result) {
+                    bootbox.confirm('Some error occurred. Please reload your video once.', function(result) {
                         if (result) { location.reload(); }
                     });
                 }
             },
-            error: function () {
-                bootbox.confirm('Some error occurred. Please reload your video once.', function (result) {
+            error: function() {
+                bootbox.confirm('Some error occurred. Please reload your video once.', function(result) {
                     if (result) { location.reload(); }
                 });
             }
