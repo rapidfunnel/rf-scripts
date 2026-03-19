@@ -68,34 +68,35 @@ jQuery(function ($) {
                       delayProcess: 0,
                       webinar: webinar
                   };
-                  var percentWatched = 0;
+
                   video.bind('play', function() {
-                      // Log percent watched to test if it's being tracked correctly
-                      console.log("Percent Watched: ", video.percentWatched());
-                    
-                      analyticObject.percentWatched = video.percentWatched();
-                      analyticObject.mediaHash = video.hashedId();
-                      analyticObject.duration = video.duration();
+                      // Populate metadata on first play (these don't change)
+                      analyticObject.mediaHash  = video.hashedId();
+                      analyticObject.duration   = video.duration();
                       analyticObject.visitorKey = video.visitorKey();
-                      analyticObject.eventKey = video.eventKey();
+                      analyticObject.eventKey   = video.eventKey();
                       analyticObject.asyncStats = true;
                       analyticObject.delayProcess = 1;
-                      sqsPushAnalytics(analyticObject);
-                      analyticObject.delayProcess = 0;
 
-                      // Log the whole analyticObject to check all values
-                      console.log("Analytic Object: ", analyticObject);
+                      console.log("Video started. Analytic Object: ", analyticObject);
                   });
 
-                  // // Clear the interval when the video is paused or ended
-                  // video.bind('pause end', function() {
-                  //     clearInterval(watchInterval); // This stops the real-time logging when the video is not playing
-                  // });
+                  video.bind('pause', function() {
+                      // Use current playhead position so scrubbing is reflected correctly
+                      analyticObject.percentWatched = video.time() / video.duration();
+                      analyticObject.delayProcess   = 0;
 
-                  video.bind('percentwatchedchanged', function (percent, lastPercent) {
-                      if (percent !== lastPercent) {
-                        console.log('Percent Watched: ', percent);
-                      }
+                      console.log("Paused at: ", analyticObject.percentWatched);
+                      sqsPushAnalytics(analyticObject);
+                  });
+
+                  video.bind('end', function() {
+                      // Use current playhead position at end (should be ~1.0)
+                      analyticObject.percentWatched = video.time() / video.duration();
+                      analyticObject.delayProcess   = 0;
+
+                      console.log("Video ended at: ", analyticObject.percentWatched);
+                      sqsPushAnalytics(analyticObject);
                   });
 
                   video.bind("secondchange", function() {
