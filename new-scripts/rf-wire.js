@@ -461,10 +461,6 @@
                         container.getAttribute('data-label') || '';
     const redirectUrl = container.getAttribute('data-redirect') || '';
 
-    if (!campaignId || campaignId === '0' || campaignId === '') {
-      console.warn(LOG, 'No campaign ID on contact form — form submission will be skipped.');
-    }
-
     // Field visibility
     const showLastName = container.getAttribute('data-last-name') !== 'false';
     const showCompany  = container.getAttribute('data-company')   === 'true';
@@ -606,11 +602,6 @@
       e.preventDefault();
       if (isSubmitting) return;
       if (!validate()) return;
-      if (!campaignId) {
-        showFormMessage('Form configuration error: Campaign ID is missing.', true);
-        return;
-      }
-
       isSubmitting = true;
       setSubmitting(true);
       clearFormMessage();
