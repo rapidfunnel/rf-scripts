@@ -13,8 +13,7 @@
  *     ?resourceId=  — which page resource this is; drives form and video tracking
  *
  *   HTML meta / data attributes (page-generation time, baked into the file)
- *     <meta name="rf-wistia-id" content="...">   — Wistia video ID (optional)
- *     data-rf-campaign-id on #contactFormContainer — campaign to enrol contacts into
+ *     data-rf-campaign-id on #contactFormContainer — campaign to enrol contacts into (optional)
  *     data-rf-label-id    on #contactFormContainer — optional label/tag
  *     data-redirect       on #contactFormContainer — post-submit redirect URL
  *
@@ -811,28 +810,63 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // WISTIA VIDEO — dynamic injection + tracking
-  // Reads the Wistia video ID from <meta name="rf-wistia-id">.
-  // If present, injects the Wistia scripts and builds the embed markup inside
-  // [data-rf-block="wistiaVideo"], then shows the block.
+  // RESOURCE DETAILS
+  // Fetches GET /api/api/resources/resource-details/ using the page-level
+  // resourceId from the URL. If the resource is a video (accountResourceTypeId 9),
+  // passes the mediaHash to initWistia(). Resource button URL resolution is
+  // handled separately inside initCtaButtons() using per-button resourceIds.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  function initResource() {
+    if (!_params.resourceId) {
+      console.warn(LOG, 'No resourceId in URL — resource details skipped.');
+      return;
+    }
+
+    get('https://app.rapidfunnel.com/api/api/resources/resource-details/', {
+      userId:    _params.userId,
+      resourceId: _params.resourceId,
+      contactId: _params.contactId
+    }).then(r => {
+      const data = r?.data;
+      if (!data) {
+        console.warn(LOG, 'Resource details: empty response.');
+        return;
+      }
+
+      // If this is a video resource and a video block exists on the page, inject it
+      if (data.accountResourceTypeId === 9) {
+        const wistiaId = (data.mediaHash || data.mediahash || '').trim();
+        if (wistiaId) {
+          console.log(LOG, 'Resource is a video — wistiaId:', wistiaId);
+          initWistia(wistiaId);
+        } else {
+          console.warn(LOG, 'Resource is type 9 (video) but mediaHash is empty.');
+        }
+      } else {
+        console.log(LOG, 'Resource type', data.accountResourceTypeId, '— no video to inject.');
+      }
+    }).catch(e => console.error(LOG, 'Resource details fetch failed:', e));
+  }
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // Receives the Wistia video ID from initResource() via the resource details API.
+  // If no video block is present on the page, returns silently.
   // Tracking fires only when both userId and contactId are in the URL.
   // ═══════════════════════════════════════════════════════════════════════════
 
-  function initWistia() {
-    const wistiaId = document.querySelector('meta[name="rf-wistia-id"]')?.content?.trim();
+  function initWistia(wistiaId) {
+    if (!wistiaId) return;
 
-    if (!wistiaId) {
-      console.log(LOG, 'No rf-wistia-id meta tag — video section hidden.');
+    const wrapper = document.querySelector('[data-rf-block="wistiaVideo"] .video-wrapper');
+    if (!wrapper) {
+      console.log(LOG, 'Wistia ID available but no video block found on page — skipping.');
       return;
     }
 
     // Inject Wistia scripts into <head>
     injectScript(`https://fast.wistia.com/embed/medias/${wistiaId}.jsonp`, true);
     injectScript('https://fast.wistia.com/assets/external/E-v1.js', true);
-
-    // Build embed markup inside the video wrapper
-    const wrapper = document.querySelector('[data-rf-block="wistiaVideo"] .video-wrapper');
-    if (wrapper) {
       // Ensure wrapper is relatively positioned so the fallback overlay works correctly
       wrapper.style.position = 'relative';
       wrapper.style.background = 'transparent';
@@ -926,7 +960,6 @@
 
       // Safety valve: disconnect observer after 30 seconds regardless
       setTimeout(() => observer.disconnect(), 30000);
-    }
 
     // Show the video block
     showBlock('wistiaVideo');
@@ -1009,13 +1042,14 @@
     // 4. Contact form
     initContactForm();
 
-    // 5. Wistia video — inject embed from meta tag and wire tracking
-    initWistia();
-
     if (!_params.userId) {
       console.warn(LOG, 'No userId in URL — API calls skipped.');
       return;
     }
+
+    // 5. Resource details — fetches video ID (and resourceUrl for resource buttons)
+    //    initResource() calls initWistia() internally if resource is type 9 (video)
+    initResource();
 
     // 6. Analytics (GA4, FB Pixel, GTM) — fire and forget
     get(`https://apiv2.rapidfunnel.com/v2/analytics/${encodeURIComponent(_params.userId)}`)
