@@ -818,8 +818,44 @@
   // ═══════════════════════════════════════════════════════════════════════════
 
   function initResource() {
+    // If a video block exists on this page but we cannot load the video for any
+    // reason, we must still show the block with the "unavailable" fallback message.
+    // showVideoUnavailable() handles that consistently from every failure path.
+    function showVideoUnavailable(reason) {
+      const videoBlock = document.querySelector('[data-rf-block="wistiaVideo"]');
+      if (!videoBlock) return; // no video block on this page — nothing to do
+      const wrapper = videoBlock.querySelector('.video-wrapper');
+      if (!wrapper) { showBlock('wistiaVideo'); return; }
+      wrapper.innerHTML = '';
+      wrapper.style.position = 'relative';
+      const fallbackEl = document.createElement('div');
+      fallbackEl.className = 'rf-video-unavailable';
+      fallbackEl.style.cssText = [
+        'width:100%',
+        'min-height:200px',
+        'background:var(--rf-surface)',
+        'color:var(--rf-text-muted)',
+        'display:flex',
+        'align-items:center',
+        'justify-content:center',
+        'flex-direction:column',
+        'gap:10px',
+        'border-radius:var(--rf-radius)',
+        'text-align:center',
+        'padding:24px',
+        'box-sizing:border-box'
+      ].join(';');
+      fallbackEl.innerHTML = `
+        <span style="font-size:32px;opacity:0.4;">&#9654;</span>
+        <p style="margin:0;font-size:16px;">Video unavailable — please try again later.</p>`;
+      wrapper.appendChild(fallbackEl);
+      showBlock('wistiaVideo');
+      console.warn(LOG, 'Video unavailable:', reason);
+    }
+
     if (!_params.resourceId) {
       console.warn(LOG, 'No resourceId in URL — resource details skipped.');
+      showVideoUnavailable('no resourceId in URL');
       return;
     }
 
@@ -831,6 +867,7 @@
       const data = r?.data;
       if (!data) {
         console.warn(LOG, 'Resource details: empty response.');
+        showVideoUnavailable('resource details API returned no data');
         return;
       }
 
@@ -842,11 +879,17 @@
           initWistia(wistiaId);
         } else {
           console.warn(LOG, 'Resource is type 9 (video) but mediaHash is empty.');
+          showVideoUnavailable('resource is type 9 but mediaHash is empty');
         }
       } else {
         console.log(LOG, 'Resource type', data.accountResourceTypeId, '— no video to inject.');
+        // Not a video resource — if a video block exists, show unavailable message
+        showVideoUnavailable('resource is not a video type');
       }
-    }).catch(e => console.error(LOG, 'Resource details fetch failed:', e));
+    }).catch(e => {
+      console.error(LOG, 'Resource details fetch failed:', e);
+      showVideoUnavailable('resource details fetch failed');
+    });
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
