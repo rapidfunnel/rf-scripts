@@ -45,7 +45,6 @@
   'use strict';
 
   const LOG = '[rf-wire]';
-  const DEFAULT_AVATAR = 'https://rfres.com/assets/img/icon-user-default.png';
 
   // ═══════════════════════════════════════════════════════════════════════════
   // URL PARAMETERS
@@ -314,12 +313,19 @@
     // Wrap data under a "rep" namespace for slot resolution ("rep.firstName", etc.)
     const slotData = { rep: userData };
 
-    // Profile images — may appear multiple times
-    Object.keys(userData).forEach(key => {
-      if (key.startsWith('profileImage')) {
-        const val = (userData[key] && userData[key].trim()) ? userData[key] : DEFAULT_AVATAR;
-        document.querySelectorAll(`[id^="${key}"], [data-rf-src="rep.${key}"]`)
-          .forEach(img => { img.src = val; });
+    // Profile image — hide the element entirely when no photo was returned.
+    // Never show a generic placeholder icon; a rep with no photo on file simply
+    // gets no image in the footer, rather than a fake/generic avatar.
+    document.querySelectorAll('[data-rf-src^="rep.profileImage"], [id^="profileImage"]').forEach(img => {
+      const key = img.getAttribute('data-rf-src')
+        ? img.getAttribute('data-rf-src').replace(/^rep\./, '')
+        : img.id;
+      const val = userData[key] && String(userData[key]).trim();
+      if (val) {
+        img.src = val;
+        img.style.display = '';
+      } else {
+        img.style.display = 'none';
       }
     });
 
@@ -359,8 +365,30 @@
       hideBlock('socialLinks');
     }
 
-    // Booking link — handled via slot injection above; bookMe logic below
-    if (userData.customBookingLink && userData.customBookingLink.trim()) {
+    // Does this rep have ANY usable detail beyond a name — photo, contact info,
+    // booking link, or at least one social link? Used below to decide whether to
+    // fall back to "Unknown User" and whether to reveal the profile card at all.
+    const hasName        = !!(userData.firstName || userData.lastName);
+    const hasBookingLink = !!(userData.customBookingLink && userData.customBookingLink.trim());
+    const hasOtherDetail = !!(userData.email || userData.phoneNumber || userData.profileImage ||
+                              hasBookingLink || socialItems.length);
+
+    // Name fallback — if no name was returned but the rep otherwise has usable
+    // data (e.g. only social links are populated), show "Unknown User" instead
+    // of leaving the name blank.
+    if (!hasName && hasOtherDetail) {
+      document.querySelectorAll('[data-rf-slot="rep.firstName"]')
+        .forEach(el => { el.textContent = 'Unknown User'; });
+      document.querySelectorAll('[data-rf-slot="rep.lastName"]')
+        .forEach(el => { el.textContent = ''; });
+    }
+
+    // Booking link — Book Me stays in its own default-hidden state (set by
+    // initBookMe()) unless a real link is provided here. A missing booking link
+    // no longer hides the rest of the profile card — it serves no purpose to show
+    // a Book Me button with nowhere to go, but the photo/name/contact info are
+    // independently useful and should still appear.
+    if (hasBookingLink) {
       // Normalize Calendly URLs — update the month parameter to the current month
       // so the booking calendar always opens on the current period, not a hardcoded one.
       let bookingLink = userData.customBookingLink.trim();
@@ -377,13 +405,10 @@
       }
       window.rfShared.customBookingLink = bookingLink;
       document.dispatchEvent(new CustomEvent('rf:bookingLinkReady'));
-    } else {
-      document.querySelectorAll('[data-rf-slot="rep.customBookingLink"]')
-        .forEach(el => { el.closest('[data-rf-block]')?.style.setProperty('display', 'none'); });
     }
 
-    // Show rep profile block if we have at least a name
-    if (userData.firstName || userData.lastName) {
+    // Show rep profile block if we have a name, or any other usable rep detail.
+    if (hasName || hasOtherDetail) {
       showBlock('repProfile');
     }
 
