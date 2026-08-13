@@ -1066,8 +1066,10 @@
           function setAspect(ratio) {
             if (ratio < 1) {
               // Portrait / vertical video
+              // Max width is controlled by --rf-video-portrait-max-width on :root.
+              // Default is 400px; override per page in the :root token block.
               wrapper.style.aspectRatio = String(ratio);
-              wrapper.style.maxWidth    = '480px';
+              wrapper.style.maxWidth    = 'var(--rf-video-portrait-max-width, 400px)';
               wrapper.style.margin      = '0 auto';
               console.log(LOG, 'Vertical video detected — aspect:', ratio.toFixed(3));
             } else {
