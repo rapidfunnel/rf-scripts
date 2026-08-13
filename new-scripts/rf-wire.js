@@ -1010,32 +1010,76 @@
           hideFallback();
 
           // Adjust wrapper aspect ratio to match the video's actual dimensions.
-          // video.aspect() returns width/height (e.g. 1.78 for 16:9, 0.56 for 9:16).
-          // We try immediately, then retry after a short delay in case metadata
-          // isn't populated yet at onReady time.
+          // video.aspect() is unreliable at onReady time — instead we read videoWidth
+          // and videoHeight from the native <video> element, which are populated once
+          // the browser has loaded media metadata. We poll until they are available.
           function applyAspect() {
-            const ratio = video.aspect ? video.aspect() : null;
-            if (!ratio || ratio <= 0) return false;
-            if (ratio < 1) {
-              // Portrait / vertical video
-              wrapper.style.aspectRatio  = String(ratio);
-              wrapper.style.maxWidth     = '480px';
-              wrapper.style.margin       = '0 auto';
-              console.log(LOG, 'Vertical video detected — aspect:', ratio.toFixed(3));
-            } else {
-              // Landscape — restore defaults in case a previous run set portrait values
-              wrapper.style.aspectRatio  = String(ratio);
-              wrapper.style.maxWidth     = '';
-              wrapper.style.margin       = '';
-              console.log(LOG, 'Landscape video detected — aspect:', ratio.toFixed(3));
+            // Try Wistia API first (works on some embed types)
+            const apiRatio = (video.aspect && typeof video.aspect === 'function')
+                             ? video.aspect() : null;
+            if (apiRatio && apiRatio > 0) {
+              setAspect(apiRatio);
+              return;
             }
-            return true;
+
+            // Fall back to native <video> element dimensions
+            const videoEl = wrapper.querySelector('video');
+            if (videoEl && videoEl.videoWidth && videoEl.videoHeight) {
+              setAspect(videoEl.videoWidth / videoEl.videoHeight);
+              return;
+            }
+
+            // Metadata not yet available — wait for loadedmetadata event or poll
+            if (videoEl) {
+              videoEl.addEventListener('loadedmetadata', function onMeta() {
+                videoEl.removeEventListener('loadedmetadata', onMeta);
+                if (videoEl.videoWidth && videoEl.videoHeight) {
+                  setAspect(videoEl.videoWidth / videoEl.videoHeight);
+                }
+              });
+            } else {
+              // <video> element not yet in DOM — poll for it
+              let polls = 0;
+              const poll = setInterval(() => {
+                polls++;
+                const el = wrapper.querySelector('video');
+                if (el && el.videoWidth && el.videoHeight) {
+                  clearInterval(poll);
+                  setAspect(el.videoWidth / el.videoHeight);
+                } else if (el && !el._rfMetaListening) {
+                  el._rfMetaListening = true;
+                  el.addEventListener('loadedmetadata', function onMeta() {
+                    el.removeEventListener('loadedmetadata', onMeta);
+                    clearInterval(poll);
+                    if (el.videoWidth && el.videoHeight) {
+                      setAspect(el.videoWidth / el.videoHeight);
+                    }
+                  });
+                } else if (polls >= 20) {
+                  clearInterval(poll);
+                  console.warn(LOG, 'Could not determine video dimensions — keeping default aspect ratio.');
+                }
+              }, 500);
+            }
           }
 
-          if (!applyAspect()) {
-            // Metadata not yet available — retry after Wistia has had time to load it
-            setTimeout(applyAspect, 800);
+          function setAspect(ratio) {
+            if (ratio < 1) {
+              // Portrait / vertical video
+              wrapper.style.aspectRatio = String(ratio);
+              wrapper.style.maxWidth    = '480px';
+              wrapper.style.margin      = '0 auto';
+              console.log(LOG, 'Vertical video detected — aspect:', ratio.toFixed(3));
+            } else {
+              // Landscape
+              wrapper.style.aspectRatio = String(ratio);
+              wrapper.style.maxWidth    = '';
+              wrapper.style.margin      = '';
+              console.log(LOG, 'Landscape video detected — aspect:', ratio.toFixed(3));
+            }
           }
+
+          applyAspect();
         }
       });
 
