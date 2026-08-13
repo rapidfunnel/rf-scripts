@@ -833,8 +833,10 @@
   // ═══════════════════════════════════════════════════════════════════════════
   // RESOURCE DETAILS
   // Fetches GET /api/api/resources/resource-details/ using the page-level
-  // resourceId from the URL. If the resource is a video (accountResourceTypeId 9),
-  // passes the mediaHash to initWistia(). Resource button URL resolution is
+  // resourceId from the URL. If the response contains a non-empty mediaHash,
+  // passes it to initWistia() regardless of accountResourceTypeId — resources
+  // can be added as any type (link, video, etc.) and still carry a Wistia ID.
+  // Resource button URL resolution is
   // handled separately inside initCtaButtons() using per-button resourceIds.
   // ═══════════════════════════════════════════════════════════════════════════
 
@@ -892,20 +894,16 @@
         return;
       }
 
-      // If this is a video resource and a video block exists on the page, inject it
-      if (data.accountResourceTypeId === 9) {
-        const wistiaId = (data.mediaHash || data.mediahash || '').trim();
-        if (wistiaId) {
-          console.log(LOG, 'Resource is a video — wistiaId:', wistiaId);
-          initWistia(wistiaId);
-        } else {
-          console.warn(LOG, 'Resource is type 9 (video) but mediaHash is empty.');
-          showVideoUnavailable('resource is type 9 but mediaHash is empty');
-        }
+      // Discriminate on mediaHash, not resource type.
+      // Resources can be added as any type (video, link, etc.) but still carry
+      // a Wistia ID — so we treat any resource with a non-empty mediaHash as a video.
+      const wistiaId = (data.mediaHash || data.mediahash || '').trim();
+      if (wistiaId) {
+        console.log(LOG, 'Resource has mediaHash — treating as video. wistiaId:', wistiaId);
+        initWistia(wistiaId);
       } else {
-        console.log(LOG, 'Resource type', data.accountResourceTypeId, '— no video to inject.');
-        // Not a video resource — if a video block exists, show unavailable message
-        showVideoUnavailable('resource is not a video type');
+        console.log(LOG, 'Resource has no mediaHash (type', data.accountResourceTypeId, ') — no video to inject.');
+        showVideoUnavailable('resource has no mediaHash');
       }
     }).catch(e => {
       console.error(LOG, 'Resource details fetch failed:', e);
@@ -1010,6 +1008,34 @@
         id: wistiaId,
         onReady: function (video) {
           hideFallback();
+
+          // Adjust wrapper aspect ratio to match the video's actual dimensions.
+          // video.aspect() returns width/height (e.g. 1.78 for 16:9, 0.56 for 9:16).
+          // We try immediately, then retry after a short delay in case metadata
+          // isn't populated yet at onReady time.
+          function applyAspect() {
+            const ratio = video.aspect ? video.aspect() : null;
+            if (!ratio || ratio <= 0) return false;
+            if (ratio < 1) {
+              // Portrait / vertical video
+              wrapper.style.aspectRatio  = String(ratio);
+              wrapper.style.maxWidth     = '480px';
+              wrapper.style.margin       = '0 auto';
+              console.log(LOG, 'Vertical video detected — aspect:', ratio.toFixed(3));
+            } else {
+              // Landscape — restore defaults in case a previous run set portrait values
+              wrapper.style.aspectRatio  = String(ratio);
+              wrapper.style.maxWidth     = '';
+              wrapper.style.margin       = '';
+              console.log(LOG, 'Landscape video detected — aspect:', ratio.toFixed(3));
+            }
+            return true;
+          }
+
+          if (!applyAspect()) {
+            // Metadata not yet available — retry after Wistia has had time to load it
+            setTimeout(applyAspect, 800);
+          }
         }
       });
 
@@ -1112,7 +1138,7 @@
     }
 
     // 5. Resource details — fetches video ID (and resourceUrl for resource buttons)
-    //    initResource() calls initWistia() internally if resource is type 9 (video)
+    //    initResource() calls initWistia() internally if resource has a non-empty mediaHash
     initResource();
 
     // 6. Analytics (GA4, FB Pixel, GTM) — fire and forget
