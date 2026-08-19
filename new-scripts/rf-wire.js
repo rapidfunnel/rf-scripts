@@ -259,6 +259,15 @@
         .forEach(el => { el.style.display = 'none'; });
     }
 
+    // Token replacement — branding slice
+    const appDetails = brandingData.appDetails || {};
+    applyTokens({
+      appName:       appDetails.appName       || '',
+      appStoreUrl:   appDetails.appStoreUrl   || '',
+      googlePlayUrl: appDetails.googlePlayUrl || '',
+      appIconImage:  appDetails.appIconImage  || ''
+    });
+
     console.log(LOG, 'Branding applied — primary:', brandingData.primaryColor);
   }
 
@@ -387,6 +396,22 @@
       showBlock('repProfile');
     }
 
+    // Token replacement — user details slice
+    applyTokens({
+      firstName:         userData.firstName         || '',
+      lastName:          userData.lastName          || '',
+      email:             userData.email             || '',
+      repId:             userData.repId             || '',
+      repId2:            userData.repId2            || '',
+      repId3:            userData.repId3            || '',
+      repId4:            userData.repId4            || '',
+      repId5:            userData.repId5            || '',
+      repId6:            userData.repId6            || '',
+      repId7:            userData.repId7            || '',
+      repId8:            userData.repId8            || '',
+      customBookingLink: userData.customBookingLink  || ''
+    });
+
     console.log(LOG, 'User details applied.');
   }
 
@@ -415,21 +440,96 @@
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
-  // PLACEHOLDER REPLACEMENT
-  // Replaces [user-id], [userId], [contactId] tokens in all <a href> values.
+  // TOKEN REPLACEMENT SYSTEM
+  //
+  // Supported tokens — detected at wiring time in Claude, resolved at runtime.
+  // Any supported token that cannot be filled is replaced with "N/A".
+  // Unsupported tokens (not in this list) must be resolved before deployment.
+  //
+  // Sources:
+  //   URL params   — userId, contactId, resourceID
+  //   User Details — firstName, lastName, email, repId1-8, customBookingLink
+  //   Branding     — appName, appStoreUrl, googlePlayUrl, appIconImage
+  //   Contact      — contactFirstName/LastName/Phone, address fields
   // ═══════════════════════════════════════════════════════════════════════════
 
-  function replacePlaceholders() {
-    document.querySelectorAll('a[href]').forEach(a => {
-      const original = a.getAttribute('href');
-      if (!original) return;
-      const updated = original
-        .replace(/\[user-id\]/g,   _params.userId)
-        .replace(/\[userId\]/g,    _params.userId)
-        .replace(/\[contactId\]/g, _params.contactId);
-      if (updated !== original) a.setAttribute('href', updated);
+  const SUPPORTED_TOKENS = [
+    'firstName', 'lastName', 'email',
+    'repId', 'repId2', 'repId3', 'repId4', 'repId5', 'repId6', 'repId7', 'repId8',
+    'customBookingLink',
+    'appName', 'appStoreUrl', 'googlePlayUrl', 'appIconImage',
+    'contactFirstName', 'contactLastName', 'contactPhone',
+    'contactAddressLine1', 'contactAddressLine2', 'contactCity',
+    'contactState', 'contactCountry', 'contactPostalCode', 'contactCompleteAddress',
+    'userId', 'contactId', 'resourceID',
+    'user-id'
+  ];
+
+  // Accumulated token values — populated progressively as API calls resolve
+  const _tokens = {};
+
+  // Attributes scanned in addition to text nodes
+  const TOKEN_ATTRS = ['href', 'src', 'alt', 'title', 'placeholder', 'value', 'content'];
+
+  // Walk the DOM replacing [tokenName] patterns in text nodes and key attributes.
+  // Called incrementally as each API resolves.
+  function applyTokens(map) {
+    if (!map || typeof map !== 'object') return;
+    Object.assign(_tokens, map);
+
+    function substitute(str) {
+      if (!str || str.indexOf('[') === -1) return str;
+      return str.replace(/\[([^\]]+)\]/g, function(match, key) {
+        return Object.prototype.hasOwnProperty.call(_tokens, key) ? _tokens[key] : match;
+      });
+    }
+
+    // Text nodes
+    var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null);
+    var textNodes = [];
+    var node;
+    while ((node = walker.nextNode())) textNodes.push(node);
+    textNodes.forEach(function(n) {
+      if (n.nodeValue && n.nodeValue.indexOf('[') !== -1) {
+        var replaced = substitute(n.nodeValue);
+        if (replaced !== n.nodeValue) n.nodeValue = replaced;
+      }
+    });
+
+    // Key attributes
+    document.querySelectorAll('*').forEach(function(el) {
+      TOKEN_ATTRS.forEach(function(attr) {
+        var val = el.getAttribute(attr);
+        if (!val || val.indexOf('[') === -1) return;
+        var replaced = substitute(val);
+        if (replaced !== val) el.setAttribute(attr, replaced);
+      });
     });
   }
+
+  // Final pass — replace any remaining supported tokens with "N/A".
+  // Called after all API calls have settled.
+  function resolveRemainingTokens() {
+    var naMap = {};
+    SUPPORTED_TOKENS.forEach(function(t) {
+      if (!Object.prototype.hasOwnProperty.call(_tokens, t)) naMap[t] = 'N/A';
+    });
+    if (Object.keys(naMap).length) {
+      applyTokens(naMap);
+      console.log(LOG, 'Token N/A pass — unresolved tokens replaced with N/A:', Object.keys(naMap).join(', '));
+    }
+  }
+
+  // Early replacement for URL param tokens — available immediately at init time
+  function replacePlaceholders() {
+    applyTokens({
+      'user-id':    _params.userId     || '',
+      'userId':     _params.userId     || '',
+      'contactId':  _params.contactId  || '',
+      'resourceID': _params.resourceId || ''
+    });
+  }
+
 
   // ═══════════════════════════════════════════════════════════════════════════
   // CONTACT FORM
@@ -493,6 +593,27 @@
             const el = document.getElementById(id);
             if (el && fields[id]) el.value = fields[id];
           });
+          // Assemble complete address from parts
+          const parts = [
+            c.address1, c.address2, c.city,
+            c.stateId, c.countryId, c.zip
+          ].filter(v => v && String(v).trim() && String(v).trim() !== '0');
+          const completeAddress = parts.join(', ');
+
+          // Token replacement — contact slice
+          applyTokens({
+            contactFirstName:       c.firstName  || '',
+            contactLastName:        c.lastName   || '',
+            contactPhone:           c.phone      || c.phoneNumber || '',
+            contactAddressLine1:    c.address1   || '',
+            contactAddressLine2:    c.address2   || '',
+            contactCity:            c.city       || '',
+            contactState:           c.stateId    ? String(c.stateId)   : '',
+            contactCountry:         c.countryId  ? String(c.countryId) : '',
+            contactPostalCode:      c.zip        || '',
+            contactCompleteAddress: completeAddress
+          });
+
           console.log(LOG, 'Form pre-filled for contact:', _params.contactId);
         })
         .catch(() => console.warn(LOG, 'Contact pre-fill fetch failed — form left empty.'));
@@ -516,7 +637,11 @@
     function showError(fieldId, msg) {
       const err = document.getElementById('err-' + fieldId);
       if (err) err.textContent = msg;
-      const input = document.getElementById('contact' + fieldId[0].toUpperCase() + fieldId.slice(1));
+      // For phone, highlight the visible field (id="phone"), not the hidden contactPhone
+      const inputId = fieldId === 'phone'
+        ? 'phone'
+        : 'contact' + fieldId[0].toUpperCase() + fieldId.slice(1);
+      const input = document.getElementById(inputId);
       if (input) input.classList.toggle('error', !!msg);
     }
 
@@ -546,13 +671,23 @@
         showError('tos', 'You must accept the terms of service.'); valid = false;
       }
 
-      // Build formatted phone into hidden field
-      if (itiInstance) {
-        const rawPhone = document.getElementById('phone')?.value.trim() || '';
-        const dialCode = itiInstance.getSelectedCountryData()?.dialCode || '';
-        const fullPhone = rawPhone && !rawPhone.startsWith('+') ? `+${dialCode}${rawPhone}` : rawPhone;
-        const hidden = document.getElementById('contactPhone');
-        if (hidden) hidden.value = fullPhone;
+      // Sync visible phone field into hidden contactPhone before reading it.
+      // When intl-tel-input is active it formats and prefixes the dial code.
+      // When it is not active, we copy the raw value directly so the submission
+      // code always finds a populated contactPhone regardless of which path ran.
+      const visiblePhone = document.getElementById('phone');
+      const hiddenPhone  = document.getElementById('contactPhone');
+      if (visiblePhone && hiddenPhone) {
+        if (itiInstance) {
+          const rawPhone = visiblePhone.value.trim();
+          const dialCode = itiInstance.getSelectedCountryData()?.dialCode || '';
+          hiddenPhone.value = rawPhone && !rawPhone.startsWith('+')
+            ? `+${dialCode}${rawPhone}`
+            : rawPhone;
+        } else {
+          // No intl-tel-input — copy raw value directly
+          hiddenPhone.value = visiblePhone.value.trim();
+        }
       }
 
       return valid;
@@ -1198,7 +1333,7 @@
       .catch(e => console.error(LOG, 'Analytics fetch failed:', e));
 
     // 7. User details (rep profile, social links, booking link)
-    get(`https://apiv2.rapidfunnel.com/v2/users-details/${encodeURIComponent(_params.userId)}`)
+    const userDetailsPromise = get(`https://apiv2.rapidfunnel.com/v2/users-details/${encodeURIComponent(_params.userId)}`)
       .then(r => {
         if (r?.data?.[0]) applyUserDetails(r.data[0]);
         else console.warn(LOG, 'User details: empty response.');
@@ -1206,9 +1341,13 @@
       .catch(e => console.error(LOG, 'User details fetch failed:', e));
 
     // 8. Branding (colors, logo, favicon, RF logo visibility)
-    get(`https://app.rapidfunnel.com/api/branding/user/${encodeURIComponent(_params.userId)}`)
+    const brandingPromise = get(`https://app.rapidfunnel.com/api/branding/user/${encodeURIComponent(_params.userId)}`)
       .then(r => { if (r?.data) injectBranding(r.data); })
       .catch(e => console.warn(LOG, 'Branding fetch failed:', e));
+
+    // 9. After all API calls settle, replace any still-unresolved supported tokens with "N/A"
+    Promise.allSettled([userDetailsPromise, brandingPromise])
+      .then(() => resolveRemainingTokens());
   }
 
   // Kick off after DOM is ready
