@@ -754,12 +754,36 @@
       // All fields tagged data-rf-notes are collected as "Label: Value" pairs.
       // A field tagged data-rf-notes="notes" (the visible notes/message field) is
       // placed last in the bundle. Empty values are skipped entirely.
+      //
+      // Radio buttons: tag only ONE radio in the group with data-rf-notes (any one).
+      // The code finds the checked sibling by name rather than reading el.value
+      // directly, since el.value on an unchecked radio returns the attribute value
+      // (not empty) and would incorrectly include unselected options.
       const notesLines = [];
       let visibleNotesLine = null;
+      const seenRadioNames = new Set();
+
       document.querySelectorAll('[data-rf-notes]').forEach(el => {
         const label = el.getAttribute('data-rf-notes').trim();
-        const value = el.value ? el.value.trim() : '';
+        let value = '';
+
+        if (el.type === 'radio') {
+          // Only process each radio group once
+          if (seenRadioNames.has(el.name)) return;
+          seenRadioNames.add(el.name);
+          // Find the checked radio in this group
+          const checked = el.name
+            ? document.querySelector(`input[type="radio"][name="${el.name}"]:checked`)
+            : (el.checked ? el : null);
+          value = checked ? checked.value.trim() : '';
+        } else if (el.type === 'checkbox') {
+          value = el.checked ? (el.value.trim() || 'Yes') : '';
+        } else {
+          value = el.value ? el.value.trim() : '';
+        }
+
         if (!value) return;
+
         const line = `${label}: ${value}`;
         if (label.toLowerCase() === 'notes' || el.id === 'contactNotes') {
           visibleNotesLine = line;
@@ -769,6 +793,13 @@
       });
       if (visibleNotesLine) notesLines.push(visibleNotesLine);
       const notes = notesLines.join('\n');
+
+      if (notes) {
+        console.log(LOG, 'Notes field will be submitted with the following content:');
+        console.log(notes);
+      } else {
+        console.log(LOG, 'Notes field is empty — no data-rf-notes fields had values.');
+      }
 
       const payload = {
         formData: new URLSearchParams({
