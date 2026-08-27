@@ -807,7 +807,7 @@
           lastName:  document.getElementById('contactLastName')?.value.trim()  || '',
           email:     document.getElementById('contactEmail')?.value.trim()     || '',
           phone,
-          ...(notes ? { notes } : {}),
+          ...(notes ? { note: notes } : {}),
           campaign:   campaignId,
           contactTag: labelId
         }).toString(),
