@@ -801,16 +801,33 @@
         console.log(LOG, 'Notes field is empty — no data-rf-notes fields had values.');
       }
 
+      // Build timestamp for note — required by the API alongside the note field.
+      // Format: "YYYY-MM-DD HH:MM:SS" in local time.
+      // noteTimeStamps[] uses array bracket notation which URLSearchParams doesn't
+      // support natively, so we append it as a raw encoded string after serialization.
+      const now = new Date();
+      const pad = n => String(n).padStart(2, '0');
+      const noteTimestamp = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())} ` +
+                            `${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
+      let formDataStr = new URLSearchParams({
+        firstName: document.getElementById('contactFirstName')?.value.trim() || '',
+        lastName:  document.getElementById('contactLastName')?.value.trim()  || '',
+        email:     document.getElementById('contactEmail')?.value.trim()     || '',
+        phone,
+        ...(notes ? { note: notes } : {}),
+        campaign:   campaignId,
+        contactTag: labelId
+      }).toString();
+
+      // Append noteTimeStamps[] only when a note is present — the API requires
+      // one timestamp entry per note submitted.
+      if (notes) {
+        formDataStr += '&' + 'noteTimeStamps%5B%5D=' + encodeURIComponent(noteTimestamp);
+      }
+
       const payload = {
-        formData: new URLSearchParams({
-          firstName: document.getElementById('contactFirstName')?.value.trim() || '',
-          lastName:  document.getElementById('contactLastName')?.value.trim()  || '',
-          email:     document.getElementById('contactEmail')?.value.trim()     || '',
-          phone,
-          ...(notes ? { note: notes } : {}),
-          campaign:   campaignId,
-          contactTag: labelId
-        }).toString(),
+        formData:   formDataStr,
         resourceId: _params.resourceId,
         senderId:   _params.userId,
         sentFrom:   'customPage'
